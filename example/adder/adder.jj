@@ -10,8 +10,8 @@ public class Adder {
 	static public void main(String[] args){
 		for(String arg : args){
 			try{
-				System.out.println(evulate(arg));
-			}catch (java.text.ParseException ex){
+				System.out.println(evaluate(arg));
+			}catch (ParseException ex){
 				System.err.println(ex.getMessage());
 			}
 		}
