@@ -1,5 +1,4 @@
 %{
-#define YYSTYPE char *
 #include "y.tab.h"
 int cur_line = 1;
 void yyerror(const char *msg);
@@ -10,14 +9,18 @@ OPERATOR        [-/+*()=;]
 INTEGER         [0-9]+
 IDENTIFIER      [_a-zA-Z][_a-zA-Z0-9]*
 WHITESPACE      [ \t]*
-IF              [i][f]
+IF              if
+WHILE           while
+BLOCK           \{[[^}][ \t]]*\}
 
 %%
+{IF}             { yylval.strval = strdup(yytext); return T_IF;         }
+{WHILE}             { yylval.strval = strdup(yytext); return T_WHILE;         }
+{BLOCK}             { yylval.strval = strdup(yytext); return T_BLOCK;         }
 {OPERATOR}      { return yytext[0]; }
-{INTEGER}       { yylval = strdup(yytext); return T_IntConstant; }
-{IDENTIFIER}    { yylval = strdup(yytext); return T_Identifier; }
+{INTEGER}       { yylval.strval = strdup(yytext); return T_IntConstant; }
+{IDENTIFIER}    { yylval.strval = strdup(yytext); return T_Identifier; }/*不使用strdup，会导致匹配整行*/
 {WHITESPACE}    { /* ignore every whitespcace */ }
-{IF}            { yylval = strdup(yytext); return T_IF; }
 \n              { cur_line++; }
 .               { unrecognized_char(yytext[0]); }
 %%

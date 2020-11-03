@@ -26,8 +26,9 @@ push 9
 add
 pop h
 
-push h
-push b
-add
-pop m
+if
 
+T_CON:ifa
+
+Error at line 7:
+	Unrecognized character: {
