@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-//#include "fb1-5.h"
+#include "fb1-5.h"
 %}
 //
 %union{
@@ -46,7 +46,7 @@ compilation_unit:{}
 con:					{}
 	| '(' IDENTIFIER ')'		{ printf("%s\n", $2);}
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-//	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %d\n", createCon('=')); }
+	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %s\n", createCon('='));$$ = createCon('='); }
 	;
 //
 //then:{}

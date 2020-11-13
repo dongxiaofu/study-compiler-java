@@ -12,9 +12,9 @@ struct ifNode *createIfNode(struct ast *con, struct ast *then, struct ast *elseB
     return ifNode1;
 }
 
-int createCon(int nodeType) {
+char *createCon(int nodeType) {
     printf("%s\n", "createCon===========");
-    return nodeType;
+    return "hello";
 //    struct ast *con = malloc(sizeof(struct ast));
 //    con->nodeType = nodeType;
 //    con->l = l;
