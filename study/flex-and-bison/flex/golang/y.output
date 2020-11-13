@@ -9,7 +9,6 @@ Nonterminals useless in grammar
 
 Terminals unused in grammar
 
-    NUMBER
     ADD
     SUB
     MUL
@@ -30,7 +29,7 @@ Grammar
 
     3 con: %empty
     4    | '(' IDENTIFIER ')'
-    5    | '(' IDENTIFIER '=' IDENTIFIER ')'
+    5    | '(' IDENTIFIER '=' NUMBER ')'
 
 
 Terminals, with rules where they appear
@@ -40,7 +39,7 @@ Terminals, with rules where they appear
     ')' (41) 4 5
     '=' (61) 5
     error (256)
-    NUMBER <intval> (258)
+    NUMBER <intval> (258) 5
     ADD <strval> (259)
     SUB <strval> (260)
     MUL <strval> (261)
@@ -99,7 +98,7 @@ State 2
 State 3
 
     4 con: '(' • IDENTIFIER ')'
-    5    | '(' • IDENTIFIER '=' IDENTIFIER ')'
+    5    | '(' • IDENTIFIER '=' NUMBER ')'
 
     IDENTIFIER  shift, and go to state 6
 
@@ -121,7 +120,7 @@ State 5
 State 6
 
     4 con: '(' IDENTIFIER • ')'
-    5    | '(' IDENTIFIER • '=' IDENTIFIER ')'
+    5    | '(' IDENTIFIER • '=' NUMBER ')'
 
     ')'  shift, and go to state 8
     '='  shift, and go to state 9
@@ -143,20 +142,20 @@ State 8
 
 State 9
 
-    5 con: '(' IDENTIFIER '=' • IDENTIFIER ')'
+    5 con: '(' IDENTIFIER '=' • NUMBER ')'
 
-    IDENTIFIER  shift, and go to state 10
+    NUMBER  shift, and go to state 10
 
 
 State 10
 
-    5 con: '(' IDENTIFIER '=' IDENTIFIER • ')'
+    5 con: '(' IDENTIFIER '=' NUMBER • ')'
 
     ')'  shift, and go to state 11
 
 
 State 11
 
-    5 con: '(' IDENTIFIER '=' IDENTIFIER ')' •
+    5 con: '(' IDENTIFIER '=' NUMBER ')' •
 
     $default  reduce using rule 5 (con)

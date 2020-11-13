@@ -22,7 +22,7 @@ struct str{
 };
 
 struct ifNode *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody);
-char * createCon(int nodeType);
+char * createCon(int nodeType,  char *l, struct number *r);
 struct ast *createThen(int nodeType, struct str *l, struct number *r);
 struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r);
 struct number *createNum(int num);

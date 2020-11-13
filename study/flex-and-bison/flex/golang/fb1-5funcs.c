@@ -12,16 +12,17 @@ struct ifNode *createIfNode(struct ast *con, struct ast *then, struct ast *elseB
     return ifNode1;
 }
 
-char *createCon(int nodeType) {
+char *createCon(int nodeType, char *l, struct number *r) {
     printf("%s\n", "createCon===========");
-    return "hello";
-//    struct ast *con = malloc(sizeof(struct ast));
-//    con->nodeType = nodeType;
-//    con->l = l;
-//    con->r = r;
-//    printf("l size = %lu\n", sizeof(l));
+//    return "hello";
+    struct ast *con = malloc(sizeof(struct ast));
+    con->nodeType = nodeType;
+    con->l = l;
+    con->r = r;
+    printf("l size = %lu\n", sizeof(l));
 //    printf("l  = %s\n", l->nodeType);
 //    printf("v  = %s\n", l->value);
+    return con->l;
 ////    printf("createCon l = %s\n", l->value);
 ////    struct str *rf = (struct str *)r;
 //    printf("con = 【%s%c】\n", l->value, nodeType);

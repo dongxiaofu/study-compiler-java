@@ -45,8 +45,8 @@ compilation_unit:{}
 
 con:					{}
 	| '(' IDENTIFIER ')'		{ printf("%s\n", $2);}
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %s\n", createCon('='));$$ = createCon('='); }
+	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('=', $2, $4); }
+//	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %s\n", createCon('='));$$ = createCon('='); }
 	;
 //
 //then:{}
