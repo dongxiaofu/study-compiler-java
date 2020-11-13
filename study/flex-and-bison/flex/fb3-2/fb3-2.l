@@ -9,7 +9,7 @@
 %option noyywrap nodefault yylineno
 %{
 # include "fb3-2.h"
-# include "fb3-2.tab.h"
+# include "y.tab.h"
 %}
 
 /* float exponent */

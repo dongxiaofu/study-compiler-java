@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-//#include "fb1-5.h"
+#include "fb1-5.h"
 %}
 //
 %union{
@@ -8,7 +8,6 @@
 	char *strval;
 	struct ifNode *in;
 	struct str *str1;
-	char c;
 }
 
 //%token <intval> NUMBER
@@ -23,10 +22,9 @@
 %token COMMENT
 %token IDENTIFIER
 
-//%type <str1> expr
-//%type <c> con
+%type <str1> expr
 %type <intval> NUMBER
-%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  then else_body IDENTIFIER con
+%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE con then else_body IDENTIFIER
 %type <strval> calclist factor
 %type <intval> term
 %type <in>	compilation_unit
@@ -35,36 +33,34 @@
 
 %%
 
-compilation_unit:{}
+compilation_unit:
 //	| IF	EOL		   { printf("if = %s\n", $1);	}
 //	| ELSE	EOL		   { printf("else = %s\n", $1);	}
 	| IF con EOL		{ printf("IF = %s###con = %s\n", $1, $2); }
-//	| IF con then EOL  	{ $$ = createIfNode($2, $3, NULL);  }
-//	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
+	| IF con then EOL  	{ $$ = createIfNode($2, $3, NULL);  }
+	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
 	;
 
-con:					{}
-	| '(' IDENTIFIER ')'		{ printf("%s\n", $2);}
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-//	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %d\n", createCon('=')); }
+con:
+	| '(' expr ')'		{ $$ = createCon('=', $2, "hello"); }
 	;
-//
-//then:{}
-////	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = $2; }
-////	| IDENTIFIER '=' NUMBER			{ $$ = $1; }
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-////	| IDENTIFIER ';'			{ $$ = $1; }
-//	;
-//
-//else_body:{}
-//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
-//	;
 
-//expr:
-//	| IDENTIFIER			{ $$ = createStr($1); }
-////	| NUMBER expr				{ $$ = createNum($1); }
-//	;
+then:
+//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = $2; }
+//	| IDENTIFIER '=' NUMBER			{ $$ = $1; }
+	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
+//	| IDENTIFIER ';'			{ $$ = $1; }
+	;
+
+else_body:{}
+	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
+	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
+	;
+
+expr:
+	| IDENTIFIER			{ $$ = createStr($1); }
+//	| NUMBER expr				{ $$ = createNum($1); }
+	;
 
 //
 //import_stmts:	import_stmt /*default	$$ = $1*/

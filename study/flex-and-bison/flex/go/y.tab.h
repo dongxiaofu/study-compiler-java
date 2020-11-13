@@ -98,9 +98,8 @@ union YYSTYPE
 	char *strval;
 	struct ifNode *in;
 	struct str *str1;
-	char c;
 
-#line 104 "y.tab.h"
+#line 103 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

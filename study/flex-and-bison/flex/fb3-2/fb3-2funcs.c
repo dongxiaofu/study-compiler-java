@@ -109,6 +109,7 @@ newfunc(int functype, struct ast *l)
   a->nodetype = 'F';
   a->l = l;
   a->functype = functype;
+  // todo 怎么能把内部结构不同的struct转成另外一个struct呢？
   return (struct ast *)a;
 }
 

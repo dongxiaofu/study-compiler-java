@@ -768,7 +768,7 @@ case 10:
 case 11:
 YY_RULE_SETUP
 #line 19 "fb1-5.l"
-{  return yytext[0]; }
+{ return yytext[0]; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP

@@ -1,0 +1,843 @@
+Grammar
+
+    0 $accept: calclist $end
+
+    1 stmt: IF exp THEN list
+    2     | IF exp THEN list ELSE list
+    3     | WHILE exp DO list
+    4     | exp
+
+    5 list: %empty
+    6     | stmt ';' list
+
+    7 exp: exp CMP exp
+    8    | exp '+' exp
+    9    | exp '-' exp
+   10    | exp '*' exp
+   11    | exp '/' exp
+   12    | '|' exp
+   13    | '(' exp ')'
+   14    | '-' exp
+   15    | NUMBER
+   16    | FUNC '(' explist ')'
+   17    | NAME
+   18    | NAME '=' exp
+   19    | NAME '(' explist ')'
+
+   20 explist: exp
+   21        | exp ',' explist
+
+   22 symlist: NAME
+   23        | NAME ',' symlist
+
+   24 calclist: %empty
+   25         | calclist stmt EOL
+   26         | calclist LET NAME '(' symlist ')' '=' list EOL
+   27         | calclist error EOL
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 13 16 19 26
+    ')' (41) 13 16 19 26
+    '*' (42) 10
+    '+' (43) 8
+    ',' (44) 21 23
+    '-' (45) 9 14
+    '/' (47) 11
+    ';' (59) 6
+    '=' (61) 18 26
+    '|' (124) 12
+    error (256) 27
+    NUMBER <d> (258) 15
+    NAME <s> (259) 17 18 19 22 23 26
+    FUNC <fn> (260) 16
+    EOL (261) 25 26 27
+    IF (262) 1 2
+    THEN (263) 1 2
+    ELSE (264) 2
+    WHILE (265) 3
+    DO (266) 3
+    LET (267) 26
+    CMP <fn> (268) 7
+    UMINUS (269)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (25)
+        on left: 0
+    stmt <a> (26)
+        on left: 1 2 3 4
+        on right: 6 25
+    list <a> (27)
+        on left: 5 6
+        on right: 1 2 3 6 26
+    exp <a> (28)
+        on left: 7 8 9 10 11 12 13 14 15 16 17 18 19
+        on right: 1 2 3 4 7 8 9 10 11 12 13 14 18 20 21
+    explist <a> (29)
+        on left: 20 21
+        on right: 16 19 21
+    symlist <sl> (30)
+        on left: 22 23
+        on right: 23 26
+    calclist (31)
+        on left: 24 25 26 27
+        on right: 0 25 26 27
+
+
+State 0
+
+    0 $accept: • calclist $end
+
+    $default  reduce using rule 24 (calclist)
+
+    calclist  go to state 1
+
+
+State 1
+
+    0 $accept: calclist • $end
+   25 calclist: calclist • stmt EOL
+   26         | calclist • LET NAME '(' symlist ')' '=' list EOL
+   27         | calclist • error EOL
+
+    $end    shift, and go to state 2
+    error   shift, and go to state 3
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    LET     shift, and go to state 9
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    stmt  go to state 13
+    exp   go to state 14
+
+
+State 2
+
+    0 $accept: calclist $end •
+
+    $default  accept
+
+
+State 3
+
+   27 calclist: calclist error • EOL
+
+    EOL  shift, and go to state 15
+
+
+State 4
+
+   15 exp: NUMBER •
+
+    $default  reduce using rule 15 (exp)
+
+
+State 5
+
+   17 exp: NAME •
+   18    | NAME • '=' exp
+   19    | NAME • '(' explist ')'
+
+    '='  shift, and go to state 16
+    '('  shift, and go to state 17
+
+    $default  reduce using rule 17 (exp)
+
+
+State 6
+
+   16 exp: FUNC • '(' explist ')'
+
+    '('  shift, and go to state 18
+
+
+State 7
+
+    1 stmt: IF • exp THEN list
+    2     | IF • exp THEN list ELSE list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 19
+
+
+State 8
+
+    3 stmt: WHILE • exp DO list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 20
+
+
+State 9
+
+   26 calclist: calclist LET • NAME '(' symlist ')' '=' list EOL
+
+    NAME  shift, and go to state 21
+
+
+State 10
+
+   14 exp: '-' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 22
+
+
+State 11
+
+   12 exp: '|' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 23
+
+
+State 12
+
+   13 exp: '(' • exp ')'
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 24
+
+
+State 13
+
+   25 calclist: calclist stmt • EOL
+
+    EOL  shift, and go to state 25
+
+
+State 14
+
+    4 stmt: exp •
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    CMP  shift, and go to state 26
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+    $default  reduce using rule 4 (stmt)
+
+
+State 15
+
+   27 calclist: calclist error EOL •
+
+    $default  reduce using rule 27 (calclist)
+
+
+State 16
+
+   18 exp: NAME '=' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 31
+
+
+State 17
+
+   19 exp: NAME '(' • explist ')'
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp      go to state 32
+    explist  go to state 33
+
+
+State 18
+
+   16 exp: FUNC '(' • explist ')'
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp      go to state 32
+    explist  go to state 34
+
+
+State 19
+
+    1 stmt: IF exp • THEN list
+    2     | IF exp • THEN list ELSE list
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    THEN  shift, and go to state 35
+    CMP   shift, and go to state 26
+    '+'   shift, and go to state 27
+    '-'   shift, and go to state 28
+    '*'   shift, and go to state 29
+    '/'   shift, and go to state 30
+
+
+State 20
+
+    3 stmt: WHILE exp • DO list
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    DO   shift, and go to state 36
+    CMP  shift, and go to state 26
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+
+State 21
+
+   26 calclist: calclist LET NAME • '(' symlist ')' '=' list EOL
+
+    '('  shift, and go to state 37
+
+
+State 22
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   14    | '-' exp •
+
+    $default  reduce using rule 14 (exp)
+
+
+State 23
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   12    | '|' exp •
+
+    $default  reduce using rule 12 (exp)
+
+
+State 24
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   13    | '(' exp • ')'
+
+    CMP  shift, and go to state 26
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+    ')'  shift, and go to state 38
+
+
+State 25
+
+   25 calclist: calclist stmt EOL •
+
+    $default  reduce using rule 25 (calclist)
+
+
+State 26
+
+    7 exp: exp CMP • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 39
+
+
+State 27
+
+    8 exp: exp '+' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 40
+
+
+State 28
+
+    9 exp: exp '-' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 41
+
+
+State 29
+
+   10 exp: exp '*' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 42
+
+
+State 30
+
+   11 exp: exp '/' • exp
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp  go to state 43
+
+
+State 31
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   18    | NAME '=' exp •
+
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+    $default  reduce using rule 18 (exp)
+
+
+State 32
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   20 explist: exp •
+   21        | exp • ',' explist
+
+    CMP  shift, and go to state 26
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+    ','  shift, and go to state 44
+
+    $default  reduce using rule 20 (explist)
+
+
+State 33
+
+   19 exp: NAME '(' explist • ')'
+
+    ')'  shift, and go to state 45
+
+
+State 34
+
+   16 exp: FUNC '(' explist • ')'
+
+    ')'  shift, and go to state 46
+
+
+State 35
+
+    1 stmt: IF exp THEN • list
+    2     | IF exp THEN • list ELSE list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    $default  reduce using rule 5 (list)
+
+    stmt  go to state 47
+    list  go to state 48
+    exp   go to state 14
+
+
+State 36
+
+    3 stmt: WHILE exp DO • list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    $default  reduce using rule 5 (list)
+
+    stmt  go to state 47
+    list  go to state 49
+    exp   go to state 14
+
+
+State 37
+
+   26 calclist: calclist LET NAME '(' • symlist ')' '=' list EOL
+
+    NAME  shift, and go to state 50
+
+    symlist  go to state 51
+
+
+State 38
+
+   13 exp: '(' exp ')' •
+
+    $default  reduce using rule 13 (exp)
+
+
+State 39
+
+    7 exp: exp • CMP exp
+    7    | exp CMP exp •
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    '+'  shift, and go to state 27
+    '-'  shift, and go to state 28
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+    CMP  error (nonassociative)
+
+    $default  reduce using rule 7 (exp)
+
+
+State 40
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    8    | exp '+' exp •
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+    $default  reduce using rule 8 (exp)
+
+
+State 41
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+    9    | exp '-' exp •
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+
+    '*'  shift, and go to state 29
+    '/'  shift, and go to state 30
+
+    $default  reduce using rule 9 (exp)
+
+
+State 42
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   10    | exp '*' exp •
+   11    | exp • '/' exp
+
+    $default  reduce using rule 10 (exp)
+
+
+State 43
+
+    7 exp: exp • CMP exp
+    8    | exp • '+' exp
+    9    | exp • '-' exp
+   10    | exp • '*' exp
+   11    | exp • '/' exp
+   11    | exp '/' exp •
+
+    $default  reduce using rule 11 (exp)
+
+
+State 44
+
+   21 explist: exp ',' • explist
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    exp      go to state 32
+    explist  go to state 52
+
+
+State 45
+
+   19 exp: NAME '(' explist ')' •
+
+    $default  reduce using rule 19 (exp)
+
+
+State 46
+
+   16 exp: FUNC '(' explist ')' •
+
+    $default  reduce using rule 16 (exp)
+
+
+State 47
+
+    6 list: stmt • ';' list
+
+    ';'  shift, and go to state 53
+
+
+State 48
+
+    1 stmt: IF exp THEN list •
+    2     | IF exp THEN list • ELSE list
+
+    ELSE  shift, and go to state 54
+
+    $default  reduce using rule 1 (stmt)
+
+
+State 49
+
+    3 stmt: WHILE exp DO list •
+
+    $default  reduce using rule 3 (stmt)
+
+
+State 50
+
+   22 symlist: NAME •
+   23        | NAME • ',' symlist
+
+    ','  shift, and go to state 55
+
+    $default  reduce using rule 22 (symlist)
+
+
+State 51
+
+   26 calclist: calclist LET NAME '(' symlist • ')' '=' list EOL
+
+    ')'  shift, and go to state 56
+
+
+State 52
+
+   21 explist: exp ',' explist •
+
+    $default  reduce using rule 21 (explist)
+
+
+State 53
+
+    6 list: stmt ';' • list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    $default  reduce using rule 5 (list)
+
+    stmt  go to state 47
+    list  go to state 57
+    exp   go to state 14
+
+
+State 54
+
+    2 stmt: IF exp THEN list ELSE • list
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    $default  reduce using rule 5 (list)
+
+    stmt  go to state 47
+    list  go to state 58
+    exp   go to state 14
+
+
+State 55
+
+   23 symlist: NAME ',' • symlist
+
+    NAME  shift, and go to state 50
+
+    symlist  go to state 59
+
+
+State 56
+
+   26 calclist: calclist LET NAME '(' symlist ')' • '=' list EOL
+
+    '='  shift, and go to state 60
+
+
+State 57
+
+    6 list: stmt ';' list •
+
+    $default  reduce using rule 6 (list)
+
+
+State 58
+
+    2 stmt: IF exp THEN list ELSE list •
+
+    $default  reduce using rule 2 (stmt)
+
+
+State 59
+
+   23 symlist: NAME ',' symlist •
+
+    $default  reduce using rule 23 (symlist)
+
+
+State 60
+
+   26 calclist: calclist LET NAME '(' symlist ')' '=' • list EOL
+
+    NUMBER  shift, and go to state 4
+    NAME    shift, and go to state 5
+    FUNC    shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    '-'     shift, and go to state 10
+    '|'     shift, and go to state 11
+    '('     shift, and go to state 12
+
+    $default  reduce using rule 5 (list)
+
+    stmt  go to state 47
+    list  go to state 61
+    exp   go to state 14
+
+
+State 61
+
+   26 calclist: calclist LET NAME '(' symlist ')' '=' list • EOL
+
+    EOL  shift, and go to state 62
+
+
+State 62
+
+   26 calclist: calclist LET NAME '(' symlist ')' '=' list EOL •
+
+    $default  reduce using rule 26 (calclist)

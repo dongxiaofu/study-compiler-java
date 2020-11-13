@@ -55,18 +55,17 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     NUMBER = 258,                  /* NUMBER  */
-    ADD = 259,                     /* ADD  */
-    SUB = 260,                     /* SUB  */
-    MUL = 261,                     /* MUL  */
-    DIV = 262,                     /* DIV  */
-    ABS = 263,                     /* ABS  */
-    EOL = 264,                     /* EOL  */
-    OP = 265,                      /* OP  */
-    CP = 266,                      /* CP  */
-    IF = 267,                      /* IF  */
-    ELSE = 268,                    /* ELSE  */
-    COMMENT = 269,                 /* COMMENT  */
-    IDENTIFIER = 270               /* IDENTIFIER  */
+    NAME = 259,                    /* NAME  */
+    FUNC = 260,                    /* FUNC  */
+    EOL = 261,                     /* EOL  */
+    IF = 262,                      /* IF  */
+    THEN = 263,                    /* THEN  */
+    ELSE = 264,                    /* ELSE  */
+    WHILE = 265,                   /* WHILE  */
+    DO = 266,                      /* DO  */
+    LET = 267,                     /* LET  */
+    CMP = 268,                     /* CMP  */
+    UMINUS = 269                   /* UMINUS  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -75,32 +74,31 @@ extern int yydebug;
 #define YYerror 256
 #define YYUNDEF 257
 #define NUMBER 258
-#define ADD 259
-#define SUB 260
-#define MUL 261
-#define DIV 262
-#define ABS 263
-#define EOL 264
-#define OP 265
-#define CP 266
-#define IF 267
-#define ELSE 268
-#define COMMENT 269
-#define IDENTIFIER 270
+#define NAME 259
+#define FUNC 260
+#define EOL 261
+#define IF 262
+#define THEN 263
+#define ELSE 264
+#define WHILE 265
+#define DO 266
+#define LET 267
+#define CMP 268
+#define UMINUS 269
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 6 "fb1-5.y"
+#line 15 "fb3-2.y"
 
-	int intval;
-	char *strval;
-	struct ifNode *in;
-	struct str *str1;
-	char c;
+  struct ast *a;
+  double d;
+  struct symbol *s;		/* which symbol */
+  struct symlist *sl;
+  int fn;			/* which function */
 
-#line 104 "y.tab.h"
+#line 102 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

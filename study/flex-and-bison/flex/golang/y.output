@@ -1,3 +1,12 @@
+Nonterminals useless in grammar
+
+    then
+    else_body
+    calclist
+    factor
+    term
+
+
 Terminals unused in grammar
 
     NUMBER
@@ -8,22 +17,8 @@ Terminals unused in grammar
     ABS
     OP
     CP
-    IF
     ELSE
     COMMENT
-
-
-Rules useless in parser due to conflicts
-
-    3 import_stmts: import_stmt
-    4             | import_stmts import_stmt
-
-
-State 4 conflicts: 1 shift/reduce
-State 6 conflicts: 1 reduce/reduce
-State 7 conflicts: 1 shift/reduce
-State 9 conflicts: 1 shift/reduce
-State 13 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -31,79 +26,67 @@ Grammar
     0 $accept: compilation_unit $end
 
     1 compilation_unit: %empty
-    2                 | import_stmts top_defs EOL
+    2                 | IF con EOL
 
-    3 import_stmts: import_stmt
-    4             | import_stmts import_stmt
-
-    5 import_stmt: IDENTIFIER
-    6            | import_stmt IDENTIFIER
-
-    7 top_defs: top_def
-    8         | top_defs top_def
-
-    9 top_def: IDENTIFIER
-   10        | top_def IDENTIFIER
+    3 con: %empty
+    4    | '(' IDENTIFIER ')'
+    5    | '(' IDENTIFIER '=' IDENTIFIER ')'
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
+    '(' (40) 4 5
+    ')' (41) 4 5
+    '=' (61) 5
     error (256)
-    NUMBER (258)
-    ADD (259)
-    SUB (260)
-    MUL (261)
-    DIV (262)
-    ABS (263)
-    EOL (264) 2
+    NUMBER <intval> (258)
+    ADD <strval> (259)
+    SUB <strval> (260)
+    MUL <strval> (261)
+    DIV <strval> (262)
+    ABS <strval> (263)
+    EOL <strval> (264) 2
     OP (265)
     CP (266)
-    IF (267)
-    ELSE (268)
+    IF <strval> (267) 2
+    ELSE <strval> (268)
     COMMENT (269)
-    IDENTIFIER (270) 5 6 9 10
+    IDENTIFIER <strval> (270) 4 5
 
 
 Nonterminals, with rules where they appear
 
-    $accept (16)
+    $accept (19)
         on left: 0
-    compilation_unit (17)
+    compilation_unit <in> (20)
         on left: 1 2
         on right: 0
-    import_stmts (18)
-        on left: 3 4
-        on right: 2 4
-    import_stmt (19)
-        on left: 5 6
-        on right: 3 4 6
-    top_defs (20)
-        on left: 7 8
-        on right: 2 8
-    top_def (21)
-        on left: 9 10
-        on right: 7 8 10
+    con <strval> (21)
+        on left: 3 4 5
+        on right: 2
 
 
 State 0
 
     0 $accept: • compilation_unit $end
 
-    IDENTIFIER  shift, and go to state 1
+    IF  shift, and go to state 1
 
     $default  reduce using rule 1 (compilation_unit)
 
     compilation_unit  go to state 2
-    import_stmts      go to state 3
-    import_stmt       go to state 4
 
 
 State 1
 
-    5 import_stmt: IDENTIFIER •
+    2 compilation_unit: IF • con EOL
 
-    $default  reduce using rule 5 (import_stmt)
+    '('  shift, and go to state 3
+
+    $default  reduce using rule 3 (con)
+
+    con  go to state 4
 
 
 State 2
@@ -115,24 +98,17 @@ State 2
 
 State 3
 
-    2 compilation_unit: import_stmts • top_defs EOL
-    4 import_stmts: import_stmts • import_stmt
+    4 con: '(' • IDENTIFIER ')'
+    5    | '(' • IDENTIFIER '=' IDENTIFIER ')'
 
     IDENTIFIER  shift, and go to state 6
-
-    import_stmt  go to state 7
-    top_defs     go to state 8
-    top_def      go to state 9
 
 
 State 4
 
-    3 import_stmts: import_stmt •
-    6 import_stmt: import_stmt • IDENTIFIER
+    2 compilation_unit: IF con • EOL
 
-    IDENTIFIER  shift, and go to state 10
-
-    IDENTIFIER  [reduce using rule 3 (import_stmts)]
+    EOL  shift, and go to state 7
 
 
 State 5
@@ -144,81 +120,43 @@ State 5
 
 State 6
 
-    5 import_stmt: IDENTIFIER •
-    9 top_def: IDENTIFIER •
+    4 con: '(' IDENTIFIER • ')'
+    5    | '(' IDENTIFIER • '=' IDENTIFIER ')'
 
-    EOL         reduce using rule 9 (top_def)
-    IDENTIFIER  reduce using rule 5 (import_stmt)
-    IDENTIFIER  [reduce using rule 9 (top_def)]
-    $default    reduce using rule 5 (import_stmt)
+    ')'  shift, and go to state 8
+    '='  shift, and go to state 9
 
 
 State 7
 
-    4 import_stmts: import_stmts import_stmt •
-    6 import_stmt: import_stmt • IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 10
-
-    IDENTIFIER  [reduce using rule 4 (import_stmts)]
-
-
-State 8
-
-    2 compilation_unit: import_stmts top_defs • EOL
-    8 top_defs: top_defs • top_def
-
-    EOL         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-
-    top_def  go to state 13
-
-
-State 9
-
-    7 top_defs: top_def •
-   10 top_def: top_def • IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 14
-
-    IDENTIFIER  [reduce using rule 7 (top_defs)]
-    $default    reduce using rule 7 (top_defs)
-
-
-State 10
-
-    6 import_stmt: import_stmt IDENTIFIER •
-
-    $default  reduce using rule 6 (import_stmt)
-
-
-State 11
-
-    2 compilation_unit: import_stmts top_defs EOL •
+    2 compilation_unit: IF con EOL •
 
     $default  reduce using rule 2 (compilation_unit)
 
 
-State 12
+State 8
 
-    9 top_def: IDENTIFIER •
+    4 con: '(' IDENTIFIER ')' •
 
-    $default  reduce using rule 9 (top_def)
-
-
-State 13
-
-    8 top_defs: top_defs top_def •
-   10 top_def: top_def • IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 14
-
-    IDENTIFIER  [reduce using rule 8 (top_defs)]
-    $default    reduce using rule 8 (top_defs)
+    $default  reduce using rule 4 (con)
 
 
-State 14
+State 9
 
-   10 top_def: top_def IDENTIFIER •
+    5 con: '(' IDENTIFIER '=' • IDENTIFIER ')'
 
-    $default  reduce using rule 10 (top_def)
+    IDENTIFIER  shift, and go to state 10
+
+
+State 10
+
+    5 con: '(' IDENTIFIER '=' IDENTIFIER • ')'
+
+    ')'  shift, and go to state 11
+
+
+State 11
+
+    5 con: '(' IDENTIFIER '=' IDENTIFIER ')' •
+
+    $default  reduce using rule 5 (con)
