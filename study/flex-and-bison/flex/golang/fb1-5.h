@@ -40,3 +40,4 @@ void dump(struct ast *root);
 void newCode(struct ast *root);
 char *generateCCode(struct ast *root, char *res);
 void printIndent(int level);
+char *int2String(int num);
