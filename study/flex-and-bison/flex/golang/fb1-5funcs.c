@@ -12,12 +12,11 @@ struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody
     return node;
 }
 
-struct ast *createCon(int nodeType, struct ast *l, struct ast *r) {
+struct ast *createCon(int nodeType, struct ast *con) {
     printf("%s\n", "createCon===========");
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
-    node->l = l;
-    node->r = r;
+    node->con = con;
     return node;
 }
 
@@ -39,6 +38,14 @@ struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r) {
     return node;
 }
 
+struct ast *createExpr(int nodeType, struct ast *l, struct ast *r){
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = nodeType;
+    node->l = l;
+    node->r = r;
+    return node;
+}
+
 struct ast *createNum(int num) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = 'n';
@@ -48,7 +55,30 @@ struct ast *createNum(int num) {
 
 struct ast *createStr(char *str) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = "s";
+    node->nodeType = 's';
     node->stringValue = str;
     return node;
+}
+
+void dump(struct ast *root){
+    if(root == NULL){
+        return;
+    }
+    printf("%s\n", "打印AST");
+    printf("nodeType = %c\n", root->nodeType);
+    int nodeType = root->nodeType;
+    switch (nodeType) {
+        case 's':
+            printf("%s\n", root->stringValue);
+            break;
+        case 'n':
+            printf("%d\n", root->numberValue);
+            break;
+        default:
+            dump(root->l);
+            dump(root->r);
+            dump(root->con);
+            dump(root->tl);
+            dump(root->el);
+    }
 }

@@ -7,8 +7,7 @@
 	int intval;
 	char *strval;
 	struct ifNode *in;
-	struct str *str1;
-	char c;
+	struct ast *node;
 }
 
 //%token <intval> NUMBER
@@ -24,29 +23,29 @@
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <str1> con
+%type <node> con then else_body expr compilation_unit
 %type <intval> NUMBER
-%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  then else_body IDENTIFIER
+%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  IDENTIFIER
 %type <strval> calclist factor
 %type <intval> term
-%type <in>	compilation_unit
 
 //%start compilation_unit
 
 %%
 
 compilation_unit:{}
-//	| IF	EOL		   { printf("if = %s\n", $1);	}
-//	| ELSE	EOL		   { printf("else = %s\n", $1);	}
-	| IF con EOL		{ printf("IF = %s###con = %s\n", $1, $2); }
-//	| IF con then EOL  	{ $$ = createIfNode($2, $3, NULL);  }
+//	| IF	EOL		   	{ printf("if = %s\n", $1);	}
+//	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
+//	| IF con EOL compilation_unit			{ dump($2); }
+	| IF con EOL			{ dump($2); }
+//	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
 	;
 
-con:					{}
-	| '(' IDENTIFIER ')'		{ printf("%s\n", $2);}
-	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
-//	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %s\n", createCon('='));$$ = createCon('='); }
+con:							{}
+	| expr						{ $$ = createCon('e', $1);}
+//	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
+//	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
 //
 //then:{}
@@ -61,10 +60,14 @@ con:					{}
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
 //	;
 
-//expr:
-//	| IDENTIFIER			{ $$ = createStr($1); }
-////	| NUMBER expr				{ $$ = createNum($1); }
-//	;
+expr:
+	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
+	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
+	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
+	| '(' expr ')'				{ $$ = $2; }
+	| IDENTIFIER				{ $$ = createStr($1); }
+	| NUMBER				{ $$ = createNum($1); }
+	;
 
 //
 //import_stmts:	import_stmt /*default	$$ = $1*/
