@@ -24,9 +24,9 @@
 %token IDENTIFIER
 
 //%type <str1> expr
-//%type <c> con
+%type <str1> con
 %type <intval> NUMBER
-%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  then else_body IDENTIFIER con
+%type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  then else_body IDENTIFIER
 %type <strval> calclist factor
 %type <intval> term
 %type <in>	compilation_unit
@@ -45,7 +45,7 @@ compilation_unit:{}
 
 con:					{}
 	| '(' IDENTIFIER ')'		{ printf("%s\n", $2);}
-	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('=', $2, $4); }
+	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ printf("createCon = %s\n", createCon('='));$$ = createCon('='); }
 	;
 //

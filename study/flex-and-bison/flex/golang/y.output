@@ -61,7 +61,7 @@ Nonterminals, with rules where they appear
     compilation_unit <in> (20)
         on left: 1 2
         on right: 0
-    con <strval> (21)
+    con <str1> (21)
         on left: 3 4 5
         on right: 2
 

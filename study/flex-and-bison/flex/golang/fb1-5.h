@@ -3,6 +3,11 @@ struct ast{
     int nodeType;
     struct ast *l;
     struct ast *r;
+    struct ast *tl;
+    struct ast *con;
+    struct ast *el;
+    int numberValue;
+    char *stringValue;
 };
 
 struct ifNode{
@@ -17,13 +22,13 @@ struct number{
 };
 
 struct str{
-    char *nodeType;
+    char nodeType;
     char *value;
 };
 
-struct ifNode *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody);
-char * createCon(int nodeType,  char *l, struct number *r);
-struct ast *createThen(int nodeType, struct str *l, struct number *r);
+struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody);
+struct ast * createCon(int nodeType,  struct ast *l, struct ast *r);
+struct ast *createThen(int nodeType, struct ast *l, struct ast  *r);
 struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r);
-struct number *createNum(int num);
-struct str *createStr(char *str);
+struct ast *createNum(int num);
+struct ast *createStr(char *str);
