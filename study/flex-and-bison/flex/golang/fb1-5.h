@@ -31,7 +31,7 @@ struct str{
 
 struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody);
 struct ast * createCon(struct ast *con);
-struct ast *createThen(int nodeType, struct ast *l, struct ast  *r);
+struct ast *createThen(struct ast *l);
 struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r);
 struct ast *createExpr(int nodeType, struct ast *l, struct ast *r);
 struct ast *createNum(int num);

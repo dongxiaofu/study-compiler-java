@@ -15,11 +15,9 @@ struct ast *createCon(struct ast *con) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;
     node->con = con;
-    printf("nodeType = %c\n", con->nodeType);
     if (con->nodeType == 's' || con->nodeType == 'n') {
         node->nodeType = 'e';
         node->l = con;
-        printf("con = %s\n", con->stringValue);
     } else {
         node->l = con->l;
     }
@@ -28,17 +26,16 @@ struct ast *createCon(struct ast *con) {
     return node;
 }
 
-struct ast *createThen(int nodeType, struct ast *l, struct ast *r) {
-    printf("%s\n", "createThen===========");
+struct ast *createThen(struct ast *e) {
+    int nodeType = e->nodeType;
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
-    node->l = l;
-    node->r = r;
+    node->l = e->l;
+    node->r = e->r;
     return node;
 }
 
 struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r) {
-    printf("%s\n", "createElseBody===========");
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
     node->l = l;
@@ -76,6 +73,7 @@ struct ast *createStr(char *str) {
         } else {
             node->stringValue = str;
         }
+        node->stringValue = str;
     } else {
         node->stringValue = str;
     }
@@ -90,8 +88,11 @@ void dump(struct ast *root) {
         return;
     }
 //    printf("%s\n", "打印AST");
+    printf("%c\n", root->nodeType);
     printIndent(level);
-    printf("nodeType = %c\n", root->nodeType);
+    if (root->nodeType == 'a') {
+        return;
+    }
     int nodeType = root->nodeType;
     switch (nodeType) {
         case 's':
@@ -103,6 +104,9 @@ void dump(struct ast *root) {
             printf("%d\n", root->numberValue);
             break;
         default:
+            if (root == NULL) {
+                break;
+            }
             level++;
             dump(root->l);
             dump(root->r);
@@ -116,6 +120,7 @@ void dump(struct ast *root) {
 
 void newCode(struct ast *root) {
     char *code = "";
+    printf("nodeType in newCode = %c\n", root->nodeType);
     generateCCode(root, code);
     printf("res = 【%s】\n", code);
 }
@@ -126,6 +131,10 @@ char *generateCCode(struct ast *root, char *code) {
         return "";
     }
     printf("nodeType in generateCCode = %c\n", root->nodeType);
+    if (root->nodeType == 'a') {
+        printf("a======%s", root->stringValue);
+        return root->stringValue;
+    }
     char nodeType = root->nodeType;
     if (nodeType == 's') {
         return root->stringValue;
@@ -133,20 +142,31 @@ char *generateCCode(struct ast *root, char *code) {
     if (nodeType == 'n') {
         return int2String(root->numberValue);
     }
+    char *res;
+    // ifNode
+    if (nodeType == 'i') {
+        char *con = generateCCode(root->con, code);
+        char *tl = generateCCode(root->tl, code);
+        char *el = generateCCode(root->el, code);
 
-    char *left = generateCCode(root->l, code);
-    char *right = generateCCode(root->r, code);
-    char *res = (char *) malloc(sizeof(left) + sizeof(right) + sizeof(root->nodeType));
-    // 当nodeType的作用是占位符、无实际作用时，将其替换为空白，参与到最终结果中
-    char operator;
-    if (nodeType == 'e') {
-        operator = ' ';
+        res = (char *) malloc(sizeof(con) + sizeof(tl) + sizeof(el));
+        sprintf(res, "%s%s%s", con, tl, el);
+        printf("if res = %s\n", res);
     } else {
-        operator = nodeType;
-    }
-    sprintf(res, "%s%c%s", left, operator, right);
+        char *left = generateCCode(root->l, code);
+        char *right = generateCCode(root->r, code);
+        res = (char *) malloc(sizeof(left) + sizeof(right) + sizeof(root->nodeType));
+        // 当nodeType的作用是占位符、无实际作用时，将其替换为空白，参与到最终结果中
+        char operator;
+        if (nodeType == 'e') {
+            operator = ' ';
+        } else {
+            operator = nodeType;
+        }
+        sprintf(res, "%s%c%s", left, operator, right);
 //    code = (char *)malloc(sizeof(code) + sizeof(root->stringValue));
-    printf("res = %s\n", res);
+        printf("res = %s\n", res);
+    }
 //    return res;
 //            left + root->nodeType + right;
     return res;

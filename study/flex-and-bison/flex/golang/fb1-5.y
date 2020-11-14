@@ -23,7 +23,7 @@
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <node> con then else_body expr compilation_unit
+%type <node> con then else_body expr compilation_unit stmt
 %type <intval> NUMBER
 %type <strval> ADD SUB MUL DIV ABS EOL IF ELSE  IDENTIFIER
 %type <strval> calclist factor
@@ -37,9 +37,13 @@ compilation_unit:{}
 //	| IF	EOL		   	{ printf("if = %s\n", $1);	}
 //	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
 //	| IF con EOL compilation_unit			{ dump($2); }
-	| IF con EOL			{ newCode($2); }
+	| stmt				{ dump($1); }
 //	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
+	;
+stmt:	{}
+	| then		{ $$ = $1; }
+	| IF con then EOL		{ $$ = createIfNode($2, $3, NULL); }
 	;
 
 con:							{}
@@ -48,24 +52,25 @@ con:							{}
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
 //
-//then:{}
-////	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = $2; }
-////	| IDENTIFIER '=' NUMBER			{ $$ = $1; }
+then:{}
+//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createThen('=', $2, $4); }
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-////	| IDENTIFIER ';'			{ $$ = $1; }
-//	;
+//	| IDENTIFIER ';'			{ $$ = $1; }
+	| expr	';'					{ $$ = createThen( $1);}
+	;
 //
-//else_body:{}
-//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
-//	;
+else_body:{}
+	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
+	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
+	;
 
-expr:
+expr:	{}
 	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
 	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
 	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
 	| expr '/'  expr			{ $$ = createExpr('/', $1, $3);  }
 	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
+	|  expr					{ $$ = $1; }
 	| '(' expr ')'				{ $$ = $2; }
 	| IDENTIFIER				{ $$ = createStr($1); }
 	| NUMBER				{ $$ = createNum($1); }
