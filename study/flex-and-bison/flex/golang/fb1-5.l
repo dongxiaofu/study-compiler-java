@@ -16,6 +16,8 @@ int old_status;
 "(" |
 ")" |
 "=" |
+"{" |
+"}" |
 ";"    {  return yytext[0]; }
 [0-9]+		{ yylval.intval = atoi(yytext); return NUMBER; }
 [$a-z_A-Z]*  { yylval.strval = strdup(yytext);  return IDENTIFIER;  }

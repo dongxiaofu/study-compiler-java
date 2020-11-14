@@ -44,10 +44,12 @@ compilation_unit:{}
 stmt:	{}
 	| then		{ $$ = $1; }
 	| IF con then EOL		{ $$ = createIfNode($2, $3, NULL); }
+	| IF con then ELSE else_body EOL		{ $$ = createIfNode($2, $3, $5); }
 	;
 
 con:							{}
 	| expr						{ $$ = createCon( $1);}
+
 //	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
@@ -57,11 +59,14 @@ then:{}
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
 //	| IDENTIFIER ';'			{ $$ = $1; }
 	| expr	';'					{ $$ = createThen( $1);}
+	| '{' expr ';' '}'				{ $$ = createThen( $2);}
 	;
 //
 else_body:{}
-	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
-	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
+//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
+//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
+	| expr	';'					{ $$ = createElseBody( $1);}
+	| '{' expr ';' '}'				{ $$ = createElseBody( $2);}
 	;
 
 expr:	{}
@@ -70,7 +75,7 @@ expr:	{}
 	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
 	| expr '/'  expr			{ $$ = createExpr('/', $1, $3);  }
 	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
-	|  expr					{ $$ = $1; }
+//	|  expr					{ $$ = $1; }
 	| '(' expr ')'				{ $$ = $2; }
 	| IDENTIFIER				{ $$ = createStr($1); }
 	| NUMBER				{ $$ = createNum($1); }

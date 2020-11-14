@@ -26,6 +26,7 @@ struct ast *createCon(struct ast *con) {
     return node;
 }
 
+// todo then和else都是简化版的二元表达式。
 struct ast *createThen(struct ast *e) {
     int nodeType = e->nodeType;
     struct ast *node = malloc(sizeof(struct ast));
@@ -35,11 +36,11 @@ struct ast *createThen(struct ast *e) {
     return node;
 }
 
-struct ast *createElseBody(int nodeType, struct ast *l, struct ast *r) {
+struct ast *createElseBody(struct ast *e) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = nodeType;
-    node->l = l;
-    node->r = r;
+    node->nodeType = e->nodeType;
+    node->l = e->l;
+    node->r = e->r;
     return node;
 }
 
