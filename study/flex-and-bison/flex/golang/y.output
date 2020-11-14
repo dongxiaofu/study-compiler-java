@@ -21,9 +21,11 @@ Terminals unused in grammar
 
 
 State 1 conflicts: 1 reduce/reduce
-State 15 conflicts: 3 shift/reduce
-State 16 conflicts: 3 shift/reduce
-State 17 conflicts: 3 shift/reduce
+State 17 conflicts: 5 shift/reduce
+State 18 conflicts: 5 shift/reduce
+State 19 conflicts: 5 shift/reduce
+State 20 conflicts: 5 shift/reduce
+State 21 conflicts: 5 shift/reduce
 
 
 Grammar
@@ -39,22 +41,26 @@ Grammar
     5 expr: %empty
     6     | expr '+' expr
     7     | expr '-' expr
-    8     | expr '=' expr
-    9     | '(' expr ')'
-   10     | IDENTIFIER
-   11     | NUMBER
+    8     | expr '*' expr
+    9     | expr '/' expr
+   10     | expr '=' expr
+   11     | '(' expr ')'
+   12     | IDENTIFIER
+   13     | NUMBER
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '(' (40) 9
-    ')' (41) 9
+    '(' (40) 11
+    ')' (41) 11
+    '*' (42) 8
     '+' (43) 6
     '-' (45) 7
-    '=' (61) 8
+    '/' (47) 9
+    '=' (61) 10
     error (256)
-    NUMBER <intval> (258) 11
+    NUMBER <intval> (258) 13
     ADD <strval> (259)
     SUB <strval> (260)
     MUL <strval> (261)
@@ -66,22 +72,22 @@ Terminals, with rules where they appear
     IF <strval> (267) 2
     ELSE <strval> (268)
     COMMENT (269)
-    IDENTIFIER <strval> (270) 10
+    IDENTIFIER <strval> (270) 12
 
 
 Nonterminals, with rules where they appear
 
-    $accept (21)
+    $accept (23)
         on left: 0
-    compilation_unit <node> (22)
+    compilation_unit <node> (24)
         on left: 1 2
         on right: 0
-    con <node> (23)
+    con <node> (25)
         on left: 3 4
         on right: 2
-    expr <node> (24)
-        on left: 5 6 7 8 9 10 11
-        on right: 4 6 7 8 9
+    expr <node> (26)
+        on left: 5 6 7 8 9 10 11 12 13
+        on right: 4 6 7 8 9 10 11
 
 
 State 0
@@ -120,21 +126,21 @@ State 2
 
 State 3
 
-   11 expr: NUMBER •
+   13 expr: NUMBER •
 
-    $default  reduce using rule 11 (expr)
+    $default  reduce using rule 13 (expr)
 
 
 State 4
 
-   10 expr: IDENTIFIER •
+   12 expr: IDENTIFIER •
 
-    $default  reduce using rule 10 (expr)
+    $default  reduce using rule 12 (expr)
 
 
 State 5
 
-    9 expr: '(' • expr ')'
+   11 expr: '(' • expr ')'
 
     NUMBER      shift, and go to state 3
     IDENTIFIER  shift, and go to state 4
@@ -157,11 +163,15 @@ State 7
     4 con: expr •
     6 expr: expr • '+' expr
     7     | expr • '-' expr
-    8     | expr • '=' expr
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+   10     | expr • '=' expr
 
     '+'  shift, and go to state 11
     '-'  shift, and go to state 12
-    '='  shift, and go to state 13
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
 
     $default  reduce using rule 4 (con)
 
@@ -177,13 +187,17 @@ State 9
 
     6 expr: expr • '+' expr
     7     | expr • '-' expr
-    8     | expr • '=' expr
-    9     | '(' expr • ')'
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+   10     | expr • '=' expr
+   11     | '(' expr • ')'
 
     '+'  shift, and go to state 11
     '-'  shift, and go to state 12
-    '='  shift, and go to state 13
-    ')'  shift, and go to state 14
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
+    ')'  shift, and go to state 16
 
 
 State 10
@@ -203,7 +217,7 @@ State 11
 
     $default  reduce using rule 5 (expr)
 
-    expr  go to state 15
+    expr  go to state 17
 
 
 State 12
@@ -216,12 +230,12 @@ State 12
 
     $default  reduce using rule 5 (expr)
 
-    expr  go to state 16
+    expr  go to state 18
 
 
 State 13
 
-    8 expr: expr '=' • expr
+    8 expr: expr '*' • expr
 
     NUMBER      shift, and go to state 3
     IDENTIFIER  shift, and go to state 4
@@ -229,62 +243,152 @@ State 13
 
     $default  reduce using rule 5 (expr)
 
-    expr  go to state 17
+    expr  go to state 19
 
 
 State 14
 
-    9 expr: '(' expr ')' •
+    9 expr: expr '/' • expr
 
-    $default  reduce using rule 9 (expr)
+    NUMBER      shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    '('         shift, and go to state 5
+
+    $default  reduce using rule 5 (expr)
+
+    expr  go to state 20
 
 
 State 15
 
-    6 expr: expr • '+' expr
-    6     | expr '+' expr •
-    7     | expr • '-' expr
-    8     | expr • '=' expr
+   10 expr: expr '=' • expr
 
-    '+'  shift, and go to state 11
-    '-'  shift, and go to state 12
-    '='  shift, and go to state 13
+    NUMBER      shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    '('         shift, and go to state 5
 
-    '+'       [reduce using rule 6 (expr)]
-    '-'       [reduce using rule 6 (expr)]
-    '='       [reduce using rule 6 (expr)]
-    $default  reduce using rule 6 (expr)
+    $default  reduce using rule 5 (expr)
+
+    expr  go to state 21
 
 
 State 16
 
-    6 expr: expr • '+' expr
-    7     | expr • '-' expr
-    7     | expr '-' expr •
-    8     | expr • '=' expr
+   11 expr: '(' expr ')' •
 
-    '+'  shift, and go to state 11
-    '-'  shift, and go to state 12
-    '='  shift, and go to state 13
-
-    '+'       [reduce using rule 7 (expr)]
-    '-'       [reduce using rule 7 (expr)]
-    '='       [reduce using rule 7 (expr)]
-    $default  reduce using rule 7 (expr)
+    $default  reduce using rule 11 (expr)
 
 
 State 17
 
     6 expr: expr • '+' expr
+    6     | expr '+' expr •
     7     | expr • '-' expr
-    8     | expr • '=' expr
-    8     | expr '=' expr •
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+   10     | expr • '=' expr
 
     '+'  shift, and go to state 11
     '-'  shift, and go to state 12
-    '='  shift, and go to state 13
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
+
+    '+'       [reduce using rule 6 (expr)]
+    '-'       [reduce using rule 6 (expr)]
+    '*'       [reduce using rule 6 (expr)]
+    '/'       [reduce using rule 6 (expr)]
+    '='       [reduce using rule 6 (expr)]
+    $default  reduce using rule 6 (expr)
+
+
+State 18
+
+    6 expr: expr • '+' expr
+    7     | expr • '-' expr
+    7     | expr '-' expr •
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+   10     | expr • '=' expr
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
+
+    '+'       [reduce using rule 7 (expr)]
+    '-'       [reduce using rule 7 (expr)]
+    '*'       [reduce using rule 7 (expr)]
+    '/'       [reduce using rule 7 (expr)]
+    '='       [reduce using rule 7 (expr)]
+    $default  reduce using rule 7 (expr)
+
+
+State 19
+
+    6 expr: expr • '+' expr
+    7     | expr • '-' expr
+    8     | expr • '*' expr
+    8     | expr '*' expr •
+    9     | expr • '/' expr
+   10     | expr • '=' expr
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
 
     '+'       [reduce using rule 8 (expr)]
     '-'       [reduce using rule 8 (expr)]
+    '*'       [reduce using rule 8 (expr)]
+    '/'       [reduce using rule 8 (expr)]
     '='       [reduce using rule 8 (expr)]
     $default  reduce using rule 8 (expr)
+
+
+State 20
+
+    6 expr: expr • '+' expr
+    7     | expr • '-' expr
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+    9     | expr '/' expr •
+   10     | expr • '=' expr
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
+
+    '+'       [reduce using rule 9 (expr)]
+    '-'       [reduce using rule 9 (expr)]
+    '*'       [reduce using rule 9 (expr)]
+    '/'       [reduce using rule 9 (expr)]
+    '='       [reduce using rule 9 (expr)]
+    $default  reduce using rule 9 (expr)
+
+
+State 21
+
+    6 expr: expr • '+' expr
+    7     | expr • '-' expr
+    8     | expr • '*' expr
+    9     | expr • '/' expr
+   10     | expr • '=' expr
+   10     | expr '=' expr •
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '='  shift, and go to state 15
+
+    '+'       [reduce using rule 10 (expr)]
+    '-'       [reduce using rule 10 (expr)]
+    '*'       [reduce using rule 10 (expr)]
+    '/'       [reduce using rule 10 (expr)]
+    '='       [reduce using rule 10 (expr)]
+    $default  reduce using rule 10 (expr)

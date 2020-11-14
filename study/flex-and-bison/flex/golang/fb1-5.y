@@ -37,13 +37,13 @@ compilation_unit:{}
 //	| IF	EOL		   	{ printf("if = %s\n", $1);	}
 //	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
 //	| IF con EOL compilation_unit			{ dump($2); }
-	| IF con EOL			{ dump($2); }
+	| IF con EOL			{ newCode($2); }
 //	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
 	;
 
 con:							{}
-	| expr						{ $$ = createCon('e', $1);}
+	| expr						{ $$ = createCon( $1);}
 //	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
@@ -63,6 +63,8 @@ con:							{}
 expr:
 	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
 	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
+	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
+	| expr '/'  expr			{ $$ = createExpr('/', $1, $3);  }
 	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 	| '(' expr ')'				{ $$ = $2; }
 	| IDENTIFIER				{ $$ = createStr($1); }
