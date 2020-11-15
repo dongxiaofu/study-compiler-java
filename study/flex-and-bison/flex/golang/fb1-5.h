@@ -9,6 +9,12 @@ struct ast{
     struct ast *tl;
     struct ast *con;
     struct ast *el;
+
+    // 返回数据类型。使用stringValue
+    // 函数名。使用stringValue
+    // 参数。多个参数、可变参数怎么存储？
+    // 函数体。函数体，怎么存储？
+
     int numberValue;
     char *stringValue;
 };

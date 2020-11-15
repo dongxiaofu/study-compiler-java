@@ -58,14 +58,14 @@ then:{}
 //	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createThen('=', $2, $4); }
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
 //	| IDENTIFIER ';'			{ $$ = $1; }
-	| expr	';'					{ $$ = createThen( $1);}
+	| expr	';' then					{ $$ = createThen( $1);}
 	| '{' expr ';' '}'				{ $$ = createThen( $2);}
 	;
 //
 else_body:{}
 //	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
 //	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
-	| expr	';'					{ $$ = createElseBody( $1);}
+	| expr	';' else_body					{ $$ = createElseBody( $1);}
 	| '{' expr ';' '}'				{ $$ = createElseBody( $2);}
 	;
 

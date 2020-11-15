@@ -8,7 +8,7 @@ CFLAGS= -g -O2
 build: $(OUT)
 
 run: $(OUT)
-	./$(OUT) < test.c > test.asm
+	./$(OUT) < test.c > test.log
 
 clean:
 	rm -f *.o lex.yy.c fb1-5.tab.c fb1-5.tab.h y.output $(OUT)

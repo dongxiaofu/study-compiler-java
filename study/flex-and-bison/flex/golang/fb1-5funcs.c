@@ -171,8 +171,8 @@ void printIndent(int level) {
 }
 
 char *int2String(int num) {
+    // todo str占用内存如何精确确定大小？乘以8，是我随便定的。
     char *str = (char *)malloc(sizeof(char) * 8);
     sprintf(str, "%d", num);
-//    printf("=====str======:%s\n", str);
     return str;
 }
