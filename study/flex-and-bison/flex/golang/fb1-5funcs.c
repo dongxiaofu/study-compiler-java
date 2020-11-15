@@ -1,7 +1,6 @@
 #include "fb1-5.h"
 
 struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody) {
-    printf("%s\n", "createIfNode===========");
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = 'i';
     node->tl = then;
@@ -11,7 +10,6 @@ struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody
 }
 
 struct ast *createCon(struct ast *con) {
-    printf("%s\n", "createCon===========");
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;
     node->con = con;
@@ -121,20 +119,13 @@ void dump(struct ast *root) {
 
 void newCode(struct ast *root) {
     char *code = "";
-    printf("nodeType in newCode = %c\n", root->nodeType);
     generateCCode(root, code);
-    printf("res = 【%s】\n", code);
 }
 
 char *generateCCode(struct ast *root, char *code) {
     // 必须再最前面，否则，当root是NULL时，下面的root->nodeType等会报错。
     if (root == NULL) {
         return "";
-    }
-    printf("nodeType in generateCCode = %c\n", root->nodeType);
-    if (root->nodeType == 'a') {
-        printf("a======%s", root->stringValue);
-        return root->stringValue;
     }
     char nodeType = root->nodeType;
     if (nodeType == 's') {
@@ -180,7 +171,8 @@ void printIndent(int level) {
 }
 
 char *int2String(int num) {
-    char *str;
+    char *str = (char *)malloc(sizeof(char) * 8);
     sprintf(str, "%d", num);
+//    printf("=====str======:%s\n", str);
     return str;
 }
