@@ -172,7 +172,92 @@ void printIndent(int level) {
 
 char *int2String(int num) {
     // todo str占用内存如何精确确定大小？乘以8，是我随便定的。
-    char *str = (char *)malloc(sizeof(char) * 8);
+    char *str = (char *) malloc(sizeof(char) * 8);
     sprintf(str, "%d", num);
     return str;
+}
+
+struct ast *createParam(struct ast *dataType, struct ast *name) {
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = 'p';       // p表示参数
+    node->paramType = dataType->stringValue;
+    node->paramName = name->stringValue;
+
+    return node;
+}
+
+void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader) {
+    // todo 不能使用malloc初始化paramNode,只能如此声明。会出问题吗？
+//    struct paramNode *cur = {NULL, NULL};
+    struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
+    cur->param = param;
+    cur->next = NULL;
+    paramNodeCur->next = cur;
+    paramNodeCur = cur;
+    if (paramNodeListHeader->next == NULL) {
+        paramNodeListHeader->next = paramNodeCur;
+    }
+    return;
+}
+
+struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
+                        struct funcStmtNode *funcStmtsListHead) {
+    struct ast *node = malloc(sizeof(struct ast));
+    // todo 后期优化。在Java，结点类名自身就是识别符号
+    node->nodeType = 'f';
+    node->funcVariableListHead = funcVariableNodeListHeader;
+    node->funcStmtsListHead = funcStmtNodeListHeader;
+    return node;
+}
+
+void addToFuncVariableNodeList(struct ast *variable,
+                               struct funcVariableNode *funcVariableListHead) {
+    struct funcVariableNode *cur = (struct funcVariableNode *)malloc(sizeof(struct funcVariableNode));
+    cur->funcVariable = variable;
+    cur->next = NULL;
+    funcVariableNodeCur = cur;
+    if (funcVariableListHead->next == NULL) {
+        funcVariableListHead->next = funcVariableNodeCur;
+    }
+}
+
+void addToFuncStmtNodeList(struct ast *funcStmtNode,
+                           struct funcStmtNode *funcStmtsListHead) {
+    struct funcStmtNode *cur = (struct funcStmtNode *)malloc(sizeof(struct funcStmtNode));
+    cur->funcStmtNode = funcStmtNode;
+    cur->next = NULL;
+    funcStmtNodeCur = cur;
+    if (funcStmtsListHead->next == NULL) {
+        funcStmtsListHead->next = funcStmtNodeCur;
+    }
+}
+
+struct ast *createVariable(struct ast *dataType, struct ast  *variableName) {
+    struct ast *variable = malloc(sizeof(struct ast));
+    variable->nodeType = 'v';
+    variable->dataType = dataType->stringValue;
+    variable->variableName = variableName->stringValue;
+    return variable;
+}
+
+struct ast *createFunction(struct ast *returnType, struct ast *funcName,
+                           struct paramNode *paramListHead, struct ast *funcBody) {
+    struct ast *node = malloc(sizeof(struct ast));
+    node->returnType = returnType->stringValue;
+    node->funcName = funcName->stringValue;
+    node->paramListHead = paramListHead;
+    node->funcBody = funcBody;
+
+    return node;
+}
+
+void init() {
+    paramNodeListHeader = (struct paramNode *) malloc(sizeof(struct paramNode));
+    paramNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
+
+    funcVariableNodeListHeader = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
+    funcVariableNodeCur = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
+
+    funcStmtNodeListHeader = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
+    funcStmtNodeCur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
 }

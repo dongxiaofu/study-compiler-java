@@ -98,8 +98,12 @@ union YYSTYPE
 	char *strval;
 	struct ifNode *in;
 	struct ast *node;
+	struct paramNode *pn;
+	struct funcVariableNode *fvn;
+	struct funcStmtNode *fsn;
 
-#line 103 "y.tab.h"
+
+#line 107 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
