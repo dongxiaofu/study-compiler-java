@@ -7,14 +7,25 @@ struct param {
     char *paramName;
 };
 
+// todo 必须放在ast的前面
+// 表达式结点，如ab=55;
+typedef struct exprNode {
+    struct ast *expr;
+    struct exprNode *next;
+} ExprNode;
+
 // todo 奇怪的struct，用自己定义自己。
 struct ast {
     int nodeType;
     struct ast *l;
     struct ast *r;
-    struct ast *tl;
     struct ast *con;
-    struct ast *el;
+    // 表达式链表 start
+    // thenBody
+    ExprNode *thenExprNodeListHeader;
+    // elseBody
+    ExprNode *elseExprNodeListHeader;
+    // 表达式链表 end
 
     // 函数元素 start
     // 返回数据类型。使用stringValue
@@ -37,7 +48,7 @@ struct ast {
     char *variableName;
 
     // 函数体
-    // 函数体重，变量和表达式交叉排列，怎么存储？
+    // 函数体中，变量和表达式交叉排列，怎么存储？
     struct funcVariableNode *funcVariableListHead;
     struct funcStmtNode *funcStmtsListHead;
 
@@ -58,11 +69,12 @@ struct funcVariableNode {
     struct ast *funcVariable;
     struct funcVariableNode *next;
 };
-// 函数表达式结点
+// 函数表达式结点，整体，如if结构、while结构
 struct funcStmtNode {
     struct ast *funcStmtNode;
     struct funcStmtNode *next;
 };
+
 
 struct ifNode {
     struct ast *thenBody;
@@ -89,13 +101,19 @@ struct funcVariableNode *funcVariableNodeCur;
 struct funcStmtNode *funcStmtNodeListHeader;
 struct funcStmtNode *funcStmtNodeCur;
 
-struct ast *createIfNode(struct ast *con, struct ast *then, struct ast *elseBody);
+ExprNode *thenExprNodeListHeader;
+ExprNode *thenExprNodeCur;
+
+ExprNode *elseExprNodeListHeader;
+ExprNode *elseExprNodeCur;
+
+struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader);
 
 struct ast *createCon(struct ast *con);
 
-struct ast *createThen(struct ast *l);
+struct ast *createThen(ExprNode *thenExprNodeListHeader);
 
-struct ast *createElseBody(struct ast *e);
+struct ast *createElseBody(ExprNode *elseExprNodeListHeader);
 
 struct ast *createExpr(int nodeType, struct ast *l, struct ast *r);
 
@@ -117,6 +135,14 @@ struct ast *createParam(struct ast *dataType, struct ast *name);
 
 void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader);
 
+//ExprNode *thenExprNodeListHeader;
+//ExprNode *thenExprNodeCur;
+void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader);
+
+//ExprNode *elseExprNodeListHeader;
+//ExprNode *elseExprNodeCur;
+void addToElseExprNodeList(struct ast *expr, ExprNode *elseExprNodeListHeader);
+
 struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
                         struct funcStmtNode *funcStmtsListHead);
 
@@ -132,6 +158,7 @@ struct ast *createFunction(struct ast *returnType, struct ast *funcName,
                            struct paramNode *paramListHead, struct ast *funcBody);
 
 void init();
+
 // 连接两个字符串
 char *contactStr(char *str1, char *str2, char *str3);
 

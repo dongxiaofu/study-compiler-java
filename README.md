@@ -27,11 +27,22 @@ https://pandolia.net/tinyc/ch13_bison.html
 ### 测试包含换行的函数
 
 p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->con->l
-p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->tl->l
-p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->tl->r   
+p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->thenExprNodeListHeader->next
+p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->elseExprNodeListHeader->next
 p  *root->paramListHead->next->param  
 p  *root->paramListHead->next->next->param 
 p  *root->paramListHead->next->next->next->param     
 p *root->funcBody->funcVariableListHead->next->funcVariable    
 p  *root->funcBody->funcVariableListHead->next->next->funcVariable  
 p  *root->funcBody->funcVariableListHead->next->next->next->funcVariable
+
+
+p *thenExprNodeListHeader->next->expr->l
+p *thenExprNodeListHeader->next->next->next->expr->l
+
+p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->thenExprNodeListHeader->next->next->expr->l
+p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->elseExprNodeListHeader->next->next->next->expr->l
+
+
+
+

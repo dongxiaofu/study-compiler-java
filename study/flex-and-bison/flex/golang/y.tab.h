@@ -101,9 +101,11 @@ union YYSTYPE
 	struct paramNode *pn;
 	struct funcVariableNode *fvn;
 	struct funcStmtNode *fsn;
+	struct exprNode *en;
+//	ExprNode *en;
 
 
-#line 107 "y.tab.h"
+#line 109 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

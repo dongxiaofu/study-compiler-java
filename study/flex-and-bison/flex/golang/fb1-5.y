@@ -17,6 +17,8 @@ int yylex ();
 	struct paramNode *pn;
 	struct funcVariableNode *fvn;
 	struct funcStmtNode *fsn;
+	struct exprNode *en;
+//	ExprNode *en;
 
 }
 
@@ -33,17 +35,18 @@ int yylex ();
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <node> con else_body expr compilation_unit stmt func block
+%type <node> con expr compilation_unit stmt func block
 %type <node> param  variable identifier number
 %type <pn> params
 %type <fvn> variables
+%type <en> then_exprs else_exprs else_body then
 %type <fsn> stmts
 %type <intval> NUMBER
 %type <strval> ADD SUB MUL DIV ABS EOL IF ELSE
 %type <strval> calclist factor IDENTIFIER
 %type <intval> term
 
-%type <strval> tparam test exprs then
+%type <strval> tparam test
 
 //%start compilation_unit
 
@@ -112,7 +115,7 @@ stmts:
 	;
 
 stmt:
-	| then		{ $$ = $1; }
+//	| then		{ $$ = $1; }
 	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
 	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
 	| IF con then ELSE else_body	{ $$ = createIfNode($2, $3, $5); }
@@ -126,18 +129,22 @@ con:							{}
 	;
 //
 then:
-	| '{' exprs '}'				{ $$ = $2;  printf("exprs = %s\n", $2); }
+	| '{' then_exprs '}'				{ $$ = thenExprNodeListHeader; }
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
 //
 else_body:
-	| '{' exprs '}'				{ $$ = $2;  printf("exprs = %s\n", $2); }
+	| '{' else_exprs '}'				{ $$ = elseExprNodeListHeader; }
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
-exprs:
-	| expr ';' exprs			{  printExpr($1);  }
+then_exprs:
+	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+	;
+
+else_exprs:
+	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
 	;
 
 
