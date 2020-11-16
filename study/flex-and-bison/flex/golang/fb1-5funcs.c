@@ -209,23 +209,30 @@ struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
     node->funcStmtsListHead = funcStmtNodeListHeader;
     return node;
 }
-
+// todo 构造单链表。因为我发现，看到自己两个多小时前写的逻辑一致的代码addToParamNodeList，居然需要看看才理解。
+// todo 所以，我觉得需要补上详细注释。
 void addToFuncVariableNodeList(struct ast *variable,
                                struct funcVariableNode *funcVariableListHead) {
+    // 用要加入的变量结点构造单链表中的结点，新当前结点
     struct funcVariableNode *cur = (struct funcVariableNode *)malloc(sizeof(struct funcVariableNode));
     cur->funcVariable = variable;
     cur->next = NULL;
+    // 目前的当前结点，将它指向新的当前结点。
+    funcVariableNodeCur->next = cur;
+    // 更新当前结点为新的当前结点。
     funcVariableNodeCur = cur;
+    // 若头结点没有指向第一个结点，将头结点指向当前结点。
     if (funcVariableListHead->next == NULL) {
         funcVariableListHead->next = funcVariableNodeCur;
     }
 }
-
+// todo addToFuncVariableNodeList、addToParamNodeList 逻辑一致，找机会消除重复代码。
 void addToFuncStmtNodeList(struct ast *funcStmtNode,
                            struct funcStmtNode *funcStmtsListHead) {
     struct funcStmtNode *cur = (struct funcStmtNode *)malloc(sizeof(struct funcStmtNode));
     cur->funcStmtNode = funcStmtNode;
     cur->next = NULL;
+    funcStmtNodeCur->next = cur;
     funcStmtNodeCur = cur;
     if (funcStmtsListHead->next == NULL) {
         funcStmtsListHead->next = funcStmtNodeCur;

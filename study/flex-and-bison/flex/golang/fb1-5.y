@@ -1,6 +1,12 @@
 %{
 #include <stdio.h>
 #include "fb1-5.h"
+
+
+int yyerror(char *s);
+int yyparse();
+int yylex ();
+
 %}
 //
 %union{
@@ -90,12 +96,13 @@ block:
 //addToFuncVariableNodeList(struct ast *variable,
 //                               struct funcVariableNode *funcVariableListHead)
 variables:
-	| variable	';'	variables	{ addToFuncVariableNodeList($1, funcVariableNodeListHeader); }
+	| variable	';'	variables	{ $$ = funcVariableNodeListHeader; }
+//	| variable				{ $$ = funcVariableNodeListHeader; }
 	;
 
 //createVariable(char *dataType, char *variableName)
 variable:
-	| identifier identifier			{ $$ = createVariable($1, $2); }
+	| identifier identifier			{ struct ast *variable = createVariable($1, $2); addToFuncVariableNodeList(variable, funcVariableNodeListHeader); }
 	;
 
 //addToFuncStmtNodeList(struct ast *funcStmtNode,
@@ -159,7 +166,7 @@ int main(int argc, char **argv)
 	return yyparse();
 }
 
-yyerror(char *s)
+int yyerror(char *s)
 {
 	fprintf(stderr, "error: %s\n", s);
 }

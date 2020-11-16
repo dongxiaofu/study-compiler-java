@@ -92,7 +92,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 6 "fb1-5.y"
+#line 12 "fb1-5.y"
 
 	int intval;
 	char *strval;

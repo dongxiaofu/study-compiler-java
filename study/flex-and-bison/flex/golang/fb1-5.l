@@ -23,8 +23,10 @@ int old_status;
 [0-9]+		{ yylval.intval = atoi(yytext); return NUMBER; }
 [$a-z_A-Z]*  { yylval.strval = strdup(yytext);  return IDENTIFIER;  }
 "//".*  { }
+"##"        { return EOL; }
 [ \t]+		{ }
-[\r\n]		{ return EOL; }
+[\r\n]		{  }
+    /*       [\r\n] { return EOL; }      */
 
 .		{  }
 %%
