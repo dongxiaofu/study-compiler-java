@@ -33,7 +33,7 @@ int yylex ();
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <node> con then else_body expr compilation_unit stmt func block
+%type <node> con else_body expr compilation_unit stmt func block
 %type <node> param  variable identifier number
 %type <pn> params
 %type <fvn> variables
@@ -43,7 +43,7 @@ int yylex ();
 %type <strval> calclist factor IDENTIFIER
 %type <intval> term
 
-%type <strval> tparam test
+%type <strval> tparam test exprs then
 
 //%start compilation_unit
 
@@ -126,11 +126,12 @@ con:							{}
 	;
 //
 then:{}
-//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createThen('=', $2, $4); }
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createThen('=', $1, $3); }
-//	| IDENTIFIER ';'			{ $$ = $1; }
-	| expr	';' then					{ $$ = createThen( $1);}
-	| '{' expr ';' '}'				{ $$ = createThen( $2);}
+	| '{' exprs '}'				{ $$ = $2;  printf("exprs = %s\n", $2); }
+	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
+	;
+
+exprs:
+	| expr ';' exprs			{  printExpr($1);  }
 	;
 //
 else_body:{}

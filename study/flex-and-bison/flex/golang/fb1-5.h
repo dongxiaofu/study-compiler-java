@@ -135,3 +135,5 @@ void init();
 // 连接两个字符串
 char *contactStr(char *str1, char *str2, char *str3);
 
+void printExpr(struct ast *expr);
+

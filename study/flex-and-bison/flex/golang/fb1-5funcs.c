@@ -278,3 +278,14 @@ char *contactStr(char *str1, char *str2, char *str3){
     str[len + 1] = '\0';
     return str;
 }
+
+void printExpr(struct ast *expr){
+    char nodeType = expr->nodeType;
+    if(nodeType == 'e'){
+        printExpr(expr->l);
+        printExpr(expr->r);
+    }else{
+        // todo 先简化处理，固定表达式是 ab=5，右边是整型。
+        printf("expr = %s %c %d\n", expr->l->stringValue, expr->nodeType, expr->r->numberValue);
+    }
+}

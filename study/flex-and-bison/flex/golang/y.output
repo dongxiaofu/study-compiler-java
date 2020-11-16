@@ -25,39 +25,39 @@ Rules useless in parser due to conflicts
 
    26 stmt: %empty
 
-   50 number: %empty
+   52 number: %empty
 
 
-State 0 conflicts: 2 shift/reduce, 18 reduce/reduce
+State 0 conflicts: 2 shift/reduce, 19 reduce/reduce
 State 2 conflicts: 3 shift/reduce, 45 reduce/reduce
 State 4 conflicts: 12 reduce/reduce
 State 5 conflicts: 12 reduce/reduce
-State 15 conflicts: 4 shift/reduce, 18 reduce/reduce
-State 16 conflicts: 5 shift/reduce
-State 22 conflicts: 1 shift/reduce, 3 reduce/reduce
-State 24 conflicts: 4 shift/reduce, 18 reduce/reduce
-State 25 conflicts: 3 shift/reduce, 32 reduce/reduce
+State 16 conflicts: 4 shift/reduce, 33 reduce/reduce
+State 17 conflicts: 5 shift/reduce
+State 23 conflicts: 1 shift/reduce, 3 reduce/reduce
+State 25 conflicts: 3 shift/reduce, 18 reduce/reduce
 State 26 conflicts: 3 shift/reduce, 32 reduce/reduce
 State 27 conflicts: 3 shift/reduce, 32 reduce/reduce
 State 28 conflicts: 3 shift/reduce, 32 reduce/reduce
 State 29 conflicts: 3 shift/reduce, 32 reduce/reduce
-State 31 conflicts: 1 shift/reduce
-State 37 conflicts: 5 shift/reduce
+State 30 conflicts: 3 shift/reduce, 32 reduce/reduce
+State 32 conflicts: 1 shift/reduce
 State 38 conflicts: 5 shift/reduce
 State 39 conflicts: 5 shift/reduce
 State 40 conflicts: 5 shift/reduce
 State 41 conflicts: 5 shift/reduce
-State 42 conflicts: 1 shift/reduce, 3 reduce/reduce
-State 44 conflicts: 12 reduce/reduce
+State 42 conflicts: 5 shift/reduce
+State 43 conflicts: 1 shift/reduce, 3 reduce/reduce
+State 45 conflicts: 12 reduce/reduce
 State 50 conflicts: 12 reduce/reduce
 State 53 conflicts: 2 shift/reduce, 4 reduce/reduce
 State 54 conflicts: 1 shift/reduce, 3 reduce/reduce
 State 58 conflicts: 12 reduce/reduce
 State 59 conflicts: 1 shift/reduce, 3 reduce/reduce
-State 61 conflicts: 5 shift/reduce, 44 reduce/reduce
-State 67 conflicts: 5 shift/reduce, 42 reduce/reduce
+State 61 conflicts: 5 shift/reduce, 57 reduce/reduce
+State 67 conflicts: 5 shift/reduce, 54 reduce/reduce
 State 68 conflicts: 2 shift/reduce, 5 reduce/reduce
-State 69 conflicts: 5 shift/reduce, 44 reduce/reduce
+State 69 conflicts: 5 shift/reduce, 57 reduce/reduce
 State 70 conflicts: 1 shift/reduce, 3 reduce/reduce
 State 73 conflicts: 2 shift/reduce, 4 reduce/reduce
 
@@ -111,46 +111,49 @@ Grammar
    32    | expr
 
    33 then: %empty
-   34     | expr ';' then
-   35     | '{' expr ';' '}'
+   34     | '{' exprs '}'
+   35     | exprs
 
-   36 else_body: %empty
-   37          | expr ';' else_body
-   38          | '{' expr ';' '}'
+   36 exprs: %empty
+   37      | expr ';' exprs
 
-   39 expr: %empty
-   40     | expr '+' expr
-   41     | expr '-' expr
-   42     | expr '*' expr
-   43     | expr '/' expr
-   44     | expr '=' expr
-   45     | '(' expr ')'
-   46     | identifier
-   47     | number
+   38 else_body: %empty
+   39          | expr ';' else_body
+   40          | '{' expr ';' '}'
 
-   48 identifier: %empty
-   49           | IDENTIFIER
+   41 expr: %empty
+   42     | expr '+' expr
+   43     | expr '-' expr
+   44     | expr '*' expr
+   45     | expr '/' expr
+   46     | expr '=' expr
+   47     | '(' expr ')'
+   48     | identifier
+   49     | number
 
-   50 number: %empty
-   51       | NUMBER
+   50 identifier: %empty
+   51           | IDENTIFIER
+
+   52 number: %empty
+   53       | NUMBER
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '(' (40) 11 45
-    ')' (41) 11 45
-    '*' (42) 42
-    '+' (43) 40
+    '(' (40) 11 47
+    ')' (41) 11 47
+    '*' (42) 44
+    '+' (43) 42
     ',' (44) 6 13
-    '-' (45) 41
-    '/' (47) 43
-    ';' (59) 21 34 35 37 38
-    '=' (61) 44
-    '{' (123) 19 35 38
-    '}' (125) 19 35 38
+    '-' (45) 43
+    '/' (47) 45
+    ';' (59) 21 37 39 40
+    '=' (61) 46
+    '{' (123) 19 34 40
+    '}' (125) 19 34 40
     error (256)
-    NUMBER <intval> (258) 51
+    NUMBER <intval> (258) 53
     ADD <strval> (259)
     SUB <strval> (260)
     MUL <strval> (261)
@@ -162,7 +165,7 @@ Terminals, with rules where they appear
     IF <strval> (267) 28 29 30
     ELSE <strval> (268) 30
     COMMENT (269)
-    IDENTIFIER <strval> (270) 49
+    IDENTIFIER <strval> (270) 51
 
 
 Nonterminals, with rules where they appear
@@ -205,21 +208,24 @@ Nonterminals, with rules where they appear
     con <node> (39)
         on left: 31 32
         on right: 28 29 30
-    then <node> (40)
+    then <strval> (40)
         on left: 33 34 35
-        on right: 27 28 29 30 34
-    else_body <node> (41)
-        on left: 36 37 38
-        on right: 30 37
-    expr <node> (42)
-        on left: 39 40 41 42 43 44 45 46 47
-        on right: 32 34 35 37 38 40 41 42 43 44 45
-    identifier <node> (43)
-        on left: 48 49
-        on right: 9 11 16 23 46
-    number <node> (44)
+        on right: 27 28 29 30
+    exprs <strval> (41)
+        on left: 36 37
+        on right: 34 35 37
+    else_body <node> (42)
+        on left: 38 39 40
+        on right: 30 39
+    expr <node> (43)
+        on left: 41 42 43 44 45 46 47 48 49
+        on right: 32 37 39 40 42 43 44 45 46 47
+    identifier <node> (44)
         on left: 50 51
-        on right: 47
+        on right: 9 11 16 23 48
+    number <node> (45)
+        on left: 52 53
+        on right: 49
 
 
 State 0
@@ -235,33 +241,34 @@ State 0
     $end        reduce using rule 1 (compilation_unit)
     $end        [reduce using rule 26 (stmt)]
     $end        [reduce using rule 33 (then)]
+    $end        [reduce using rule 36 (exprs)]
     EOL         reduce using rule 5 (test)
     EOL         [reduce using rule 8 (tparam)]
     EOL         [reduce using rule 10 (func)]
-    EOL         [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    EOL         [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ','         reduce using rule 8 (tparam)
-    ','         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 48 (identifier)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    ','         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 50 (identifier)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
 
     compilation_unit  go to state 6
     test              go to state 7
@@ -269,16 +276,17 @@ State 0
     func              go to state 9
     stmt              go to state 10
     then              go to state 11
-    expr              go to state 12
-    identifier        go to state 13
-    number            go to state 14
+    exprs             go to state 12
+    expr              go to state 13
+    identifier        go to state 14
+    number            go to state 15
 
 
 State 1
 
-   51 number: NUMBER •
+   53 number: NUMBER •
 
-    $default  reduce using rule 51 (number)
+    $default  reduce using rule 53 (number)
 
 
 State 2
@@ -292,158 +300,160 @@ State 2
     '('         shift, and go to state 4
 
     $end        reduce using rule 31 (con)
-    $end        [reduce using rule 39 (expr)]
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
+    $end        [reduce using rule 41 (expr)]
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
     NUMBER      [reduce using rule 31 (con)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
     EOL         reduce using rule 31 (con)
-    EOL         [reduce using rule 39 (expr)]
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
+    EOL         [reduce using rule 41 (expr)]
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
     IF          reduce using rule 31 (con)
-    IF          [reduce using rule 39 (expr)]
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
+    IF          [reduce using rule 41 (expr)]
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
     ELSE        reduce using rule 31 (con)
-    ELSE        [reduce using rule 39 (expr)]
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
+    ELSE        [reduce using rule 41 (expr)]
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
     IDENTIFIER  [reduce using rule 31 (con)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
     '('         [reduce using rule 31 (con)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
     '{'         reduce using rule 31 (con)
-    '{'         [reduce using rule 39 (expr)]
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
+    '{'         [reduce using rule 41 (expr)]
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
     '}'         reduce using rule 31 (con)
-    '}'         [reduce using rule 39 (expr)]
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
+    '}'         [reduce using rule 41 (expr)]
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
     ';'         reduce using rule 31 (con)
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
     '+'         reduce using rule 31 (con)
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
     '-'         reduce using rule 31 (con)
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
     '*'         reduce using rule 31 (con)
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
     '/'         reduce using rule 31 (con)
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
     '='         reduce using rule 31 (con)
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
     $default    reduce using rule 31 (con)
 
-    con         go to state 15
-    expr        go to state 16
-    identifier  go to state 17
-    number      go to state 14
+    con         go to state 16
+    expr        go to state 17
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 3
 
-   49 identifier: IDENTIFIER •
+   51 identifier: IDENTIFIER •
 
-    $default  reduce using rule 49 (identifier)
+    $default  reduce using rule 51 (identifier)
 
 
 State 4
 
-   45 expr: '(' • expr ')'
+   47 expr: '(' • expr ')'
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    ')'       reduce using rule 39 (expr)
-    ')'       [reduce using rule 48 (identifier)]
-    ')'       [reduce using rule 50 (number)]
-    '+'       reduce using rule 39 (expr)
-    '+'       [reduce using rule 48 (identifier)]
-    '+'       [reduce using rule 50 (number)]
-    '-'       reduce using rule 39 (expr)
-    '-'       [reduce using rule 48 (identifier)]
-    '-'       [reduce using rule 50 (number)]
-    '*'       reduce using rule 39 (expr)
-    '*'       [reduce using rule 48 (identifier)]
-    '*'       [reduce using rule 50 (number)]
-    '/'       reduce using rule 39 (expr)
-    '/'       [reduce using rule 48 (identifier)]
-    '/'       [reduce using rule 50 (number)]
-    '='       reduce using rule 39 (expr)
-    '='       [reduce using rule 48 (identifier)]
-    '='       [reduce using rule 50 (number)]
-    $default  reduce using rule 39 (expr)
+    ')'       reduce using rule 41 (expr)
+    ')'       [reduce using rule 50 (identifier)]
+    ')'       [reduce using rule 52 (number)]
+    '+'       reduce using rule 41 (expr)
+    '+'       [reduce using rule 50 (identifier)]
+    '+'       [reduce using rule 52 (number)]
+    '-'       reduce using rule 41 (expr)
+    '-'       [reduce using rule 50 (identifier)]
+    '-'       [reduce using rule 52 (number)]
+    '*'       reduce using rule 41 (expr)
+    '*'       [reduce using rule 50 (identifier)]
+    '*'       [reduce using rule 52 (number)]
+    '/'       reduce using rule 41 (expr)
+    '/'       [reduce using rule 50 (identifier)]
+    '/'       [reduce using rule 52 (number)]
+    '='       reduce using rule 41 (expr)
+    '='       [reduce using rule 50 (identifier)]
+    '='       [reduce using rule 52 (number)]
+    $default  reduce using rule 41 (expr)
 
-    expr        go to state 18
-    identifier  go to state 17
-    number      go to state 14
+    expr        go to state 19
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 5
 
-   35 then: '{' • expr ';' '}'
+   34 then: '{' • exprs '}'
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    ';'       reduce using rule 39 (expr)
-    ';'       [reduce using rule 48 (identifier)]
-    ';'       [reduce using rule 50 (number)]
-    '+'       reduce using rule 39 (expr)
-    '+'       [reduce using rule 48 (identifier)]
-    '+'       [reduce using rule 50 (number)]
-    '-'       reduce using rule 39 (expr)
-    '-'       [reduce using rule 48 (identifier)]
-    '-'       [reduce using rule 50 (number)]
-    '*'       reduce using rule 39 (expr)
-    '*'       [reduce using rule 48 (identifier)]
-    '*'       [reduce using rule 50 (number)]
-    '/'       reduce using rule 39 (expr)
-    '/'       [reduce using rule 48 (identifier)]
-    '/'       [reduce using rule 50 (number)]
-    '='       reduce using rule 39 (expr)
-    '='       [reduce using rule 48 (identifier)]
-    '='       [reduce using rule 50 (number)]
-    $default  reduce using rule 39 (expr)
+    '}'       reduce using rule 36 (exprs)
+    ';'       reduce using rule 41 (expr)
+    ';'       [reduce using rule 50 (identifier)]
+    ';'       [reduce using rule 52 (number)]
+    '+'       reduce using rule 41 (expr)
+    '+'       [reduce using rule 50 (identifier)]
+    '+'       [reduce using rule 52 (number)]
+    '-'       reduce using rule 41 (expr)
+    '-'       [reduce using rule 50 (identifier)]
+    '-'       [reduce using rule 52 (number)]
+    '*'       reduce using rule 41 (expr)
+    '*'       [reduce using rule 50 (identifier)]
+    '*'       [reduce using rule 52 (number)]
+    '/'       reduce using rule 41 (expr)
+    '/'       [reduce using rule 50 (identifier)]
+    '/'       [reduce using rule 52 (number)]
+    '='       reduce using rule 41 (expr)
+    '='       [reduce using rule 50 (identifier)]
+    '='       [reduce using rule 52 (number)]
+    $default  reduce using rule 41 (expr)
 
-    expr        go to state 19
-    identifier  go to state 17
-    number      go to state 14
+    exprs       go to state 20
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 6
 
     0 $accept: compilation_unit • $end
 
-    $end  shift, and go to state 20
+    $end  shift, and go to state 21
 
 
 State 7
 
     2 compilation_unit: test • EOL
 
-    EOL  shift, and go to state 21
+    EOL  shift, and go to state 22
 
 
 State 8
@@ -451,7 +461,7 @@ State 8
     6 test: tparam • ',' test
     7     | tparam •
 
-    ','  shift, and go to state 22
+    ','  shift, and go to state 23
 
     $default  reduce using rule 7 (test)
 
@@ -460,7 +470,7 @@ State 9
 
     3 compilation_unit: func • EOL
 
-    EOL  shift, and go to state 23
+    EOL  shift, and go to state 24
 
 
 State 10
@@ -479,45 +489,52 @@ State 11
 
 State 12
 
-   34 then: expr • ';' then
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   35 then: exprs •
 
-    ';'  shift, and go to state 24
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    $default  reduce using rule 35 (then)
 
 
 State 13
 
-    9 tparam: identifier • identifier
-   11 func: identifier • identifier '(' params ')' block
-   46 expr: identifier •
+   37 exprs: expr • ';' exprs
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
-    IDENTIFIER  shift, and go to state 3
-
-    EOL       reduce using rule 48 (identifier)
-    ','       reduce using rule 48 (identifier)
-    '('       reduce using rule 48 (identifier)
-    $default  reduce using rule 46 (expr)
-
-    identifier  go to state 30
+    ';'  shift, and go to state 25
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
 
 State 14
 
-   47 expr: number •
+    9 tparam: identifier • identifier
+   11 func: identifier • identifier '(' params ')' block
+   48 expr: identifier •
 
-    $default  reduce using rule 47 (expr)
+    IDENTIFIER  shift, and go to state 3
+
+    EOL       reduce using rule 50 (identifier)
+    ','       reduce using rule 50 (identifier)
+    '('       reduce using rule 50 (identifier)
+    $default  reduce using rule 48 (expr)
+
+    identifier  go to state 31
 
 
 State 15
+
+   49 expr: number •
+
+    $default  reduce using rule 49 (expr)
+
+
+State 16
 
    28 stmt: IF con • then
    29     | IF con • then EOL
@@ -528,56 +545,77 @@ State 15
     '('         shift, and go to state 4
     '{'         shift, and go to state 5
 
+    $end        reduce using rule 33 (then)
+    $end        [reduce using rule 36 (exprs)]
     NUMBER      [reduce using rule 33 (then)]
+    NUMBER      [reduce using rule 36 (exprs)]
+    EOL         reduce using rule 33 (then)
+    EOL         [reduce using rule 36 (exprs)]
+    IF          reduce using rule 33 (then)
+    IF          [reduce using rule 36 (exprs)]
+    ELSE        reduce using rule 33 (then)
+    ELSE        [reduce using rule 36 (exprs)]
     IDENTIFIER  [reduce using rule 33 (then)]
+    IDENTIFIER  [reduce using rule 36 (exprs)]
     '('         [reduce using rule 33 (then)]
+    '('         [reduce using rule 36 (exprs)]
     '{'         [reduce using rule 33 (then)]
+    '{'         [reduce using rule 36 (exprs)]
+    '}'         reduce using rule 33 (then)
+    '}'         [reduce using rule 36 (exprs)]
     ';'         reduce using rule 33 (then)
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
+    ';'         [reduce using rule 36 (exprs)]
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
     '+'         reduce using rule 33 (then)
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
+    '+'         [reduce using rule 36 (exprs)]
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
     '-'         reduce using rule 33 (then)
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
+    '-'         [reduce using rule 36 (exprs)]
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
     '*'         reduce using rule 33 (then)
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
+    '*'         [reduce using rule 36 (exprs)]
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
     '/'         reduce using rule 33 (then)
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
+    '/'         [reduce using rule 36 (exprs)]
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
     '='         reduce using rule 33 (then)
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
+    '='         [reduce using rule 36 (exprs)]
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
     $default    reduce using rule 33 (then)
 
-    then        go to state 31
-    expr        go to state 12
-    identifier  go to state 17
-    number      go to state 14
+    then        go to state 32
+    exprs       go to state 12
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
-State 16
+State 17
 
    32 con: expr •
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
     '+'       [reduce using rule 32 (con)]
     '-'       [reduce using rule 32 (con)]
@@ -587,62 +625,52 @@ State 16
     $default  reduce using rule 32 (con)
 
 
-State 17
-
-   46 expr: identifier •
-
-    $default  reduce using rule 46 (expr)
-
-
 State 18
 
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
-   45     | '(' expr • ')'
+   48 expr: identifier •
 
-    ')'  shift, and go to state 32
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    $default  reduce using rule 48 (expr)
 
 
 State 19
 
-   35 then: '{' expr • ';' '}'
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
+   47     | '(' expr • ')'
 
-    ';'  shift, and go to state 33
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    ')'  shift, and go to state 33
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
 
 State 20
+
+   34 then: '{' exprs • '}'
+
+    '}'  shift, and go to state 34
+
+
+State 21
 
     0 $accept: compilation_unit $end •
 
     $default  accept
 
 
-State 21
+State 22
 
     2 compilation_unit: test EOL •
 
     $default  reduce using rule 2 (compilation_unit)
 
 
-State 22
+State 23
 
     6 test: tparam ',' • test
 
@@ -650,506 +678,458 @@ State 22
 
     EOL         reduce using rule 5 (test)
     EOL         [reduce using rule 8 (tparam)]
-    EOL         [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    EOL         [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ','         reduce using rule 8 (tparam)
-    ','         [reduce using rule 48 (identifier)]
+    ','         [reduce using rule 50 (identifier)]
     $default    reduce using rule 5 (test)
 
-    test        go to state 34
+    test        go to state 35
     tparam      go to state 8
-    identifier  go to state 35
+    identifier  go to state 36
 
 
-State 23
+State 24
 
     3 compilation_unit: func EOL •
 
     $default  reduce using rule 3 (compilation_unit)
 
 
-State 24
-
-   34 then: expr ';' • then
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 3
-    '('         shift, and go to state 4
-    '{'         shift, and go to state 5
-
-    NUMBER      [reduce using rule 33 (then)]
-    IDENTIFIER  [reduce using rule 33 (then)]
-    '('         [reduce using rule 33 (then)]
-    '{'         [reduce using rule 33 (then)]
-    ';'         reduce using rule 33 (then)
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 33 (then)
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 33 (then)
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 33 (then)
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 33 (then)
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 33 (then)
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 33 (then)
-
-    then        go to state 36
-    expr        go to state 12
-    identifier  go to state 17
-    number      go to state 14
-
-
 State 25
 
-   40 expr: expr '+' • expr
+   37 exprs: expr ';' • exprs
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    $end        reduce using rule 39 (expr)
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
-    EOL         reduce using rule 39 (expr)
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
-    IF          reduce using rule 39 (expr)
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
-    ELSE        reduce using rule 39 (expr)
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
-    ')'         reduce using rule 39 (expr)
-    ')'         [reduce using rule 48 (identifier)]
-    ')'         [reduce using rule 50 (number)]
-    '{'         reduce using rule 39 (expr)
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
-    '}'         reduce using rule 39 (expr)
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    NUMBER      [reduce using rule 36 (exprs)]
+    IDENTIFIER  [reduce using rule 36 (exprs)]
+    '('         [reduce using rule 36 (exprs)]
+    ';'         reduce using rule 36 (exprs)
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 36 (exprs)
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 36 (exprs)
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 36 (exprs)
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 36 (exprs)
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 36 (exprs)
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 36 (exprs)
 
-    expr        go to state 37
-    identifier  go to state 17
-    number      go to state 14
+    exprs       go to state 37
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 26
 
-   41 expr: expr '-' • expr
+   42 expr: expr '+' • expr
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    $end        reduce using rule 39 (expr)
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
-    EOL         reduce using rule 39 (expr)
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
-    IF          reduce using rule 39 (expr)
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
-    ELSE        reduce using rule 39 (expr)
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
-    ')'         reduce using rule 39 (expr)
-    ')'         [reduce using rule 48 (identifier)]
-    ')'         [reduce using rule 50 (number)]
-    '{'         reduce using rule 39 (expr)
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
-    '}'         reduce using rule 39 (expr)
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    $end        reduce using rule 41 (expr)
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
+    EOL         reduce using rule 41 (expr)
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
+    IF          reduce using rule 41 (expr)
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
+    ELSE        reduce using rule 41 (expr)
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
+    ')'         reduce using rule 41 (expr)
+    ')'         [reduce using rule 50 (identifier)]
+    ')'         [reduce using rule 52 (number)]
+    '{'         reduce using rule 41 (expr)
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
+    '}'         reduce using rule 41 (expr)
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
 
     expr        go to state 38
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 27
 
-   42 expr: expr '*' • expr
+   43 expr: expr '-' • expr
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    $end        reduce using rule 39 (expr)
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
-    EOL         reduce using rule 39 (expr)
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
-    IF          reduce using rule 39 (expr)
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
-    ELSE        reduce using rule 39 (expr)
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
-    ')'         reduce using rule 39 (expr)
-    ')'         [reduce using rule 48 (identifier)]
-    ')'         [reduce using rule 50 (number)]
-    '{'         reduce using rule 39 (expr)
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
-    '}'         reduce using rule 39 (expr)
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    $end        reduce using rule 41 (expr)
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
+    EOL         reduce using rule 41 (expr)
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
+    IF          reduce using rule 41 (expr)
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
+    ELSE        reduce using rule 41 (expr)
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
+    ')'         reduce using rule 41 (expr)
+    ')'         [reduce using rule 50 (identifier)]
+    ')'         [reduce using rule 52 (number)]
+    '{'         reduce using rule 41 (expr)
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
+    '}'         reduce using rule 41 (expr)
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
 
     expr        go to state 39
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 28
 
-   43 expr: expr '/' • expr
+   44 expr: expr '*' • expr
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    $end        reduce using rule 39 (expr)
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
-    EOL         reduce using rule 39 (expr)
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
-    IF          reduce using rule 39 (expr)
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
-    ELSE        reduce using rule 39 (expr)
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
-    ')'         reduce using rule 39 (expr)
-    ')'         [reduce using rule 48 (identifier)]
-    ')'         [reduce using rule 50 (number)]
-    '{'         reduce using rule 39 (expr)
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
-    '}'         reduce using rule 39 (expr)
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    $end        reduce using rule 41 (expr)
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
+    EOL         reduce using rule 41 (expr)
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
+    IF          reduce using rule 41 (expr)
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
+    ELSE        reduce using rule 41 (expr)
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
+    ')'         reduce using rule 41 (expr)
+    ')'         [reduce using rule 50 (identifier)]
+    ')'         [reduce using rule 52 (number)]
+    '{'         reduce using rule 41 (expr)
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
+    '}'         reduce using rule 41 (expr)
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
 
     expr        go to state 40
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 29
 
-   44 expr: expr '=' • expr
+   45 expr: expr '/' • expr
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    $end        reduce using rule 39 (expr)
-    $end        [reduce using rule 48 (identifier)]
-    $end        [reduce using rule 50 (number)]
-    NUMBER      [reduce using rule 39 (expr)]
-    NUMBER      [reduce using rule 48 (identifier)]
-    NUMBER      [reduce using rule 50 (number)]
-    EOL         reduce using rule 39 (expr)
-    EOL         [reduce using rule 48 (identifier)]
-    EOL         [reduce using rule 50 (number)]
-    IF          reduce using rule 39 (expr)
-    IF          [reduce using rule 48 (identifier)]
-    IF          [reduce using rule 50 (number)]
-    ELSE        reduce using rule 39 (expr)
-    ELSE        [reduce using rule 48 (identifier)]
-    ELSE        [reduce using rule 50 (number)]
-    IDENTIFIER  [reduce using rule 39 (expr)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
-    IDENTIFIER  [reduce using rule 50 (number)]
-    '('         [reduce using rule 39 (expr)]
-    '('         [reduce using rule 48 (identifier)]
-    '('         [reduce using rule 50 (number)]
-    ')'         reduce using rule 39 (expr)
-    ')'         [reduce using rule 48 (identifier)]
-    ')'         [reduce using rule 50 (number)]
-    '{'         reduce using rule 39 (expr)
-    '{'         [reduce using rule 48 (identifier)]
-    '{'         [reduce using rule 50 (number)]
-    '}'         reduce using rule 39 (expr)
-    '}'         [reduce using rule 48 (identifier)]
-    '}'         [reduce using rule 50 (number)]
-    ';'         reduce using rule 39 (expr)
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
-    '+'         reduce using rule 39 (expr)
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
-    '-'         reduce using rule 39 (expr)
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
-    '*'         reduce using rule 39 (expr)
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
-    '/'         reduce using rule 39 (expr)
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
-    '='         reduce using rule 39 (expr)
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
-    $default    reduce using rule 39 (expr)
+    $end        reduce using rule 41 (expr)
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
+    EOL         reduce using rule 41 (expr)
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
+    IF          reduce using rule 41 (expr)
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
+    ELSE        reduce using rule 41 (expr)
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
+    ')'         reduce using rule 41 (expr)
+    ')'         [reduce using rule 50 (identifier)]
+    ')'         [reduce using rule 52 (number)]
+    '{'         reduce using rule 41 (expr)
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
+    '}'         reduce using rule 41 (expr)
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
 
     expr        go to state 41
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 30
 
+   46 expr: expr '=' • expr
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 3
+    '('         shift, and go to state 4
+
+    $end        reduce using rule 41 (expr)
+    $end        [reduce using rule 50 (identifier)]
+    $end        [reduce using rule 52 (number)]
+    NUMBER      [reduce using rule 41 (expr)]
+    NUMBER      [reduce using rule 50 (identifier)]
+    NUMBER      [reduce using rule 52 (number)]
+    EOL         reduce using rule 41 (expr)
+    EOL         [reduce using rule 50 (identifier)]
+    EOL         [reduce using rule 52 (number)]
+    IF          reduce using rule 41 (expr)
+    IF          [reduce using rule 50 (identifier)]
+    IF          [reduce using rule 52 (number)]
+    ELSE        reduce using rule 41 (expr)
+    ELSE        [reduce using rule 50 (identifier)]
+    ELSE        [reduce using rule 52 (number)]
+    IDENTIFIER  [reduce using rule 41 (expr)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
+    IDENTIFIER  [reduce using rule 52 (number)]
+    '('         [reduce using rule 41 (expr)]
+    '('         [reduce using rule 50 (identifier)]
+    '('         [reduce using rule 52 (number)]
+    ')'         reduce using rule 41 (expr)
+    ')'         [reduce using rule 50 (identifier)]
+    ')'         [reduce using rule 52 (number)]
+    '{'         reduce using rule 41 (expr)
+    '{'         [reduce using rule 50 (identifier)]
+    '{'         [reduce using rule 52 (number)]
+    '}'         reduce using rule 41 (expr)
+    '}'         [reduce using rule 50 (identifier)]
+    '}'         [reduce using rule 52 (number)]
+    ';'         reduce using rule 41 (expr)
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
+    '+'         reduce using rule 41 (expr)
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
+    '-'         reduce using rule 41 (expr)
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
+    '*'         reduce using rule 41 (expr)
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
+    '/'         reduce using rule 41 (expr)
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
+    '='         reduce using rule 41 (expr)
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
+    $default    reduce using rule 41 (expr)
+
+    expr        go to state 42
+    identifier  go to state 18
+    number      go to state 15
+
+
+State 31
+
     9 tparam: identifier identifier •
    11 func: identifier identifier • '(' params ')' block
 
-    '('  shift, and go to state 42
+    '('  shift, and go to state 43
 
     $default  reduce using rule 9 (tparam)
 
 
-State 31
+State 32
 
    28 stmt: IF con then •
    29     | IF con then • EOL
    30     | IF con then • ELSE else_body EOL
 
-    EOL   shift, and go to state 43
-    ELSE  shift, and go to state 44
+    EOL   shift, and go to state 44
+    ELSE  shift, and go to state 45
 
     EOL       [reduce using rule 28 (stmt)]
     $default  reduce using rule 28 (stmt)
 
 
-State 32
-
-   45 expr: '(' expr ')' •
-
-    $default  reduce using rule 45 (expr)
-
-
 State 33
 
-   35 then: '{' expr ';' • '}'
+   47 expr: '(' expr ')' •
 
-    '}'  shift, and go to state 45
+    $default  reduce using rule 47 (expr)
 
 
 State 34
+
+   34 then: '{' exprs '}' •
+
+    $default  reduce using rule 34 (then)
+
+
+State 35
 
     6 test: tparam ',' test •
 
     $default  reduce using rule 6 (test)
 
 
-State 35
+State 36
 
     9 tparam: identifier • identifier
 
     IDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 48 (identifier)
+    $default  reduce using rule 50 (identifier)
 
     identifier  go to state 46
 
 
-State 36
-
-   34 then: expr ';' then •
-
-    $default  reduce using rule 34 (then)
-
-
 State 37
 
-   40 expr: expr • '+' expr
-   40     | expr '+' expr •
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   37 exprs: expr ';' exprs •
 
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
-
-    '+'       [reduce using rule 40 (expr)]
-    '-'       [reduce using rule 40 (expr)]
-    '*'       [reduce using rule 40 (expr)]
-    '/'       [reduce using rule 40 (expr)]
-    '='       [reduce using rule 40 (expr)]
-    $default  reduce using rule 40 (expr)
+    $default  reduce using rule 37 (exprs)
 
 
 State 38
 
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   41     | expr '-' expr •
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   42 expr: expr • '+' expr
+   42     | expr '+' expr •
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
-
-    '+'       [reduce using rule 41 (expr)]
-    '-'       [reduce using rule 41 (expr)]
-    '*'       [reduce using rule 41 (expr)]
-    '/'       [reduce using rule 41 (expr)]
-    '='       [reduce using rule 41 (expr)]
-    $default  reduce using rule 41 (expr)
-
-
-State 39
-
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   42     | expr '*' expr •
-   43     | expr • '/' expr
-   44     | expr • '=' expr
-
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
     '+'       [reduce using rule 42 (expr)]
     '-'       [reduce using rule 42 (expr)]
@@ -1159,20 +1139,20 @@ State 39
     $default  reduce using rule 42 (expr)
 
 
-State 40
+State 39
 
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   43     | expr '/' expr •
-   44     | expr • '=' expr
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   43     | expr '-' expr •
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
     '+'       [reduce using rule 43 (expr)]
     '-'       [reduce using rule 43 (expr)]
@@ -1182,20 +1162,20 @@ State 40
     $default  reduce using rule 43 (expr)
 
 
-State 41
+State 40
 
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
-   44     | expr '=' expr •
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   44     | expr '*' expr •
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
     '+'       [reduce using rule 44 (expr)]
     '-'       [reduce using rule 44 (expr)]
@@ -1205,18 +1185,64 @@ State 41
     $default  reduce using rule 44 (expr)
 
 
+State 41
+
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   45     | expr '/' expr •
+   46     | expr • '=' expr
+
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
+
+    '+'       [reduce using rule 45 (expr)]
+    '-'       [reduce using rule 45 (expr)]
+    '*'       [reduce using rule 45 (expr)]
+    '/'       [reduce using rule 45 (expr)]
+    '='       [reduce using rule 45 (expr)]
+    $default  reduce using rule 45 (expr)
+
+
 State 42
+
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
+   46     | expr '=' expr •
+
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
+
+    '+'       [reduce using rule 46 (expr)]
+    '-'       [reduce using rule 46 (expr)]
+    '*'       [reduce using rule 46 (expr)]
+    '/'       [reduce using rule 46 (expr)]
+    '='       [reduce using rule 46 (expr)]
+    $default  reduce using rule 46 (expr)
+
+
+State 43
 
    11 func: identifier identifier '(' • params ')' block
 
     IDENTIFIER  shift, and go to state 3
 
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ','         reduce using rule 15 (param)
-    ','         [reduce using rule 48 (identifier)]
+    ','         [reduce using rule 50 (identifier)]
     ')'         reduce using rule 12 (params)
     ')'         [reduce using rule 15 (param)]
-    ')'         [reduce using rule 48 (identifier)]
+    ')'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 12 (params)
 
     params      go to state 47
@@ -1224,14 +1250,14 @@ State 42
     identifier  go to state 49
 
 
-State 43
+State 44
 
    29 stmt: IF con then EOL •
 
     $default  reduce using rule 29 (stmt)
 
 
-State 44
+State 45
 
    30 stmt: IF con then ELSE • else_body EOL
 
@@ -1240,38 +1266,31 @@ State 44
     '('         shift, and go to state 4
     '{'         shift, and go to state 50
 
-    EOL       reduce using rule 36 (else_body)
-    ';'       reduce using rule 39 (expr)
-    ';'       [reduce using rule 48 (identifier)]
-    ';'       [reduce using rule 50 (number)]
-    '+'       reduce using rule 39 (expr)
-    '+'       [reduce using rule 48 (identifier)]
-    '+'       [reduce using rule 50 (number)]
-    '-'       reduce using rule 39 (expr)
-    '-'       [reduce using rule 48 (identifier)]
-    '-'       [reduce using rule 50 (number)]
-    '*'       reduce using rule 39 (expr)
-    '*'       [reduce using rule 48 (identifier)]
-    '*'       [reduce using rule 50 (number)]
-    '/'       reduce using rule 39 (expr)
-    '/'       [reduce using rule 48 (identifier)]
-    '/'       [reduce using rule 50 (number)]
-    '='       reduce using rule 39 (expr)
-    '='       [reduce using rule 48 (identifier)]
-    '='       [reduce using rule 50 (number)]
-    $default  reduce using rule 39 (expr)
+    EOL       reduce using rule 38 (else_body)
+    ';'       reduce using rule 41 (expr)
+    ';'       [reduce using rule 50 (identifier)]
+    ';'       [reduce using rule 52 (number)]
+    '+'       reduce using rule 41 (expr)
+    '+'       [reduce using rule 50 (identifier)]
+    '+'       [reduce using rule 52 (number)]
+    '-'       reduce using rule 41 (expr)
+    '-'       [reduce using rule 50 (identifier)]
+    '-'       [reduce using rule 52 (number)]
+    '*'       reduce using rule 41 (expr)
+    '*'       [reduce using rule 50 (identifier)]
+    '*'       [reduce using rule 52 (number)]
+    '/'       reduce using rule 41 (expr)
+    '/'       [reduce using rule 50 (identifier)]
+    '/'       [reduce using rule 52 (number)]
+    '='       reduce using rule 41 (expr)
+    '='       [reduce using rule 50 (identifier)]
+    '='       [reduce using rule 52 (number)]
+    $default  reduce using rule 41 (expr)
 
     else_body   go to state 51
     expr        go to state 52
-    identifier  go to state 17
-    number      go to state 14
-
-
-State 45
-
-   35 then: '{' expr ';' '}' •
-
-    $default  reduce using rule 35 (then)
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 46
@@ -1304,42 +1323,42 @@ State 49
 
     IDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 48 (identifier)
+    $default  reduce using rule 50 (identifier)
 
     identifier  go to state 55
 
 
 State 50
 
-   38 else_body: '{' • expr ';' '}'
+   40 else_body: '{' • expr ';' '}'
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
 
-    ';'       reduce using rule 39 (expr)
-    ';'       [reduce using rule 48 (identifier)]
-    ';'       [reduce using rule 50 (number)]
-    '+'       reduce using rule 39 (expr)
-    '+'       [reduce using rule 48 (identifier)]
-    '+'       [reduce using rule 50 (number)]
-    '-'       reduce using rule 39 (expr)
-    '-'       [reduce using rule 48 (identifier)]
-    '-'       [reduce using rule 50 (number)]
-    '*'       reduce using rule 39 (expr)
-    '*'       [reduce using rule 48 (identifier)]
-    '*'       [reduce using rule 50 (number)]
-    '/'       reduce using rule 39 (expr)
-    '/'       [reduce using rule 48 (identifier)]
-    '/'       [reduce using rule 50 (number)]
-    '='       reduce using rule 39 (expr)
-    '='       [reduce using rule 48 (identifier)]
-    '='       [reduce using rule 50 (number)]
-    $default  reduce using rule 39 (expr)
+    ';'       reduce using rule 41 (expr)
+    ';'       [reduce using rule 50 (identifier)]
+    ';'       [reduce using rule 52 (number)]
+    '+'       reduce using rule 41 (expr)
+    '+'       [reduce using rule 50 (identifier)]
+    '+'       [reduce using rule 52 (number)]
+    '-'       reduce using rule 41 (expr)
+    '-'       [reduce using rule 50 (identifier)]
+    '-'       [reduce using rule 52 (number)]
+    '*'       reduce using rule 41 (expr)
+    '*'       [reduce using rule 50 (identifier)]
+    '*'       [reduce using rule 52 (number)]
+    '/'       reduce using rule 41 (expr)
+    '/'       [reduce using rule 50 (identifier)]
+    '/'       [reduce using rule 52 (number)]
+    '='       reduce using rule 41 (expr)
+    '='       [reduce using rule 50 (identifier)]
+    '='       [reduce using rule 52 (number)]
+    $default  reduce using rule 41 (expr)
 
     expr        go to state 56
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 51
@@ -1351,19 +1370,19 @@ State 51
 
 State 52
 
-   37 else_body: expr • ';' else_body
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   39 else_body: expr • ';' else_body
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
     ';'  shift, and go to state 58
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
 
 State 53
@@ -1376,11 +1395,11 @@ State 53
     EOL         reduce using rule 17 (block)
     EOL         [reduce using rule 20 (variables)]
     IDENTIFIER  [reduce using rule 20 (variables)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     '{'         [reduce using rule 20 (variables)]
     ';'         reduce using rule 20 (variables)
     ';'         [reduce using rule 22 (variable)]
-    ';'         [reduce using rule 48 (identifier)]
+    ';'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 20 (variables)
 
     block       go to state 60
@@ -1395,12 +1414,12 @@ State 54
 
     IDENTIFIER  shift, and go to state 3
 
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ','         reduce using rule 15 (param)
-    ','         [reduce using rule 48 (identifier)]
+    ','         [reduce using rule 50 (identifier)]
     ')'         reduce using rule 12 (params)
     ')'         [reduce using rule 15 (param)]
-    ')'         [reduce using rule 48 (identifier)]
+    ')'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 12 (params)
 
     params      go to state 64
@@ -1417,19 +1436,19 @@ State 55
 
 State 56
 
-   38 else_body: '{' expr • ';' '}'
-   40 expr: expr • '+' expr
-   41     | expr • '-' expr
-   42     | expr • '*' expr
-   43     | expr • '/' expr
-   44     | expr • '=' expr
+   40 else_body: '{' expr • ';' '}'
+   42 expr: expr • '+' expr
+   43     | expr • '-' expr
+   44     | expr • '*' expr
+   45     | expr • '/' expr
+   46     | expr • '=' expr
 
     ';'  shift, and go to state 65
-    '+'  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '*'  shift, and go to state 27
-    '/'  shift, and go to state 28
-    '='  shift, and go to state 29
+    '+'  shift, and go to state 26
+    '-'  shift, and go to state 27
+    '*'  shift, and go to state 28
+    '/'  shift, and go to state 29
+    '='  shift, and go to state 30
 
 
 State 57
@@ -1441,38 +1460,38 @@ State 57
 
 State 58
 
-   37 else_body: expr ';' • else_body
+   39 else_body: expr ';' • else_body
 
     NUMBER      shift, and go to state 1
     IDENTIFIER  shift, and go to state 3
     '('         shift, and go to state 4
     '{'         shift, and go to state 50
 
-    EOL       reduce using rule 36 (else_body)
-    ';'       reduce using rule 39 (expr)
-    ';'       [reduce using rule 48 (identifier)]
-    ';'       [reduce using rule 50 (number)]
-    '+'       reduce using rule 39 (expr)
-    '+'       [reduce using rule 48 (identifier)]
-    '+'       [reduce using rule 50 (number)]
-    '-'       reduce using rule 39 (expr)
-    '-'       [reduce using rule 48 (identifier)]
-    '-'       [reduce using rule 50 (number)]
-    '*'       reduce using rule 39 (expr)
-    '*'       [reduce using rule 48 (identifier)]
-    '*'       [reduce using rule 50 (number)]
-    '/'       reduce using rule 39 (expr)
-    '/'       [reduce using rule 48 (identifier)]
-    '/'       [reduce using rule 50 (number)]
-    '='       reduce using rule 39 (expr)
-    '='       [reduce using rule 48 (identifier)]
-    '='       [reduce using rule 50 (number)]
-    $default  reduce using rule 39 (expr)
+    EOL       reduce using rule 38 (else_body)
+    ';'       reduce using rule 41 (expr)
+    ';'       [reduce using rule 50 (identifier)]
+    ';'       [reduce using rule 52 (number)]
+    '+'       reduce using rule 41 (expr)
+    '+'       [reduce using rule 50 (identifier)]
+    '+'       [reduce using rule 52 (number)]
+    '-'       reduce using rule 41 (expr)
+    '-'       [reduce using rule 50 (identifier)]
+    '-'       [reduce using rule 52 (number)]
+    '*'       reduce using rule 41 (expr)
+    '*'       [reduce using rule 50 (identifier)]
+    '*'       [reduce using rule 52 (number)]
+    '/'       reduce using rule 41 (expr)
+    '/'       [reduce using rule 50 (identifier)]
+    '/'       [reduce using rule 52 (number)]
+    '='       reduce using rule 41 (expr)
+    '='       [reduce using rule 50 (identifier)]
+    '='       [reduce using rule 52 (number)]
+    $default  reduce using rule 41 (expr)
 
     else_body   go to state 66
     expr        go to state 52
-    identifier  go to state 17
-    number      go to state 14
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 59
@@ -1482,10 +1501,10 @@ State 59
     IDENTIFIER  shift, and go to state 3
 
     IDENTIFIER  [reduce using rule 20 (variables)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ';'         reduce using rule 20 (variables)
     ';'         [reduce using rule 22 (variable)]
-    ';'         [reduce using rule 48 (identifier)]
+    ';'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 20 (variables)
 
     variables   go to state 67
@@ -1513,68 +1532,82 @@ State 61
     NUMBER      [reduce using rule 24 (stmts)]
     NUMBER      [reduce using rule 26 (stmt)]
     NUMBER      [reduce using rule 33 (then)]
+    NUMBER      [reduce using rule 36 (exprs)]
     EOL         reduce using rule 24 (stmts)
     EOL         [reduce using rule 26 (stmt)]
     EOL         [reduce using rule 33 (then)]
+    EOL         [reduce using rule 36 (exprs)]
     IF          [reduce using rule 24 (stmts)]
     IF          [reduce using rule 26 (stmt)]
     IF          [reduce using rule 33 (then)]
+    IF          [reduce using rule 36 (exprs)]
     IDENTIFIER  [reduce using rule 24 (stmts)]
     IDENTIFIER  [reduce using rule 26 (stmt)]
     IDENTIFIER  [reduce using rule 33 (then)]
+    IDENTIFIER  [reduce using rule 36 (exprs)]
     '('         [reduce using rule 24 (stmts)]
     '('         [reduce using rule 26 (stmt)]
     '('         [reduce using rule 33 (then)]
+    '('         [reduce using rule 36 (exprs)]
     '{'         [reduce using rule 24 (stmts)]
     '{'         [reduce using rule 26 (stmt)]
     '{'         [reduce using rule 33 (then)]
+    '{'         [reduce using rule 36 (exprs)]
     '}'         reduce using rule 24 (stmts)
     '}'         [reduce using rule 26 (stmt)]
     '}'         [reduce using rule 33 (then)]
+    '}'         [reduce using rule 36 (exprs)]
     ';'         reduce using rule 24 (stmts)
     ';'         [reduce using rule 26 (stmt)]
     ';'         [reduce using rule 33 (then)]
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
+    ';'         [reduce using rule 36 (exprs)]
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
     '+'         reduce using rule 24 (stmts)
     '+'         [reduce using rule 26 (stmt)]
     '+'         [reduce using rule 33 (then)]
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
+    '+'         [reduce using rule 36 (exprs)]
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
     '-'         reduce using rule 24 (stmts)
     '-'         [reduce using rule 26 (stmt)]
     '-'         [reduce using rule 33 (then)]
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
+    '-'         [reduce using rule 36 (exprs)]
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
     '*'         reduce using rule 24 (stmts)
     '*'         [reduce using rule 26 (stmt)]
     '*'         [reduce using rule 33 (then)]
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
+    '*'         [reduce using rule 36 (exprs)]
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
     '/'         reduce using rule 24 (stmts)
     '/'         [reduce using rule 26 (stmt)]
     '/'         [reduce using rule 33 (then)]
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
+    '/'         [reduce using rule 36 (exprs)]
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
     '='         reduce using rule 24 (stmts)
     '='         [reduce using rule 26 (stmt)]
     '='         [reduce using rule 33 (then)]
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
+    '='         [reduce using rule 36 (exprs)]
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
     $default    reduce using rule 24 (stmts)
 
     stmts       go to state 68
     stmt        go to state 69
     then        go to state 11
-    expr        go to state 12
-    identifier  go to state 17
-    number      go to state 14
+    exprs       go to state 12
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 62
@@ -1590,7 +1623,7 @@ State 63
 
     IDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 48 (identifier)
+    $default  reduce using rule 50 (identifier)
 
     identifier  go to state 71
 
@@ -1604,16 +1637,16 @@ State 64
 
 State 65
 
-   38 else_body: '{' expr ';' • '}'
+   40 else_body: '{' expr ';' • '}'
 
     '}'  shift, and go to state 72
 
 
 State 66
 
-   37 else_body: expr ';' else_body •
+   39 else_body: expr ';' else_body •
 
-    $default  reduce using rule 37 (else_body)
+    $default  reduce using rule 39 (else_body)
 
 
 State 67
@@ -1629,65 +1662,78 @@ State 67
     NUMBER      [reduce using rule 24 (stmts)]
     NUMBER      [reduce using rule 26 (stmt)]
     NUMBER      [reduce using rule 33 (then)]
+    NUMBER      [reduce using rule 36 (exprs)]
     IF          [reduce using rule 24 (stmts)]
     IF          [reduce using rule 26 (stmt)]
     IF          [reduce using rule 33 (then)]
+    IF          [reduce using rule 36 (exprs)]
     IDENTIFIER  [reduce using rule 24 (stmts)]
     IDENTIFIER  [reduce using rule 26 (stmt)]
     IDENTIFIER  [reduce using rule 33 (then)]
+    IDENTIFIER  [reduce using rule 36 (exprs)]
     '('         [reduce using rule 24 (stmts)]
     '('         [reduce using rule 26 (stmt)]
     '('         [reduce using rule 33 (then)]
+    '('         [reduce using rule 36 (exprs)]
     '{'         [reduce using rule 24 (stmts)]
     '{'         [reduce using rule 26 (stmt)]
     '{'         [reduce using rule 33 (then)]
+    '{'         [reduce using rule 36 (exprs)]
     '}'         reduce using rule 24 (stmts)
     '}'         [reduce using rule 26 (stmt)]
     '}'         [reduce using rule 33 (then)]
+    '}'         [reduce using rule 36 (exprs)]
     ';'         reduce using rule 24 (stmts)
     ';'         [reduce using rule 26 (stmt)]
     ';'         [reduce using rule 33 (then)]
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
+    ';'         [reduce using rule 36 (exprs)]
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
     '+'         reduce using rule 24 (stmts)
     '+'         [reduce using rule 26 (stmt)]
     '+'         [reduce using rule 33 (then)]
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
+    '+'         [reduce using rule 36 (exprs)]
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
     '-'         reduce using rule 24 (stmts)
     '-'         [reduce using rule 26 (stmt)]
     '-'         [reduce using rule 33 (then)]
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
+    '-'         [reduce using rule 36 (exprs)]
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
     '*'         reduce using rule 24 (stmts)
     '*'         [reduce using rule 26 (stmt)]
     '*'         [reduce using rule 33 (then)]
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
+    '*'         [reduce using rule 36 (exprs)]
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
     '/'         reduce using rule 24 (stmts)
     '/'         [reduce using rule 26 (stmt)]
     '/'         [reduce using rule 33 (then)]
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
+    '/'         [reduce using rule 36 (exprs)]
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
     '='         reduce using rule 24 (stmts)
     '='         [reduce using rule 26 (stmt)]
     '='         [reduce using rule 33 (then)]
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
+    '='         [reduce using rule 36 (exprs)]
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
     $default    reduce using rule 24 (stmts)
 
     stmts       go to state 73
     stmt        go to state 69
     then        go to state 11
-    expr        go to state 12
-    identifier  go to state 17
-    number      go to state 14
+    exprs       go to state 12
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 68
@@ -1700,13 +1746,13 @@ State 68
     EOL         reduce using rule 17 (block)
     EOL         [reduce using rule 20 (variables)]
     IDENTIFIER  [reduce using rule 20 (variables)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     '{'         [reduce using rule 20 (variables)]
     '}'         reduce using rule 17 (block)
     '}'         [reduce using rule 20 (variables)]
     ';'         reduce using rule 20 (variables)
     ';'         [reduce using rule 22 (variable)]
-    ';'         [reduce using rule 48 (identifier)]
+    ';'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 20 (variables)
 
     block       go to state 74
@@ -1728,68 +1774,82 @@ State 69
     NUMBER      [reduce using rule 24 (stmts)]
     NUMBER      [reduce using rule 26 (stmt)]
     NUMBER      [reduce using rule 33 (then)]
+    NUMBER      [reduce using rule 36 (exprs)]
     EOL         reduce using rule 24 (stmts)
     EOL         [reduce using rule 26 (stmt)]
     EOL         [reduce using rule 33 (then)]
+    EOL         [reduce using rule 36 (exprs)]
     IF          [reduce using rule 24 (stmts)]
     IF          [reduce using rule 26 (stmt)]
     IF          [reduce using rule 33 (then)]
+    IF          [reduce using rule 36 (exprs)]
     IDENTIFIER  [reduce using rule 24 (stmts)]
     IDENTIFIER  [reduce using rule 26 (stmt)]
     IDENTIFIER  [reduce using rule 33 (then)]
+    IDENTIFIER  [reduce using rule 36 (exprs)]
     '('         [reduce using rule 24 (stmts)]
     '('         [reduce using rule 26 (stmt)]
     '('         [reduce using rule 33 (then)]
+    '('         [reduce using rule 36 (exprs)]
     '{'         [reduce using rule 24 (stmts)]
     '{'         [reduce using rule 26 (stmt)]
     '{'         [reduce using rule 33 (then)]
+    '{'         [reduce using rule 36 (exprs)]
     '}'         reduce using rule 24 (stmts)
     '}'         [reduce using rule 26 (stmt)]
     '}'         [reduce using rule 33 (then)]
+    '}'         [reduce using rule 36 (exprs)]
     ';'         reduce using rule 24 (stmts)
     ';'         [reduce using rule 26 (stmt)]
     ';'         [reduce using rule 33 (then)]
-    ';'         [reduce using rule 39 (expr)]
-    ';'         [reduce using rule 48 (identifier)]
-    ';'         [reduce using rule 50 (number)]
+    ';'         [reduce using rule 36 (exprs)]
+    ';'         [reduce using rule 41 (expr)]
+    ';'         [reduce using rule 50 (identifier)]
+    ';'         [reduce using rule 52 (number)]
     '+'         reduce using rule 24 (stmts)
     '+'         [reduce using rule 26 (stmt)]
     '+'         [reduce using rule 33 (then)]
-    '+'         [reduce using rule 39 (expr)]
-    '+'         [reduce using rule 48 (identifier)]
-    '+'         [reduce using rule 50 (number)]
+    '+'         [reduce using rule 36 (exprs)]
+    '+'         [reduce using rule 41 (expr)]
+    '+'         [reduce using rule 50 (identifier)]
+    '+'         [reduce using rule 52 (number)]
     '-'         reduce using rule 24 (stmts)
     '-'         [reduce using rule 26 (stmt)]
     '-'         [reduce using rule 33 (then)]
-    '-'         [reduce using rule 39 (expr)]
-    '-'         [reduce using rule 48 (identifier)]
-    '-'         [reduce using rule 50 (number)]
+    '-'         [reduce using rule 36 (exprs)]
+    '-'         [reduce using rule 41 (expr)]
+    '-'         [reduce using rule 50 (identifier)]
+    '-'         [reduce using rule 52 (number)]
     '*'         reduce using rule 24 (stmts)
     '*'         [reduce using rule 26 (stmt)]
     '*'         [reduce using rule 33 (then)]
-    '*'         [reduce using rule 39 (expr)]
-    '*'         [reduce using rule 48 (identifier)]
-    '*'         [reduce using rule 50 (number)]
+    '*'         [reduce using rule 36 (exprs)]
+    '*'         [reduce using rule 41 (expr)]
+    '*'         [reduce using rule 50 (identifier)]
+    '*'         [reduce using rule 52 (number)]
     '/'         reduce using rule 24 (stmts)
     '/'         [reduce using rule 26 (stmt)]
     '/'         [reduce using rule 33 (then)]
-    '/'         [reduce using rule 39 (expr)]
-    '/'         [reduce using rule 48 (identifier)]
-    '/'         [reduce using rule 50 (number)]
+    '/'         [reduce using rule 36 (exprs)]
+    '/'         [reduce using rule 41 (expr)]
+    '/'         [reduce using rule 50 (identifier)]
+    '/'         [reduce using rule 52 (number)]
     '='         reduce using rule 24 (stmts)
     '='         [reduce using rule 26 (stmt)]
     '='         [reduce using rule 33 (then)]
-    '='         [reduce using rule 39 (expr)]
-    '='         [reduce using rule 48 (identifier)]
-    '='         [reduce using rule 50 (number)]
+    '='         [reduce using rule 36 (exprs)]
+    '='         [reduce using rule 41 (expr)]
+    '='         [reduce using rule 50 (identifier)]
+    '='         [reduce using rule 52 (number)]
     $default    reduce using rule 24 (stmts)
 
     stmts       go to state 75
     stmt        go to state 69
     then        go to state 11
-    expr        go to state 12
-    identifier  go to state 17
-    number      go to state 14
+    exprs       go to state 12
+    expr        go to state 13
+    identifier  go to state 18
+    number      go to state 15
 
 
 State 70
@@ -1799,10 +1859,10 @@ State 70
     IDENTIFIER  shift, and go to state 3
 
     IDENTIFIER  [reduce using rule 20 (variables)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     ';'         reduce using rule 20 (variables)
     ';'         [reduce using rule 22 (variable)]
-    ';'         [reduce using rule 48 (identifier)]
+    ';'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 20 (variables)
 
     variables   go to state 76
@@ -1819,9 +1879,9 @@ State 71
 
 State 72
 
-   38 else_body: '{' expr ';' '}' •
+   40 else_body: '{' expr ';' '}' •
 
-    $default  reduce using rule 38 (else_body)
+    $default  reduce using rule 40 (else_body)
 
 
 State 73
@@ -1832,13 +1892,13 @@ State 73
     '{'         shift, and go to state 59
 
     IDENTIFIER  [reduce using rule 20 (variables)]
-    IDENTIFIER  [reduce using rule 48 (identifier)]
+    IDENTIFIER  [reduce using rule 50 (identifier)]
     '{'         [reduce using rule 20 (variables)]
     '}'         reduce using rule 17 (block)
     '}'         [reduce using rule 20 (variables)]
     ';'         reduce using rule 20 (variables)
     ';'         [reduce using rule 22 (variable)]
-    ';'         [reduce using rule 48 (identifier)]
+    ';'         [reduce using rule 50 (identifier)]
     $default    reduce using rule 20 (variables)
 
     block       go to state 77

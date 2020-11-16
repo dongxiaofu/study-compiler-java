@@ -2,7 +2,11 @@ int main(int argc, char ef, double te) {
     int ab;
     int mf;
     char hi;
-    if (true)ab = 5;
+    if (true) {
+        ab = 5;
+        mf = 89;
+        hi = 94;
+    }
 }
 
 
