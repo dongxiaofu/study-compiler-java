@@ -55,7 +55,7 @@ compilation_unit:{}
 //	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
 //	| IF con EOL compilation_unit			{ dump($2); }
 	| func EOL			{  newCode($1);				}
-	| stmt				{  newCode($1); }
+	| stmt EOL				{  newCode($1); }
 //	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
 	;
@@ -114,8 +114,8 @@ stmts:
 stmt:
 	| then		{ $$ = $1; }
 	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
-	| IF con then EOL		{ $$ = createIfNode($2, $3, NULL); }
-	| IF con then ELSE else_body EOL		{ $$ = createIfNode($2, $3, $5); }
+	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
+	| IF con then ELSE else_body	{ $$ = createIfNode($2, $3, $5); }
 	;
 
 con:							{}
@@ -125,21 +125,21 @@ con:							{}
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
 //
-then:{}
+then:
 	| '{' exprs '}'				{ $$ = $2;  printf("exprs = %s\n", $2); }
-	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
+//	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
+	;
+
+//
+else_body:
+	| '{' exprs '}'				{ $$ = $2;  printf("exprs = %s\n", $2); }
+//	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
 exprs:
 	| expr ';' exprs			{  printExpr($1);  }
 	;
-//
-else_body:{}
-//	| '{' IDENTIFIER '=' NUMBER ';' '}'	{ $$ = createElseBody('=', $2, $4); }
-//	| IDENTIFIER '=' NUMBER	';'		{ $$ = createElseBody('=', $1, $3); }
-	| expr	';' else_body					{ $$ = createElseBody( $1);}
-	| '{' expr ';' '}'				{ $$ = createElseBody( $2);}
-	;
+
 
 expr:	{}
 	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }

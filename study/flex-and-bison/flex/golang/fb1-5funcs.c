@@ -286,6 +286,6 @@ void printExpr(struct ast *expr){
         printExpr(expr->r);
     }else{
         // todo 先简化处理，固定表达式是 ab=5，右边是整型。
-        printf("expr = %s %c %d\n", expr->l->stringValue, expr->nodeType, expr->r->numberValue);
+        printf("\nexpr = %s %c %d\n", expr->l->stringValue, expr->nodeType, expr->r->numberValue);
     }
 }
