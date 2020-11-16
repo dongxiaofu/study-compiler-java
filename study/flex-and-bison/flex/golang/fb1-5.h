@@ -132,4 +132,6 @@ struct ast *createFunction(struct ast *returnType, struct ast *funcName,
                            struct paramNode *paramListHead, struct ast *funcBody);
 
 void init();
+// 连接两个字符串
+char *contactStr(char *str1, char *str2, char *str3);
 

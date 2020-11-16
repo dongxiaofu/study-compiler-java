@@ -37,11 +37,14 @@
 %type <strval> calclist factor IDENTIFIER
 %type <intval> term
 
+%type <strval> tparam test
+
 //%start compilation_unit
 
 %%
 
 compilation_unit:{}
+	| test	EOL			{ printf("test = %s\n", $1); }
 //	| IF	EOL		   	{ printf("if = %s\n", $1);	}
 //	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
 //	| IF con EOL compilation_unit			{ dump($2); }
@@ -49,6 +52,14 @@ compilation_unit:{}
 	| stmt				{  newCode($1); }
 //	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
+	;
+
+test:
+	| tparam ',' test		{ printf("test=%s\n", $1); $$ = contactStr($1, " ", $3); }
+	| tparam			{ $$ = $1; }
+	;
+tparam:
+	| identifier identifier	 { printf("tpamra=%s %s\n", $1->stringValue, $2->stringValue); $$ = contactStr($1->stringValue, " ", $2->stringValue);}
 	;
 
 //*createFunction(char *returnType, char *funcName,
@@ -59,13 +70,13 @@ func:
 
 //void *addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader)
 params:
-	| param ',' params	{ addToParamNodeList($1, paramNodeListHeader); $$ = paramNodeListHeader;}
-	| param			{ addToParamNodeList($1, paramNodeListHeader); $$ = paramNodeListHeader;}
+	| param ',' params	{ $$ = paramNodeListHeader;}
+	| param			{ $$ = paramNodeListHeader;}
 	;
 
 //createParam(char *dataType, char *name)
 param:
-	| identifier identifier		{ $$ = createParam($1, $2); }
+	| identifier identifier	 { struct ast *param = createParam($1, $2);  addToParamNodeList(param, paramNodeListHeader); }
 	;
 
 //createBlock(struct funcVariableNode *funcVariableListHead,

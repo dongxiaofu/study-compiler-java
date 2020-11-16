@@ -261,3 +261,13 @@ void init() {
     funcStmtNodeListHeader = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
     funcStmtNodeCur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
 }
+
+char *contactStr(char *str1, char *str2, char *str3){
+    // todo 不确定，str的长度是否需要加1。
+    // todo 能使用(char *）malloc(*)吗？强制类型转换。
+    int len = sizeof(str1) + sizeof(str2) + sizeof(str3);
+    char *str = malloc( len+ 1);
+    sprintf(str, "%s%s%s", str1, str2, str3);
+    str[len + 1] = '\0';
+    return str;
+}
