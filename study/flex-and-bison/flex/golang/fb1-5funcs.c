@@ -2,7 +2,7 @@
 
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = 'i';
+    node->nodeType = IF;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
     node->con = con;
     node->elseExprNodeListHeader = *elseExprNodeListHeader;
@@ -17,7 +17,7 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
     WhileNode *node = malloc(sizeof(WhileNode));
     struct ast *fatherNode = (struct ast *)node;
-    fatherNode->nodeType = 'w';
+    fatherNode->nodeType = WHILE;
     fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
     fatherNode->con = con;
 
@@ -29,7 +29,7 @@ struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
 struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader){
     DoWhileNode *node = malloc(sizeof(WhileNode));
     struct ast *fatherNode = (struct ast *)node;
-    fatherNode->nodeType = 'd';
+    fatherNode->nodeType = DO_WHILE;
     fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
     fatherNode->con = con;
 
@@ -38,12 +38,13 @@ struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader)
     return fatherNode;
 }
 
+// todo nodeType如何使用enum？
 struct ast *createCon(struct ast *con) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;
     node->con = con;
-    if (con->nodeType == 's' || con->nodeType == 'n') {
-        node->nodeType = 'e';
+    if (con->nodeType == STR || con->nodeType == NUM) {
+        node->nodeType = EXPR;
         node->l = con;
     } else {
         node->l = con->l;
@@ -56,7 +57,7 @@ struct ast *createCon(struct ast *con) {
 // todo then和else都是简化版的二元表达式。
 // todo 未使用
 struct ast *createThen(ExprNode *thenExprNodeListHeader) {
-    int nodeType = 'e';
+    int nodeType = THEN;
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
@@ -68,7 +69,7 @@ struct ast *createThen(ExprNode *thenExprNodeListHeader) {
 // todo 未使用
 struct ast *createElseBody(ExprNode *elseExprNodeListHeader) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = 'e';
+    node->nodeType = ELSE_BODY;
     node->elseExprNodeListHeader = *elseExprNodeListHeader;
 
     elseExprNodeListHeader->next = NULL;
@@ -76,6 +77,7 @@ struct ast *createElseBody(ExprNode *elseExprNodeListHeader) {
     return node;
 }
 
+// todo nodeType如何使用enum？
 struct ast *createExpr(int nodeType, struct ast *l, struct ast *r) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
@@ -86,14 +88,14 @@ struct ast *createExpr(int nodeType, struct ast *l, struct ast *r) {
 
 struct ast *createNum(int num) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = 'n';
+    node->nodeType = NUM;
     node->numberValue = num;
     return node;
 }
 
 struct ast *createStr(char *str) {
     struct ast *node = malloc(sizeof(struct ast));
-    node->nodeType = 's';
+    node->nodeType = STR;
     char *temp = (char *) malloc(sizeof(str) + 1);
     int len = strlen(str);
     // 仅仅以$开头的标识符才去掉首字符
@@ -225,7 +227,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
     // todo 不能使用malloc初始化paramNode,只能如此声明。会出问题吗？
 //    struct paramNode *cur = {NULL, NULL};
     struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
-    cur->param = param;
+    cur->linkedListNode = param;
     cur->next = NULL;
     paramNodeCur->next = cur;
     paramNodeCur = cur;
@@ -239,7 +241,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
 //ExprNode *thenExprNodeCur;
 void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
-    cur->expr = expr;
+    cur->linkedListNode = expr;
     thenExprNodeCur->next = cur;
     thenExprNodeCur = cur;
     if (thenExprNodeListHeader->next == NULL) {
@@ -252,7 +254,7 @@ void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
 //ExprNode *elseExprNodeCur;
 void addToElseExprNodeList(struct ast *expr, ExprNode *elseExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
-    cur->expr = expr;
+    cur->linkedListNode = expr;
     elseExprNodeCur->next = cur;
     elseExprNodeCur = cur;
     if (elseExprNodeListHeader->next == NULL) {
@@ -281,7 +283,7 @@ void addToFuncVariableNodeList(struct ast *variable,
                                struct funcVariableNode *funcVariableListHead) {
     // 用要加入的变量结点构造单链表中的结点，新当前结点
     struct funcVariableNode *cur = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
-    cur->funcVariable = variable;
+    cur->linkedListNode = variable;
     cur->next = NULL;
     // 目前的当前结点，将它指向新的当前结点。
     funcVariableNodeCur->next = cur;
@@ -296,7 +298,7 @@ void addToFuncVariableNodeList(struct ast *variable,
 // todo addToFuncVariableNodeList、addToParamNodeList 逻辑一致，找机会消除重复代码。
 void addToFuncStmtNodeList(struct ast *funcStmtNode) {
     struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
-    cur->funcStmtNode = funcStmtNode;
+    cur->linkedListNode = funcStmtNode;
     cur->next = NULL;
     funcStmtNodeCur->next = cur;
     funcStmtNodeCur = cur;
@@ -317,6 +319,7 @@ struct ast *createVariable(struct ast *dataType, struct ast *variableName) {
 struct ast *createFunction(struct ast *returnType, struct ast *funcName,
                            struct paramNode *paramListHead, struct ast *funcBody) {
     struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = 'f';
     node->returnType = returnType->stringValue;
     node->funcName = funcName->stringValue;
     node->paramListHead = *paramListHead;
@@ -366,4 +369,29 @@ void printExpr(struct ast *expr) {
         // todo 先简化处理，固定表达式是 ab=5，右边是整型。
         printf("\nexpr = %s %c %d\n", expr->l->stringValue, expr->nodeType, expr->r->numberValue);
     }
+}
+
+char *traverseNode(struct ast *node){
+
+    if(node == NULL){
+        return "";
+    }
+
+    if(node->nodeType == NUM){
+        return int2String(node->numberValue);
+    }
+
+    if(node->nodeType == STR){
+        return node->stringValue;
+    }
+
+    if(node->nodeType == IF){
+        char *codeStr1 = traverseNode(node->con);
+        ExprNode thenExprNodeListHeader2 = node->thenExprNodeListHeader;
+        struct singleLinkedListNode  singleLinkedLisThenHeader = (struct singleLinkedListNode *)thenExprNodeListHeader2;
+        char *codeStr2 = traverseLinkedList(singleLinkedLisThenHeader);
+    }
+}
+char *traverseLinkedList(struct singleLinkedListNode header){
+
 }

@@ -2,32 +2,46 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum NODE_TYPE {
+    IF = 'A', WHILE, DO_WHILE, CON, THEN, ELSE_BODY, EXPR, NUM, STR, PLUS = 43, SUB = 45, TIMES = 42, EQUAL = 61
+};
+
 struct param {
     char *paramType;
     char *paramName;
 };
 
-// todo 必须放在ast的前面
-// 表达式结点，如ab=55;
-typedef struct exprNode {
-    struct ast *expr;
-    struct exprNode *next;
-} ExprNode;
+// todo 为了traverseLinkedList传参方便而新建
+struct singleLinkedListNode {
+//    struct ast *linkedListNode;
+};
 
 // 函数表达式结点，整体，如if结构、while结构
 struct funcStmtNode {
-    struct ast *funcStmtNode;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct funcStmtNode *next;
 };
 
+// todo 必须放在ast的前面
+// 暂不改成继承父struct
+// 表达式结点，如ab=55;
+typedef struct exprNode {
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
+    struct exprNode *next;
+} ExprNode;
+
 // 函数参数结点
 struct paramNode {
-    struct ast *param;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct paramNode *next;
 };
 // 函数体变量结点
 struct funcVariableNode {
-    struct ast *funcVariable;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct funcVariableNode *next;
 };
 
@@ -49,7 +63,8 @@ struct str {
 
 // todo 奇怪的struct，用自己定义自己。
 struct ast {
-    int nodeType;
+//    int nodeType;
+    enum NODE_TYPE nodeType;
     struct ast *l;
     struct ast *r;
     struct ast *con;
@@ -59,6 +74,8 @@ struct ast {
     // elseBody
     ExprNode elseExprNodeListHeader;
     // 表达式链表 end
+
+    struct singleLinkedListNode linkedListNode;
 
     // 函数元素 start
     // 返回数据类型。使用stringValue
@@ -90,7 +107,7 @@ struct ast {
 
     // todo struct的最后一个成员可以是变长数组
 //    // 函数元素 。已经用替代方案"链表"实现。
-//    struct param params[0];
+//    struct linkedListNode params[0];
 };
 
 typedef struct whileNode {
@@ -177,4 +194,11 @@ void init();
 char *contactStr(char *str1, char *str2, char *str3);
 
 void printExpr(struct ast *expr);
+
+// 遍历AST start
+char *traverseNode(struct ast *node);
+
+char *traverseLinkedList(struct singleLinkedListNode header);
+// 遍历AST end
+
 

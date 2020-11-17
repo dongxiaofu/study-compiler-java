@@ -89,10 +89,10 @@ Grammar
    11     | identifier identifier '(' params ')' block
 
    12 params: %empty
-   13       | param ',' params
-   14       | param
+   13       | linkedListNode ',' params
+   14       | linkedListNode
 
-   15 param: %empty
+   15 linkedListNode: %empty
    16      | identifier identifier
 
    17 block: %empty
@@ -124,7 +124,7 @@ Grammar
    36        | IF con then ELSE else_body
 
    37 con: %empty
-   38    | expr
+   38    | linkedListNode
 
    39 then: %empty
    40     | '{' then_exprs '}'
@@ -133,18 +133,18 @@ Grammar
    42          | '{' else_exprs '}'
 
    43 then_exprs: %empty
-   44           | expr ';' then_exprs
+   44           | linkedListNode ';' then_exprs
 
    45 else_exprs: %empty
-   46           | expr ';' else_exprs
+   46           | linkedListNode ';' else_exprs
 
-   47 expr: %empty
-   48     | expr '+' expr
-   49     | expr '-' expr
-   50     | expr '*' expr
-   51     | expr '/' expr
-   52     | expr '=' expr
-   53     | '(' expr ')'
+   47 linkedListNode: %empty
+   48     | linkedListNode '+' linkedListNode
+   49     | linkedListNode '-' linkedListNode
+   50     | linkedListNode '*' linkedListNode
+   51     | linkedListNode '/' linkedListNode
+   52     | linkedListNode '=' linkedListNode
+   53     | '(' linkedListNode ')'
    54     | identifier
    55     | number
 
@@ -206,7 +206,7 @@ Nonterminals, with rules where they appear
     params <pn> (34)
         on left: 12 13 14
         on right: 11 13
-    param <node> (35)
+    linkedListNode <node> (35)
         on left: 15 16
         on right: 13 14
     block <node> (36)
@@ -248,7 +248,7 @@ Nonterminals, with rules where they appear
     else_exprs <en> (48)
         on left: 45 46
         on right: 42 46
-    expr <node> (49)
+    linkedListNode <node> (49)
         on left: 47 48 49 50 51 52 53 54 55
         on right: 38 44 46 48 49 50 51 52 53
     identifier <node> (50)
@@ -303,60 +303,60 @@ State 1
     '('         shift, and go to state 15
 
     EOL         reduce using rule 37 (con)
-    EOL         [reduce using rule 47 (expr)]
+    EOL         [reduce using rule 47 (linkedListNode)]
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
     IF          reduce using rule 37 (con)
-    IF          [reduce using rule 47 (expr)]
+    IF          [reduce using rule 47 (linkedListNode)]
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
     ELSE        reduce using rule 37 (con)
-    ELSE        [reduce using rule 47 (expr)]
+    ELSE        [reduce using rule 47 (linkedListNode)]
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
     WHILE       reduce using rule 37 (con)
-    WHILE       [reduce using rule 47 (expr)]
+    WHILE       [reduce using rule 47 (linkedListNode)]
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
     DO          reduce using rule 37 (con)
-    DO          [reduce using rule 47 (expr)]
+    DO          [reduce using rule 47 (linkedListNode)]
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
     IDENTIFIER  [reduce using rule 37 (con)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
     '{'         reduce using rule 37 (con)
-    '{'         [reduce using rule 47 (expr)]
+    '{'         [reduce using rule 47 (linkedListNode)]
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
     '}'         reduce using rule 37 (con)
-    '}'         [reduce using rule 47 (expr)]
+    '}'         [reduce using rule 47 (linkedListNode)]
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
     ';'         reduce using rule 37 (con)
-    ';'         [reduce using rule 47 (expr)]
+    ';'         [reduce using rule 47 (linkedListNode)]
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
     $default    reduce using rule 37 (con)
 
     con         go to state 16
-    expr        go to state 17
+    linkedListNode        go to state 17
     identifier  go to state 18
     number      go to state 19
 
@@ -370,56 +370,56 @@ State 2
     '('         shift, and go to state 15
 
     EOL         reduce using rule 37 (con)
-    EOL         [reduce using rule 47 (expr)]
+    EOL         [reduce using rule 47 (linkedListNode)]
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
     IF          reduce using rule 37 (con)
-    IF          [reduce using rule 47 (expr)]
+    IF          [reduce using rule 47 (linkedListNode)]
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
     WHILE       reduce using rule 37 (con)
-    WHILE       [reduce using rule 47 (expr)]
+    WHILE       [reduce using rule 47 (linkedListNode)]
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
     DO          reduce using rule 37 (con)
-    DO          [reduce using rule 47 (expr)]
+    DO          [reduce using rule 47 (linkedListNode)]
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
     IDENTIFIER  [reduce using rule 37 (con)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
     '{'         reduce using rule 37 (con)
-    '{'         [reduce using rule 47 (expr)]
+    '{'         [reduce using rule 47 (linkedListNode)]
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
     '}'         reduce using rule 37 (con)
-    '}'         [reduce using rule 47 (expr)]
+    '}'         [reduce using rule 47 (linkedListNode)]
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
     ';'         reduce using rule 37 (con)
-    ';'         [reduce using rule 47 (expr)]
+    ';'         [reduce using rule 47 (linkedListNode)]
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
     $default    reduce using rule 37 (con)
 
     con         go to state 20
-    expr        go to state 17
+    linkedListNode        go to state 17
     identifier  go to state 18
     number      go to state 19
 
@@ -522,33 +522,33 @@ State 14
 
 State 15
 
-   53 expr: '(' • expr ')'
+   53 linkedListNode: '(' • linkedListNode ')'
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    ')'       reduce using rule 47 (expr)
+    ')'       reduce using rule 47 (linkedListNode)
     ')'       [reduce using rule 56 (identifier)]
     ')'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
-    expr        go to state 29
+    linkedListNode        go to state 29
     identifier  go to state 18
     number      go to state 19
 
@@ -568,12 +568,12 @@ State 16
 
 State 17
 
-   38 con: expr •
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   38 con: linkedListNode •
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -586,16 +586,16 @@ State 17
 
 State 18
 
-   54 expr: identifier •
+   54 linkedListNode: identifier •
 
-    $default  reduce using rule 54 (expr)
+    $default  reduce using rule 54 (linkedListNode)
 
 
 State 19
 
-   55 expr: number •
+   55 linkedListNode: number •
 
-    $default  reduce using rule 55 (expr)
+    $default  reduce using rule 55 (linkedListNode)
 
 
 State 20
@@ -619,28 +619,28 @@ State 21
     '('         shift, and go to state 15
 
     '}'       reduce using rule 43 (then_exprs)
-    ';'       reduce using rule 47 (expr)
+    ';'       reduce using rule 47 (linkedListNode)
     ';'       [reduce using rule 56 (identifier)]
     ';'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
     then_exprs  go to state 37
-    expr        go to state 38
+    linkedListNode        go to state 38
     identifier  go to state 18
     number      go to state 19
 
@@ -711,12 +711,12 @@ State 28
 
 State 29
 
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
-   53     | '(' expr • ')'
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
+   53     | '(' linkedListNode • ')'
 
     ')'  shift, and go to state 43
     '+'  shift, and go to state 31
@@ -738,300 +738,300 @@ State 30
 
 State 31
 
-   48 expr: expr '+' • expr
+   48 linkedListNode: linkedListNode '+' • linkedListNode
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    EOL         reduce using rule 47 (expr)
+    EOL         reduce using rule 47 (linkedListNode)
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
-    IF          reduce using rule 47 (expr)
+    IF          reduce using rule 47 (linkedListNode)
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
-    ELSE        reduce using rule 47 (expr)
+    ELSE        reduce using rule 47 (linkedListNode)
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
-    WHILE       reduce using rule 47 (expr)
+    WHILE       reduce using rule 47 (linkedListNode)
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
-    DO          reduce using rule 47 (expr)
+    DO          reduce using rule 47 (linkedListNode)
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
-    ')'         reduce using rule 47 (expr)
+    ')'         reduce using rule 47 (linkedListNode)
     ')'         [reduce using rule 56 (identifier)]
     ')'         [reduce using rule 58 (number)]
-    '{'         reduce using rule 47 (expr)
+    '{'         reduce using rule 47 (linkedListNode)
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
-    '}'         reduce using rule 47 (expr)
+    '}'         reduce using rule 47 (linkedListNode)
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
-    ';'         reduce using rule 47 (expr)
+    ';'         reduce using rule 47 (linkedListNode)
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
-    $default    reduce using rule 47 (expr)
+    $default    reduce using rule 47 (linkedListNode)
 
-    expr        go to state 45
+    linkedListNode        go to state 45
     identifier  go to state 18
     number      go to state 19
 
 
 State 32
 
-   49 expr: expr '-' • expr
+   49 linkedListNode: linkedListNode '-' • linkedListNode
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    EOL         reduce using rule 47 (expr)
+    EOL         reduce using rule 47 (linkedListNode)
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
-    IF          reduce using rule 47 (expr)
+    IF          reduce using rule 47 (linkedListNode)
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
-    ELSE        reduce using rule 47 (expr)
+    ELSE        reduce using rule 47 (linkedListNode)
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
-    WHILE       reduce using rule 47 (expr)
+    WHILE       reduce using rule 47 (linkedListNode)
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
-    DO          reduce using rule 47 (expr)
+    DO          reduce using rule 47 (linkedListNode)
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
-    ')'         reduce using rule 47 (expr)
+    ')'         reduce using rule 47 (linkedListNode)
     ')'         [reduce using rule 56 (identifier)]
     ')'         [reduce using rule 58 (number)]
-    '{'         reduce using rule 47 (expr)
+    '{'         reduce using rule 47 (linkedListNode)
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
-    '}'         reduce using rule 47 (expr)
+    '}'         reduce using rule 47 (linkedListNode)
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
-    ';'         reduce using rule 47 (expr)
+    ';'         reduce using rule 47 (linkedListNode)
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
-    $default    reduce using rule 47 (expr)
+    $default    reduce using rule 47 (linkedListNode)
 
-    expr        go to state 46
+    linkedListNode        go to state 46
     identifier  go to state 18
     number      go to state 19
 
 
 State 33
 
-   50 expr: expr '*' • expr
+   50 linkedListNode: linkedListNode '*' • linkedListNode
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    EOL         reduce using rule 47 (expr)
+    EOL         reduce using rule 47 (linkedListNode)
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
-    IF          reduce using rule 47 (expr)
+    IF          reduce using rule 47 (linkedListNode)
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
-    ELSE        reduce using rule 47 (expr)
+    ELSE        reduce using rule 47 (linkedListNode)
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
-    WHILE       reduce using rule 47 (expr)
+    WHILE       reduce using rule 47 (linkedListNode)
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
-    DO          reduce using rule 47 (expr)
+    DO          reduce using rule 47 (linkedListNode)
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
-    ')'         reduce using rule 47 (expr)
+    ')'         reduce using rule 47 (linkedListNode)
     ')'         [reduce using rule 56 (identifier)]
     ')'         [reduce using rule 58 (number)]
-    '{'         reduce using rule 47 (expr)
+    '{'         reduce using rule 47 (linkedListNode)
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
-    '}'         reduce using rule 47 (expr)
+    '}'         reduce using rule 47 (linkedListNode)
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
-    ';'         reduce using rule 47 (expr)
+    ';'         reduce using rule 47 (linkedListNode)
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
-    $default    reduce using rule 47 (expr)
+    $default    reduce using rule 47 (linkedListNode)
 
-    expr        go to state 47
+    linkedListNode        go to state 47
     identifier  go to state 18
     number      go to state 19
 
 
 State 34
 
-   51 expr: expr '/' • expr
+   51 linkedListNode: linkedListNode '/' • linkedListNode
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    EOL         reduce using rule 47 (expr)
+    EOL         reduce using rule 47 (linkedListNode)
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
-    IF          reduce using rule 47 (expr)
+    IF          reduce using rule 47 (linkedListNode)
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
-    ELSE        reduce using rule 47 (expr)
+    ELSE        reduce using rule 47 (linkedListNode)
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
-    WHILE       reduce using rule 47 (expr)
+    WHILE       reduce using rule 47 (linkedListNode)
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
-    DO          reduce using rule 47 (expr)
+    DO          reduce using rule 47 (linkedListNode)
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
-    ')'         reduce using rule 47 (expr)
+    ')'         reduce using rule 47 (linkedListNode)
     ')'         [reduce using rule 56 (identifier)]
     ')'         [reduce using rule 58 (number)]
-    '{'         reduce using rule 47 (expr)
+    '{'         reduce using rule 47 (linkedListNode)
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
-    '}'         reduce using rule 47 (expr)
+    '}'         reduce using rule 47 (linkedListNode)
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
-    ';'         reduce using rule 47 (expr)
+    ';'         reduce using rule 47 (linkedListNode)
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
-    $default    reduce using rule 47 (expr)
+    $default    reduce using rule 47 (linkedListNode)
 
-    expr        go to state 48
+    linkedListNode        go to state 48
     identifier  go to state 18
     number      go to state 19
 
 
 State 35
 
-   52 expr: expr '=' • expr
+   52 linkedListNode: linkedListNode '=' • linkedListNode
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
-    EOL         reduce using rule 47 (expr)
+    EOL         reduce using rule 47 (linkedListNode)
     EOL         [reduce using rule 56 (identifier)]
     EOL         [reduce using rule 58 (number)]
-    IF          reduce using rule 47 (expr)
+    IF          reduce using rule 47 (linkedListNode)
     IF          [reduce using rule 56 (identifier)]
     IF          [reduce using rule 58 (number)]
-    ELSE        reduce using rule 47 (expr)
+    ELSE        reduce using rule 47 (linkedListNode)
     ELSE        [reduce using rule 56 (identifier)]
     ELSE        [reduce using rule 58 (number)]
-    WHILE       reduce using rule 47 (expr)
+    WHILE       reduce using rule 47 (linkedListNode)
     WHILE       [reduce using rule 56 (identifier)]
     WHILE       [reduce using rule 58 (number)]
-    DO          reduce using rule 47 (expr)
+    DO          reduce using rule 47 (linkedListNode)
     DO          [reduce using rule 56 (identifier)]
     DO          [reduce using rule 58 (number)]
-    IDENTIFIER  [reduce using rule 47 (expr)]
+    IDENTIFIER  [reduce using rule 47 (linkedListNode)]
     IDENTIFIER  [reduce using rule 56 (identifier)]
     IDENTIFIER  [reduce using rule 58 (number)]
-    ')'         reduce using rule 47 (expr)
+    ')'         reduce using rule 47 (linkedListNode)
     ')'         [reduce using rule 56 (identifier)]
     ')'         [reduce using rule 58 (number)]
-    '{'         reduce using rule 47 (expr)
+    '{'         reduce using rule 47 (linkedListNode)
     '{'         [reduce using rule 56 (identifier)]
     '{'         [reduce using rule 58 (number)]
-    '}'         reduce using rule 47 (expr)
+    '}'         reduce using rule 47 (linkedListNode)
     '}'         [reduce using rule 56 (identifier)]
     '}'         [reduce using rule 58 (number)]
-    ';'         reduce using rule 47 (expr)
+    ';'         reduce using rule 47 (linkedListNode)
     ';'         [reduce using rule 56 (identifier)]
     ';'         [reduce using rule 58 (number)]
-    '+'         reduce using rule 47 (expr)
+    '+'         reduce using rule 47 (linkedListNode)
     '+'         [reduce using rule 56 (identifier)]
     '+'         [reduce using rule 58 (number)]
-    '-'         reduce using rule 47 (expr)
+    '-'         reduce using rule 47 (linkedListNode)
     '-'         [reduce using rule 56 (identifier)]
     '-'         [reduce using rule 58 (number)]
-    '*'         reduce using rule 47 (expr)
+    '*'         reduce using rule 47 (linkedListNode)
     '*'         [reduce using rule 56 (identifier)]
     '*'         [reduce using rule 58 (number)]
-    '/'         reduce using rule 47 (expr)
+    '/'         reduce using rule 47 (linkedListNode)
     '/'         [reduce using rule 56 (identifier)]
     '/'         [reduce using rule 58 (number)]
-    '='         reduce using rule 47 (expr)
+    '='         reduce using rule 47 (linkedListNode)
     '='         [reduce using rule 56 (identifier)]
     '='         [reduce using rule 58 (number)]
-    $default    reduce using rule 47 (expr)
+    $default    reduce using rule 47 (linkedListNode)
 
-    expr        go to state 49
+    linkedListNode        go to state 49
     identifier  go to state 18
     number      go to state 19
 
@@ -1052,12 +1052,12 @@ State 37
 
 State 38
 
-   44 then_exprs: expr • ';' then_exprs
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   44 then_exprs: linkedListNode • ';' then_exprs
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     ';'  shift, and go to state 51
     '+'  shift, and go to state 31
@@ -1076,28 +1076,28 @@ State 39
     '('         shift, and go to state 15
 
     ';'       reduce using rule 37 (con)
-    ';'       [reduce using rule 47 (expr)]
+    ';'       [reduce using rule 47 (linkedListNode)]
     ';'       [reduce using rule 56 (identifier)]
     ';'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
     con         go to state 52
-    expr        go to state 17
+    linkedListNode        go to state 17
     identifier  go to state 18
     number      go to state 19
 
@@ -1127,23 +1127,23 @@ State 42
     IDENTIFIER  shift, and go to state 4
 
     IDENTIFIER  [reduce using rule 56 (identifier)]
-    ','         reduce using rule 15 (param)
+    ','         reduce using rule 15 (linkedListNode)
     ','         [reduce using rule 56 (identifier)]
     ')'         reduce using rule 12 (params)
-    ')'         [reduce using rule 15 (param)]
+    ')'         [reduce using rule 15 (linkedListNode)]
     ')'         [reduce using rule 56 (identifier)]
     $default    reduce using rule 12 (params)
 
     params      go to state 54
-    param       go to state 55
+    linkedListNode       go to state 55
     identifier  go to state 56
 
 
 State 43
 
-   53 expr: '(' expr ')' •
+   53 linkedListNode: '(' linkedListNode ')' •
 
-    $default  reduce using rule 53 (expr)
+    $default  reduce using rule 53 (linkedListNode)
 
 
 State 44
@@ -1160,12 +1160,12 @@ State 44
 
 State 45
 
-   48 expr: expr • '+' expr
-   48     | expr '+' expr •
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   48     | linkedListNode '+' linkedListNode •
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -1173,22 +1173,22 @@ State 45
     '/'  shift, and go to state 34
     '='  shift, and go to state 35
 
-    '+'       [reduce using rule 48 (expr)]
-    '-'       [reduce using rule 48 (expr)]
-    '*'       [reduce using rule 48 (expr)]
-    '/'       [reduce using rule 48 (expr)]
-    '='       [reduce using rule 48 (expr)]
-    $default  reduce using rule 48 (expr)
+    '+'       [reduce using rule 48 (linkedListNode)]
+    '-'       [reduce using rule 48 (linkedListNode)]
+    '*'       [reduce using rule 48 (linkedListNode)]
+    '/'       [reduce using rule 48 (linkedListNode)]
+    '='       [reduce using rule 48 (linkedListNode)]
+    $default  reduce using rule 48 (linkedListNode)
 
 
 State 46
 
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   49     | expr '-' expr •
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   49     | linkedListNode '-' linkedListNode •
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -1196,22 +1196,22 @@ State 46
     '/'  shift, and go to state 34
     '='  shift, and go to state 35
 
-    '+'       [reduce using rule 49 (expr)]
-    '-'       [reduce using rule 49 (expr)]
-    '*'       [reduce using rule 49 (expr)]
-    '/'       [reduce using rule 49 (expr)]
-    '='       [reduce using rule 49 (expr)]
-    $default  reduce using rule 49 (expr)
+    '+'       [reduce using rule 49 (linkedListNode)]
+    '-'       [reduce using rule 49 (linkedListNode)]
+    '*'       [reduce using rule 49 (linkedListNode)]
+    '/'       [reduce using rule 49 (linkedListNode)]
+    '='       [reduce using rule 49 (linkedListNode)]
+    $default  reduce using rule 49 (linkedListNode)
 
 
 State 47
 
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   50     | expr '*' expr •
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   50     | linkedListNode '*' linkedListNode •
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -1219,22 +1219,22 @@ State 47
     '/'  shift, and go to state 34
     '='  shift, and go to state 35
 
-    '+'       [reduce using rule 50 (expr)]
-    '-'       [reduce using rule 50 (expr)]
-    '*'       [reduce using rule 50 (expr)]
-    '/'       [reduce using rule 50 (expr)]
-    '='       [reduce using rule 50 (expr)]
-    $default  reduce using rule 50 (expr)
+    '+'       [reduce using rule 50 (linkedListNode)]
+    '-'       [reduce using rule 50 (linkedListNode)]
+    '*'       [reduce using rule 50 (linkedListNode)]
+    '/'       [reduce using rule 50 (linkedListNode)]
+    '='       [reduce using rule 50 (linkedListNode)]
+    $default  reduce using rule 50 (linkedListNode)
 
 
 State 48
 
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   51     | expr '/' expr •
-   52     | expr • '=' expr
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   51     | linkedListNode '/' linkedListNode •
+   52     | linkedListNode • '=' linkedListNode
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -1242,22 +1242,22 @@ State 48
     '/'  shift, and go to state 34
     '='  shift, and go to state 35
 
-    '+'       [reduce using rule 51 (expr)]
-    '-'       [reduce using rule 51 (expr)]
-    '*'       [reduce using rule 51 (expr)]
-    '/'       [reduce using rule 51 (expr)]
-    '='       [reduce using rule 51 (expr)]
-    $default  reduce using rule 51 (expr)
+    '+'       [reduce using rule 51 (linkedListNode)]
+    '-'       [reduce using rule 51 (linkedListNode)]
+    '*'       [reduce using rule 51 (linkedListNode)]
+    '/'       [reduce using rule 51 (linkedListNode)]
+    '='       [reduce using rule 51 (linkedListNode)]
+    $default  reduce using rule 51 (linkedListNode)
 
 
 State 49
 
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
-   52     | expr '=' expr •
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
+   52     | linkedListNode '=' linkedListNode •
 
     '+'  shift, and go to state 31
     '-'  shift, and go to state 32
@@ -1265,12 +1265,12 @@ State 49
     '/'  shift, and go to state 34
     '='  shift, and go to state 35
 
-    '+'       [reduce using rule 52 (expr)]
-    '-'       [reduce using rule 52 (expr)]
-    '*'       [reduce using rule 52 (expr)]
-    '/'       [reduce using rule 52 (expr)]
-    '='       [reduce using rule 52 (expr)]
-    $default  reduce using rule 52 (expr)
+    '+'       [reduce using rule 52 (linkedListNode)]
+    '-'       [reduce using rule 52 (linkedListNode)]
+    '*'       [reduce using rule 52 (linkedListNode)]
+    '/'       [reduce using rule 52 (linkedListNode)]
+    '='       [reduce using rule 52 (linkedListNode)]
+    $default  reduce using rule 52 (linkedListNode)
 
 
 State 50
@@ -1282,35 +1282,35 @@ State 50
 
 State 51
 
-   44 then_exprs: expr ';' • then_exprs
+   44 then_exprs: linkedListNode ';' • then_exprs
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
     '}'       reduce using rule 43 (then_exprs)
-    ';'       reduce using rule 47 (expr)
+    ';'       reduce using rule 47 (linkedListNode)
     ';'       [reduce using rule 56 (identifier)]
     ';'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
     then_exprs  go to state 59
-    expr        go to state 38
+    linkedListNode        go to state 38
     identifier  go to state 18
     number      go to state 19
 
@@ -1338,8 +1338,8 @@ State 54
 
 State 55
 
-   13 params: param • ',' params
-   14       | param •
+   13 params: linkedListNode • ',' params
+   14       | linkedListNode •
 
     ','  shift, and go to state 62
 
@@ -1348,7 +1348,7 @@ State 55
 
 State 56
 
-   16 param: identifier • identifier
+   16 linkedListNode: identifier • identifier
 
     IDENTIFIER  shift, and go to state 4
 
@@ -1366,28 +1366,28 @@ State 57
     '('         shift, and go to state 15
 
     '}'       reduce using rule 45 (else_exprs)
-    ';'       reduce using rule 47 (expr)
+    ';'       reduce using rule 47 (linkedListNode)
     ';'       [reduce using rule 56 (identifier)]
     ';'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
     else_exprs  go to state 64
-    expr        go to state 65
+    linkedListNode        go to state 65
     identifier  go to state 18
     number      go to state 19
 
@@ -1401,7 +1401,7 @@ State 58
 
 State 59
 
-   44 then_exprs: expr ';' then_exprs •
+   44 then_exprs: linkedListNode ';' then_exprs •
 
     $default  reduce using rule 44 (then_exprs)
 
@@ -1438,28 +1438,28 @@ State 61
 
 State 62
 
-   13 params: param ',' • params
+   13 params: linkedListNode ',' • params
 
     IDENTIFIER  shift, and go to state 4
 
     IDENTIFIER  [reduce using rule 56 (identifier)]
-    ','         reduce using rule 15 (param)
+    ','         reduce using rule 15 (linkedListNode)
     ','         [reduce using rule 56 (identifier)]
     ')'         reduce using rule 12 (params)
-    ')'         [reduce using rule 15 (param)]
+    ')'         [reduce using rule 15 (linkedListNode)]
     ')'         [reduce using rule 56 (identifier)]
     $default    reduce using rule 12 (params)
 
     params      go to state 71
-    param       go to state 55
+    linkedListNode       go to state 55
     identifier  go to state 56
 
 
 State 63
 
-   16 param: identifier identifier •
+   16 linkedListNode: identifier identifier •
 
-    $default  reduce using rule 16 (param)
+    $default  reduce using rule 16 (linkedListNode)
 
 
 State 64
@@ -1471,12 +1471,12 @@ State 64
 
 State 65
 
-   46 else_exprs: expr • ';' else_exprs
-   48 expr: expr • '+' expr
-   49     | expr • '-' expr
-   50     | expr • '*' expr
-   51     | expr • '/' expr
-   52     | expr • '=' expr
+   46 else_exprs: linkedListNode • ';' else_exprs
+   48 linkedListNode: linkedListNode • '+' linkedListNode
+   49     | linkedListNode • '-' linkedListNode
+   50     | linkedListNode • '*' linkedListNode
+   51     | linkedListNode • '/' linkedListNode
+   52     | linkedListNode • '=' linkedListNode
 
     ';'  shift, and go to state 73
     '+'  shift, and go to state 31
@@ -1588,7 +1588,7 @@ State 70
 
 State 71
 
-   13 params: param ',' params •
+   13 params: linkedListNode ',' params •
 
     $default  reduce using rule 13 (params)
 
@@ -1602,35 +1602,35 @@ State 72
 
 State 73
 
-   46 else_exprs: expr ';' • else_exprs
+   46 else_exprs: linkedListNode ';' • else_exprs
 
     NUMBER      shift, and go to state 14
     IDENTIFIER  shift, and go to state 4
     '('         shift, and go to state 15
 
     '}'       reduce using rule 45 (else_exprs)
-    ';'       reduce using rule 47 (expr)
+    ';'       reduce using rule 47 (linkedListNode)
     ';'       [reduce using rule 56 (identifier)]
     ';'       [reduce using rule 58 (number)]
-    '+'       reduce using rule 47 (expr)
+    '+'       reduce using rule 47 (linkedListNode)
     '+'       [reduce using rule 56 (identifier)]
     '+'       [reduce using rule 58 (number)]
-    '-'       reduce using rule 47 (expr)
+    '-'       reduce using rule 47 (linkedListNode)
     '-'       [reduce using rule 56 (identifier)]
     '-'       [reduce using rule 58 (number)]
-    '*'       reduce using rule 47 (expr)
+    '*'       reduce using rule 47 (linkedListNode)
     '*'       [reduce using rule 56 (identifier)]
     '*'       [reduce using rule 58 (number)]
-    '/'       reduce using rule 47 (expr)
+    '/'       reduce using rule 47 (linkedListNode)
     '/'       [reduce using rule 56 (identifier)]
     '/'       [reduce using rule 58 (number)]
-    '='       reduce using rule 47 (expr)
+    '='       reduce using rule 47 (linkedListNode)
     '='       [reduce using rule 56 (identifier)]
     '='       [reduce using rule 58 (number)]
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 47 (linkedListNode)
 
     else_exprs  go to state 79
-    expr        go to state 65
+    linkedListNode        go to state 65
     identifier  go to state 18
     number      go to state 19
 
@@ -1796,7 +1796,7 @@ State 78
 
 State 79
 
-   46 else_exprs: expr ';' else_exprs •
+   46 else_exprs: linkedListNode ';' else_exprs •
 
     $default  reduce using rule 46 (else_exprs)
 

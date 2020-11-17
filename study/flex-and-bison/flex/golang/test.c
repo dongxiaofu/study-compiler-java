@@ -82,6 +82,13 @@ int main(int argc) {
     }
 }##
 
+int main(int ab, int df){
+    if(true){
+        char you;
+        char ok;
+    }
+}
+
 
 
 
