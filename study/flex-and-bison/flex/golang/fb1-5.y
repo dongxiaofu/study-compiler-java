@@ -37,6 +37,7 @@ int yylex ();
 //%type <str1> expr
 %type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt
 %type <node> param  variable identifier number
+%type <node> for_stmt for_con for_body for_body_exprs for_con_expr for_con_init for_con_step
 %type <pn> params
 %type <fvn> variables
 %type <en> then_exprs else_exprs else_body then
@@ -118,6 +119,7 @@ stmt:
 	| if_stmt			{ $$ = $1; }
 	| while_stmt			{ $$ = $1; }
 	| do_while_stmt			{ $$ = $1; }
+	| for_stmt			{ $$ = $1; }
 	;
 
 while_stmt:
@@ -131,6 +133,26 @@ do_while_stmt:
 if_stmt:
 	| IF con then			{ struct ast *stmt = createIfNode($2, $3, NULL); addToFuncStmtNodeList(stmt); }
 	| IF con then ELSE else_body	{ struct ast *stmt  = createIfNode($2, $3, $5); addToFuncStmtNodeList(stmt); }
+	;
+
+for_stmt:
+	| FOR '(' for_con ')' for_body		{ struct ast *stmt = (struct ast *)createDoWhileNode($4, $2); addToFuncStmtNodeList(stmt); }
+	;
+
+for_con:
+	| for_con_init  ';' for_con_expr  ';' for_con_step 	{ }
+	;
+
+for_con_init:
+	| expr			{}
+	;
+
+for_con_expr:
+	| expr			{}
+	;
+
+for_con_step:
+	| expr			{ }
 	;
 
 con:							{}
@@ -151,6 +173,11 @@ else_body:
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
+for_body:
+	| '{' for_body_exprs '}'				{ $$ = elseExprNodeListHeader; }
+//	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
+	;
+
 then_exprs:
 	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
 	;
@@ -159,6 +186,9 @@ else_exprs:
 	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
 	;
 
+for_body_exprs:
+	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
+	;
 
 expr:	{}
 	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
