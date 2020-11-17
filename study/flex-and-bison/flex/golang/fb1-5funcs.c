@@ -26,6 +26,18 @@ struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
     return fatherNode;
 }
 
+struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader){
+    DoWhileNode *node = malloc(sizeof(WhileNode));
+    struct ast *fatherNode = (struct ast *)node;
+    fatherNode->nodeType = 'd';
+    fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
+    fatherNode->con = con;
+
+    thenExprNodeListHeader->next = NULL;
+
+    return fatherNode;
+}
+
 struct ast *createCon(struct ast *con) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;

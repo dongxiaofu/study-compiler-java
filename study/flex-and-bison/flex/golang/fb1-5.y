@@ -30,12 +30,12 @@ int yylex ();
 %token  NUMBER
 %token ADD SUB MUL DIV ABS
 %token  EOL
-%token OP CP IF ELSE WHILE
+%token OP CP IF ELSE WHILE DO
 %token COMMENT
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <node> con expr compilation_unit stmt func block while_stmt if_stmt
+%type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt
 %type <node> param  variable identifier number
 %type <pn> params
 %type <fvn> variables
@@ -117,10 +117,15 @@ stmts:
 stmt:
 	| if_stmt			{ $$ = $1; }
 	| while_stmt			{ $$ = $1; }
+	| do_while_stmt			{ $$ = $1; }
 	;
 
 while_stmt:
 	| WHILE con then		{ struct ast *stmt = (struct ast *)createWhileNode($2, $3); addToFuncStmtNodeList(stmt); }
+	;
+
+do_while_stmt:
+	| DO then WHILE con ';'		{ struct ast *stmt = (struct ast *)createDoWhileNode($4, $2); addToFuncStmtNodeList(stmt); }
 	;
 
 if_stmt:

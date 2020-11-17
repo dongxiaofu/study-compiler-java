@@ -66,8 +66,9 @@ extern int yydebug;
     IF = 267,                      /* IF  */
     ELSE = 268,                    /* ELSE  */
     WHILE = 269,                   /* WHILE  */
-    COMMENT = 270,                 /* COMMENT  */
-    IDENTIFIER = 271               /* IDENTIFIER  */
+    DO = 270,                      /* DO  */
+    COMMENT = 271,                 /* COMMENT  */
+    IDENTIFIER = 272               /* IDENTIFIER  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -87,8 +88,9 @@ extern int yydebug;
 #define IF 267
 #define ELSE 268
 #define WHILE 269
-#define COMMENT 270
-#define IDENTIFIER 271
+#define DO 270
+#define COMMENT 271
+#define IDENTIFIER 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -107,7 +109,7 @@ union YYSTYPE
 //	ExprNode *en;
 
 
-#line 111 "y.tab.h"
+#line 113 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

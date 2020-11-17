@@ -98,6 +98,11 @@ typedef struct whileNode {
 
 } WhileNode;
 
+typedef struct doWhileNode {
+    struct ast node;
+
+} DoWhileNode;
+
 struct paramNode *paramNodeListHeader;
 struct paramNode *paramNodeCur;
 
@@ -116,6 +121,8 @@ ExprNode *elseExprNodeCur;
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader);
 
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader);
+
+struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader);
 
 struct ast *createCon(struct ast *con);
 
