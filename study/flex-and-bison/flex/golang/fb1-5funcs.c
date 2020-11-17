@@ -13,6 +13,19 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
     return node;
 }
 
+// todo 用"继承"struct的作用是，能不让father struct成员量太杂太多。
+struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
+    WhileNode *node = malloc(sizeof(WhileNode));
+    struct ast *fatherNode = (struct ast *)node;
+    fatherNode->nodeType = 'w';
+    fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
+    fatherNode->con = con;
+
+    thenExprNodeListHeader->next = NULL;
+
+    return fatherNode;
+}
+
 struct ast *createCon(struct ast *con) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;
@@ -269,7 +282,7 @@ void addToFuncVariableNodeList(struct ast *variable,
 }
 
 // todo addToFuncVariableNodeList、addToParamNodeList 逻辑一致，找机会消除重复代码。
-void addToFuncStmtNodeList(struct ast *funcStmtNode ) {
+void addToFuncStmtNodeList(struct ast *funcStmtNode) {
     struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
     cur->funcStmtNode = funcStmtNode;
     cur->next = NULL;

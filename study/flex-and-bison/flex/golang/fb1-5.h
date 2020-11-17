@@ -93,6 +93,11 @@ struct ast {
 //    struct param params[0];
 };
 
+typedef struct whileNode {
+    struct ast node;
+
+} WhileNode;
+
 struct paramNode *paramNodeListHeader;
 struct paramNode *paramNodeCur;
 
@@ -109,6 +114,8 @@ ExprNode *elseExprNodeListHeader;
 ExprNode *elseExprNodeCur;
 
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader);
+
+struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader);
 
 struct ast *createCon(struct ast *con);
 
