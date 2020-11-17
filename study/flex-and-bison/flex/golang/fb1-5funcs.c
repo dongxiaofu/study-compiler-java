@@ -3,9 +3,13 @@
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = 'i';
-    node->thenExprNodeListHeader = thenExprNodeListHeader;
+    node->thenExprNodeListHeader = *thenExprNodeListHeader;
     node->con = con;
-    node->elseExprNodeListHeader = elseExprNodeListHeader;
+    node->elseExprNodeListHeader = *elseExprNodeListHeader;
+    // todo 尝试一下
+    thenExprNodeListHeader->next = NULL;
+    elseExprNodeListHeader->next = NULL;
+
     return node;
 }
 
@@ -30,14 +34,20 @@ struct ast *createThen(ExprNode *thenExprNodeListHeader) {
     int nodeType = 'e';
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = nodeType;
-    node->thenExprNodeListHeader = thenExprNodeListHeader;
+    node->thenExprNodeListHeader = *thenExprNodeListHeader;
+
+    thenExprNodeListHeader->next = NULL;
     return node;
 }
+
 // todo 未使用
 struct ast *createElseBody(ExprNode *elseExprNodeListHeader) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = 'e';
-    node->elseExprNodeListHeader = elseExprNodeListHeader;
+    node->elseExprNodeListHeader = *elseExprNodeListHeader;
+
+    elseExprNodeListHeader->next = NULL;
+
     return node;
 }
 
@@ -200,7 +210,6 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
     return;
 }
 
-
 //ExprNode *thenExprNodeListHeader;
 //ExprNode *thenExprNodeCur;
 void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
@@ -231,8 +240,13 @@ struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
     struct ast *node = malloc(sizeof(struct ast));
     // todo 后期优化。在Java，结点类名自身就是识别符号
     node->nodeType = 'f';
-    node->funcVariableListHead = funcVariableNodeListHeader;
-    node->funcStmtsListHead = funcStmtNodeListHeader;
+    node->funcVariableListHead = *funcVariableNodeListHeader;
+    node->funcStmtsListHead = *funcStmtNodeListHeader;
+
+    // todo 行不通。执行设置为NULL后，node的对应成员的值也是NULL。
+    funcVariableNodeListHeader->next = NULL;
+    funcStmtNodeListHeader->next = NULL;
+
     return node;
 }
 
@@ -255,15 +269,14 @@ void addToFuncVariableNodeList(struct ast *variable,
 }
 
 // todo addToFuncVariableNodeList、addToParamNodeList 逻辑一致，找机会消除重复代码。
-void addToFuncStmtNodeList(struct ast *funcStmtNode,
-                           struct funcStmtNode *funcStmtsListHead) {
+void addToFuncStmtNodeList(struct ast *funcStmtNode ) {
     struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
     cur->funcStmtNode = funcStmtNode;
     cur->next = NULL;
     funcStmtNodeCur->next = cur;
     funcStmtNodeCur = cur;
-    if (funcStmtsListHead->next == NULL) {
-        funcStmtsListHead->next = funcStmtNodeCur;
+    if (funcStmtNodeListHeader->next == NULL) {
+        funcStmtNodeListHeader->next = funcStmtNodeCur;
     }
 }
 
@@ -275,13 +288,16 @@ struct ast *createVariable(struct ast *dataType, struct ast *variableName) {
     return variable;
 }
 
+// todo 这个文件里的参数、结构体等大部分都使用指针，能不能不要指针？我不愿现在去测试这点。
 struct ast *createFunction(struct ast *returnType, struct ast *funcName,
                            struct paramNode *paramListHead, struct ast *funcBody) {
     struct ast *node = malloc(sizeof(struct ast));
     node->returnType = returnType->stringValue;
     node->funcName = funcName->stringValue;
-    node->paramListHead = paramListHead;
+    node->paramListHead = *paramListHead;
     node->funcBody = funcBody;
+
+    paramListHead->next = NULL;
 
     return node;
 }
@@ -294,6 +310,7 @@ void init() {
     funcVariableNodeCur = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
 
     funcStmtNodeListHeader = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
+    funcStmtNodeListHeader->next = NULL;
     funcStmtNodeCur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
 
     thenExprNodeListHeader = (ExprNode *) malloc(sizeof(ExprNode));

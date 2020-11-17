@@ -14,6 +14,39 @@ typedef struct exprNode {
     struct exprNode *next;
 } ExprNode;
 
+// 函数表达式结点，整体，如if结构、while结构
+struct funcStmtNode {
+    struct ast *funcStmtNode;
+    struct funcStmtNode *next;
+};
+
+// 函数参数结点
+struct paramNode {
+    struct ast *param;
+    struct paramNode *next;
+};
+// 函数体变量结点
+struct funcVariableNode {
+    struct ast *funcVariable;
+    struct funcVariableNode *next;
+};
+
+struct ifNode {
+    struct ast *thenBody;
+    struct ast *con;
+    struct ast *elseBody;
+};
+
+struct number {
+    int nodeType;
+    int value;
+};
+
+struct str {
+    char nodeType;
+    char *value;
+};
+
 // todo 奇怪的struct，用自己定义自己。
 struct ast {
     int nodeType;
@@ -22,9 +55,9 @@ struct ast {
     struct ast *con;
     // 表达式链表 start
     // thenBody
-    ExprNode *thenExprNodeListHeader;
+    ExprNode thenExprNodeListHeader;
     // elseBody
-    ExprNode *elseExprNodeListHeader;
+    ExprNode elseExprNodeListHeader;
     // 表达式链表 end
 
     // 函数元素 start
@@ -32,7 +65,7 @@ struct ast {
     char *returnType;
     char *funcName;
     // 用链表来存储
-    struct paramNode *paramListHead;
+    struct paramNode paramListHead;
     struct ast *funcBody;
     // 函数名。使用stringValue
     // 参数。多个参数、可变参数怎么存储？
@@ -49,8 +82,8 @@ struct ast {
 
     // 函数体
     // 函数体中，变量和表达式交叉排列，怎么存储？
-    struct funcVariableNode *funcVariableListHead;
-    struct funcStmtNode *funcStmtsListHead;
+    struct funcVariableNode funcVariableListHead;
+    struct funcStmtNode funcStmtsListHead;
 
     int numberValue;
     char *stringValue;
@@ -58,38 +91,6 @@ struct ast {
     // todo struct的最后一个成员可以是变长数组
 //    // 函数元素 。已经用替代方案"链表"实现。
 //    struct param params[0];
-};
-// 函数参数结点
-struct paramNode {
-    struct ast *param;
-    struct paramNode *next;
-};
-// 函数体变量结点
-struct funcVariableNode {
-    struct ast *funcVariable;
-    struct funcVariableNode *next;
-};
-// 函数表达式结点，整体，如if结构、while结构
-struct funcStmtNode {
-    struct ast *funcStmtNode;
-    struct funcStmtNode *next;
-};
-
-
-struct ifNode {
-    struct ast *thenBody;
-    struct ast *con;
-    struct ast *elseBody;
-};
-
-struct number {
-    int nodeType;
-    int value;
-};
-
-struct str {
-    char nodeType;
-    char *value;
 };
 
 struct paramNode *paramNodeListHeader;
@@ -149,8 +150,7 @@ struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
 void addToFuncVariableNodeList(struct ast *variable,
                                struct funcVariableNode *funcVariableListHead);
 
-void addToFuncStmtNodeList(struct ast *funcStmtNode,
-                           struct funcStmtNode *funcStmtsListHead);
+void addToFuncStmtNodeList(struct ast *funcStmtNode);
 
 struct ast *createVariable(struct ast *dataType, struct ast *variableName);
 

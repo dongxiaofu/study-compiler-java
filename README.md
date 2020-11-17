@@ -42,6 +42,7 @@ p *thenExprNodeListHeader->next->next->next->expr->l
 
 p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->thenExprNodeListHeader->next->next->expr->l
 p  *root->funcBody->funcStmtsListHead->next->funcStmtNode->elseExprNodeListHeader->next->next->next->expr->l
+p  *root->funcBody->funcStmtsListHead->next->next->funcStmtNode->thenExprNodeListHeader->next->next->expr->l
 
 
 

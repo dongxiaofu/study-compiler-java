@@ -92,7 +92,7 @@ param:
 //                        struct funcStmtNode *funcStmtsListHead)
 block:
 //	| '{' block '}'			{ $$ = $2; }
-	|  variables stmts block 	{ $$ = createBlock(funcVariableNodeListHeader, funcStmtNodeListHeader); }
+	|  variables stmts block 	{ $$ = createBlock(funcVariableNodeListHeader, $2); }
 	|  '{' variables stmts block '}'	{ $$ = createBlock(funcVariableNodeListHeader, funcStmtNodeListHeader); }
 	;
 
@@ -111,14 +111,13 @@ variable:
 //addToFuncStmtNodeList(struct ast *funcStmtNode,
 //                           struct funcStmtNode *funcStmtsListHead)
 stmts:
-	| stmt stmts			{ addToFuncStmtNodeList($1, funcStmtNodeListHeader); }
+	| stmt stmts			{ $$ =  funcStmtNodeListHeader; }
 	;
 
 stmt:
 //	| then		{ $$ = $1; }
-	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
-	| IF con then			{ $$ = createIfNode($2, $3, NULL); }
-	| IF con then ELSE else_body	{ $$ = createIfNode($2, $3, $5); }
+	| IF con then			{ struct ast *stmt = createIfNode($2, $3, NULL); addToFuncStmtNodeList(stmt);}
+	| IF con then ELSE else_body	{ struct ast *stmt  = createIfNode($2, $3, $5); addToFuncStmtNodeList(stmt);}
 	;
 
 con:							{}

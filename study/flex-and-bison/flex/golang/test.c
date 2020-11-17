@@ -4,12 +4,21 @@ int main(int argc, char ef, double te) {
     char hi;
     if (true) {
         ab = 5;
-        mf = 89;
+        test_mf = 89;
         hi = 94;
     }else{
         _ab = 5;
         mf_ = 89;
         h_i = 94;
+    }
+    if (false) {
+        ab_ = 5;
+        mf_ = 89;
+        hi_ = 94;
+    }else{
+        _ab__ = 5;
+        mf___ = 89;
+        h_i__ = 94;
     }
 }##
 
