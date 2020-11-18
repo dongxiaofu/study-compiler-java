@@ -1,10 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 enum NODE_TYPE {
-    IF = 'A', WHILE, DO_WHILE, CON, THEN, ELSE_BODY, EXPR, NUM, STR, PLUS = 43, SUB = 45, TIMES = 42, EQUAL = 61
+    IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
+    ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE,
+    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE,
+    PLUS_NODE_TYPE = 43,
+    SUB_NODE_TYPE = 45, TIMES_NODE_TYPE = 42, EQUAL_NODE_TYPE = 61,
+
 };
+
+// todo EXPR_HEADER 等不能重复，它们的值能重复吗？
+enum HEADER_TYPE {
+    FUNC_STMT_HEADER = 'A', EXPR_HEADER, PARAM_HEADER, FUNC_VARIABLE_HEADER
+};
+
+enum _BOOL {
+    FALSE = 0, TRUE
+};
+
 
 struct param {
     char *paramType;
@@ -44,6 +60,13 @@ struct funcVariableNode {
     struct ast *linkedListNode;
     struct funcVariableNode *next;
 };
+// todo 方便在traverseLinkedList使用一个参数
+typedef union header {
+    struct funcStmtNode funcStmtNode;
+    ExprNode exprNode;
+    struct paramNode paramNode;
+    struct funcVariableNode funcVariableNode;
+} SINGLE_LINKED_LIST_NODE_HEADER;
 
 struct ifNode {
     struct ast *thenBody;
@@ -198,7 +221,17 @@ void printExpr(struct ast *expr);
 // 遍历AST start
 char *traverseNode(struct ast *node);
 
-char *traverseLinkedList(struct singleLinkedListNode header);
+char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType);
 // 遍历AST end
+
+// 优化版拼接字符串函数
+char *contactStrBetter(int num, ...);
+
+// 遍历ifNode
+char *traverseIfNode(const struct ast *node);
+
+char *traverseExprNode(const struct ast *node);
+
+enum _BOOL isExprNode(int nodeType);
 
 

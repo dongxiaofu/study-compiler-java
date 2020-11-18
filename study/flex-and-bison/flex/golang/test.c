@@ -83,11 +83,45 @@ int main(int argc) {
 }##
 
 int main(int ab, int df){
+    int ab;
+    int mf;
+    char hi;
     if(true){
         char you;
         char ok;
     }
-}
+}##
+
+
+
+int main(int argc, char ef, double te) {
+    int ab;
+    int mf;
+    char hi;
+    if (true) {
+        ab = 5;
+        test_mf = 89;
+        hi = 94;
+    }else{
+        _ab = 5;
+        mf_ = 89;
+        h_i = 94;
+    }
+}##
+
+int main(int argc, char ef, double te) {
+    int ab;
+    int mf;
+    char hi;
+    if (true) {
+        ab = 5;
+        test_mf = 89;
+        hi = 94;
+    }
+    while(ab = 7){
+        test = 5;
+    }
+}##
 
 
 
