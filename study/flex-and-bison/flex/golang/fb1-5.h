@@ -1,35 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
+
+enum NODE_TYPE {
+    IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
+    ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE,
+    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE,
+    PLUS_NODE_TYPE = 43,
+    SUB_NODE_TYPE = 45, TIMES_NODE_TYPE = 42, EQUAL_NODE_TYPE = 61,
+
+};
+
+// todo EXPR_HEADER 等不能重复，它们的值能重复吗？
+enum HEADER_TYPE {
+    FUNC_STMT_HEADER = 'A', EXPR_HEADER, PARAM_HEADER, FUNC_VARIABLE_HEADER
+};
+
+enum _BOOL {
+    FALSE = 0, TRUE
+};
+
 
 struct param {
     char *paramType;
     char *paramName;
 };
 
-// todo 必须放在ast的前面
-// 表达式结点，如ab=55;
-typedef struct exprNode {
-    struct ast *expr;
-    struct exprNode *next;
-} ExprNode;
+// todo 为了traverseLinkedList传参方便而新建
+struct singleLinkedListNode {
+//    struct ast *linkedListNode;
+};
 
 // 函数表达式结点，整体，如if结构、while结构
 struct funcStmtNode {
-    struct ast *funcStmtNode;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct funcStmtNode *next;
 };
 
+// todo 必须放在ast的前面
+// 暂不改成继承父struct
+// 表达式结点，如ab=55;
+typedef struct exprNode {
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
+    struct exprNode *next;
+} ExprNode;
+
 // 函数参数结点
 struct paramNode {
-    struct ast *param;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct paramNode *next;
 };
 // 函数体变量结点
 struct funcVariableNode {
-    struct ast *funcVariable;
+    struct singleLinkedListNode parent;
+    struct ast *linkedListNode;
     struct funcVariableNode *next;
 };
+// todo 方便在traverseLinkedList使用一个参数
+typedef union header {
+    struct funcStmtNode funcStmtNode;
+    ExprNode exprNode;
+    struct paramNode paramNode;
+    struct funcVariableNode funcVariableNode;
+} SINGLE_LINKED_LIST_NODE_HEADER;
 
 struct ifNode {
     struct ast *thenBody;
@@ -49,7 +86,8 @@ struct str {
 
 // todo 奇怪的struct，用自己定义自己。
 struct ast {
-    int nodeType;
+//    int nodeType;
+    enum NODE_TYPE nodeType;
     struct ast *l;
     struct ast *r;
     struct ast *con;
@@ -59,6 +97,8 @@ struct ast {
     // elseBody
     ExprNode elseExprNodeListHeader;
     // 表达式链表 end
+
+    struct singleLinkedListNode linkedListNode;
 
     // 函数元素 start
     // 返回数据类型。使用stringValue
@@ -90,7 +130,7 @@ struct ast {
 
     // todo struct的最后一个成员可以是变长数组
 //    // 函数元素 。已经用替代方案"链表"实现。
-//    struct param params[0];
+//    struct linkedListNode params[0];
 };
 
 typedef struct whileNode {
@@ -177,4 +217,21 @@ void init();
 char *contactStr(char *str1, char *str2, char *str3);
 
 void printExpr(struct ast *expr);
+
+// 遍历AST start
+char *traverseNode(struct ast *node);
+
+char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType);
+// 遍历AST end
+
+// 优化版拼接字符串函数
+char *contactStrBetter(int num, ...);
+
+// 遍历ifNode
+char *traverseIfNode(const struct ast *node);
+
+char *traverseExprNode(const struct ast *node);
+
+enum _BOOL isExprNode(int nodeType);
+
 

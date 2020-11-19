@@ -19,7 +19,7 @@ public class Adder {
 
 	static public long evaluate(String src) throws ParseException{
 		Reader reader = new StringReader(src);
-		return new Adder(reader).expr();
+		return new Adder(reader).linkedListNode();
 	}
 }
 PARSER_END(Adder)
@@ -37,7 +37,7 @@ TOKEN : {
 <INTEGER:(["0"-"9"])+>
 }
 
-long expr():
+long linkedListNode():
 {
 		Token x,y;
 }
