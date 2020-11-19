@@ -46,4 +46,4 @@ p  *root->funcBody->funcStmtsListHead->next->next->funcStmtNode->thenExprNodeLis
 
 
 
-
+增加gas code
