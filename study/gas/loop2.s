@@ -5,29 +5,24 @@ str:
 .section .text
 .global _start
 _start:
-    movl $30, %ecx
+    movl $3, %ecx
     movl $0, %eax
     jcxz done
 loop1:
-    movl %ecx, %edi
+    pushl %ecx
+    pushl %eax
+
     pushl %ecx
     pushl $str
     call printf
-    # call write start
-    #movl $str, %ecx
-    #movl $12, %edx
-    #movl $1, %ebx
-    #movl $4, %eax
-    #int $0x80
-    # call write end
-    movl %edi, %ecx
+
+    popl %eax
+    popl %ecx
+
     loop loop1
 done:
     movl $1, %eax           #System call:   exit
     movl $0, %ebx
     int $0x80
-
-.type echo, @function
-echo:
 
 
