@@ -27,7 +27,4 @@ done:
     movl $0, %ebx
     int $0x80
 
-.type echo, @function
-echo:
-
 

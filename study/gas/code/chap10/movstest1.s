@@ -14,6 +14,13 @@ _start:
    movsw
    movsl
 
+   pushl $value1
+   call printf
+
+    # 什么都打印不出来，那么，这个东西有啥用？
+   pushl $output
+   call printf
+
    movl $1, %eax
    movl $0, %ebx
    int $0x80

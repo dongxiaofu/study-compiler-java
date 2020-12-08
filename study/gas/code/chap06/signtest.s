@@ -12,8 +12,8 @@ loop:
    pushl value(, %edi, 4)
    pushl $output
    call printf
-   add $8, $esp
-   dec %edi
+   #addl $8, $esp # 不知有啥用，留着还报错
+   decl %edi
    jns loop
    movl $1, %eax
    movl $0, %ebx
