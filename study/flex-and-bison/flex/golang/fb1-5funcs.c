@@ -241,7 +241,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
     // todo 不能使用malloc初始化paramNode,只能如此声明。会出问题吗？
 //    struct paramNode *cur = {NULL, NULL};
     struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
-    cur->linkedListNode = param;
+    cur->param = param;
     cur->next = NULL;
     paramNodeCur->next = cur;
     paramNodeCur = cur;
@@ -255,7 +255,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
 //ExprNode *thenExprNodeCur;
 void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
-    cur->linkedListNode = expr;
+    cur->expr = expr;
     thenExprNodeCur->next = cur;
     thenExprNodeCur = cur;
     if (thenExprNodeListHeader->next == NULL) {
@@ -268,7 +268,7 @@ void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
 //ExprNode *elseExprNodeCur;
 void addToElseExprNodeList(struct ast *expr, ExprNode *elseExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
-    cur->linkedListNode = expr;
+    cur->expr = expr;
     elseExprNodeCur->next = cur;
     elseExprNodeCur = cur;
     if (elseExprNodeListHeader->next == NULL) {
@@ -297,7 +297,7 @@ void addToFuncVariableNodeList(struct ast *variable,
                                struct funcVariableNode *funcVariableListHead) {
     // 用要加入的变量结点构造单链表中的结点，新当前结点
     struct funcVariableNode *cur = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
-    cur->linkedListNode = variable;
+    cur->funcVariable = variable;
     cur->next = NULL;
     // 目前的当前结点，将它指向新的当前结点。
     funcVariableNodeCur->next = cur;
@@ -312,7 +312,7 @@ void addToFuncVariableNodeList(struct ast *variable,
 // todo addToFuncVariableNodeList、addToParamNodeList 逻辑一致，找机会消除重复代码。
 void addToFuncStmtNodeList(struct ast *funcStmtNode) {
     struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
-    cur->linkedListNode = funcStmtNode;
+    cur->funcStmtNode = funcStmtNode;
     cur->next = NULL;
     funcStmtNodeCur->next = cur;
     funcStmtNodeCur = cur;
@@ -569,7 +569,7 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
 //        struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
         struct funcStmtNode *cur = header.funcStmtNode.next;
         while (cur != NULL) {
-            char *str = traverseNode(cur->linkedListNode);
+            char *str = traverseNode(cur->funcStmtNode);
             char *oldCodeStr = codeStr;
             codeStr = contactStrBetter(2, oldCodeStr, str);
             cur = cur->next;
@@ -587,7 +587,7 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
         struct exprNode *cur = header.exprNode.next;
         while (cur != NULL) {
             char *oldCodeStr = codeStr;
-            char *str = traverseNode(cur->linkedListNode);
+            char *str = traverseNode(cur->expr);
             codeStr = contactStrBetter(2, oldCodeStr, str);
             cur = cur->next;
         }
@@ -604,7 +604,7 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
         struct paramNode *cur = header.paramNode.next;
         while (cur != NULL) {
             char *oldCodeStr = codeStr;
-            char *str = traverseNode(cur->linkedListNode);
+            char *str = traverseNode(cur->param);
             codeStr = contactStrBetter(2, oldCodeStr, str);
             cur = cur->next;
         }
@@ -622,7 +622,7 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
         while (cur != NULL) {
             // todo 不使用oldCodeStr这个中间变量行不行？
             char *oldCodeStr = codeStr;
-            char *str = traverseNode(cur->linkedListNode);
+            char *str = traverseNode(cur->funcVariable);
             codeStr = contactStrBetter(2, oldCodeStr, str);
             cur = cur->next;
         }

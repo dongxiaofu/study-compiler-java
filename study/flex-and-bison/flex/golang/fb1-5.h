@@ -35,7 +35,7 @@ struct singleLinkedListNode {
 // 函数表达式结点，整体，如if结构、while结构
 struct funcStmtNode {
     struct singleLinkedListNode parent;
-    struct ast *linkedListNode;
+    struct ast *funcStmtNode;
     struct funcStmtNode *next;
 };
 
@@ -44,20 +44,23 @@ struct funcStmtNode {
 // 表达式结点，如ab=55;
 typedef struct exprNode {
     struct singleLinkedListNode parent;
-    struct ast *linkedListNode;
+//    struct ast *linkedListNode;
+    struct ast *expr;
     struct exprNode *next;
 } ExprNode;
 
 // 函数参数结点
 struct paramNode {
     struct singleLinkedListNode parent;
-    struct ast *linkedListNode;
+//    struct ast *linkedListNode;
+    struct ast *param;
     struct paramNode *next;
 };
 // 函数体变量结点
 struct funcVariableNode {
     struct singleLinkedListNode parent;
-    struct ast *linkedListNode;
+//    struct ast *linkedListNode;
+    struct ast *funcVariable;
     struct funcVariableNode *next;
 };
 // todo 方便在traverseLinkedList使用一个参数
