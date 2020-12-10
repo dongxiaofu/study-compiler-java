@@ -16,6 +16,8 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
     if (elseExprNodeListHeader != NULL) {
         elseExprNodeListHeader->next = NULL;
     }
+    // 耗时4个多小时，才通过猜测+尝试 解决 链表结点次序颠倒 + 写出这句。防止出现重复元素。
+    thenExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
 
     return node;
 }
@@ -261,6 +263,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
 void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
     cur->expr = expr;
+    cur->next = NULL;
     thenExprNodeCur->next = cur;
     thenExprNodeCur = cur;
     if (thenExprNodeListHeader->next == NULL) {
@@ -274,6 +277,7 @@ void addToThenExprNodeList(struct ast *expr, ExprNode *thenExprNodeListHeader) {
 void addToElseExprNodeList(struct ast *expr, ExprNode *elseExprNodeListHeader) {
     ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
     cur->expr = expr;
+    cur->next = NULL;
     elseExprNodeCur->next = cur;
     elseExprNodeCur = cur;
     if (elseExprNodeListHeader->next == NULL) {

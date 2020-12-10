@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "fb1-5.h"
 
+int yydebug=1;
 
 int yyerror(char *s);
 int yyparse();
@@ -57,7 +58,7 @@ compilation_unit:{}
 //	| IF	EOL		   	{ printf("if = %s\n", $1);	}
 //	| ELSE	EOL		   	{ printf("else = %s\n", $1);	}
 //	| IF con EOL compilation_unit			{ dump($2); }
-	| func EOL			{  newCode($1);				}
+	| func EOL			{ printf("code=%s\n", newCode($1));			}
 	| stmt EOL				{  newCode($1); }
 //	| IF con then EOL  		{ $$ = createIfNode($2, $3, NULL);  }
 //	| IF con then ELSE else_body EOL  { $$ = createIfNode($2, $3, $5);  }
@@ -129,7 +130,7 @@ do_while_stmt:
 	;
 
 if_stmt:
-	| IF con then			{ struct ast *stmt = createIfNode($2, $3, NULL); addToFuncStmtNodeList(stmt); }
+	| IF con then			{  struct ast *stmt = createIfNode($2, $3, NULL); addToFuncStmtNodeList(stmt); }
 	| IF con then ELSE else_body	{ struct ast *stmt  = createIfNode($2, $3, $5); addToFuncStmtNodeList(stmt); }
 	;
 
@@ -141,31 +142,38 @@ con:							{}
 	;
 //
 then:
+//	| '{' then_exprs '}'				{ $$ = $2; }
 	| '{' then_exprs '}'				{ $$ = thenExprNodeListHeader; }
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
 //
 else_body:
-	| '{' else_exprs '}'				{ $$ = elseExprNodeListHeader; }
+//	| '{' else_exprs '}'				{  }
+//	| '{' else_exprs '}'				{ $$ = elseExprNodeListHeader; }
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
 then_exprs:
-	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+//	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+//	| expr ';' 				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+	| expr ';' then_exprs			{    }
+	| expr ';'				{    }
 	;
 
 else_exprs:
-	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
+//	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
+	| expr ';' else_exprs			{   }
 	;
 
 
-expr:	{}
-	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
+expr:
+	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  addToThenExprNodeList($$, thenExprNodeListHeader); }
 	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
 	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
 	| expr '/'  expr			{ $$ = createExpr('/', $1, $3);  }
-	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
+	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  addToThenExprNodeList($$, thenExprNodeListHeader); }
+//	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 	| '(' expr ')'				{ $$ = $2; }
 	| identifier				{ $$ = $1; }
 	| number				{ $$ = $1; }

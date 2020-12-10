@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <signal.h>
 
 enum NODE_TYPE {
     IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
@@ -46,6 +47,9 @@ typedef struct exprNode {
     struct singleLinkedListNode parent;
 //    struct ast *linkedListNode;
     struct ast *expr;
+    // error: error: incomplete type 'ExprNode' where a complete type is required
+    //note: forward declaration of 'ExprNode'
+//    struct ExprNode *next;
     struct exprNode *next;
 } ExprNode;
 
@@ -181,7 +185,7 @@ struct ast *createStr(char *str);
 
 void dump(struct ast *root);
 
-void newCode(struct ast *root);
+char *newCode(struct ast *root);
 
 char *generateCCode(struct ast *root, char *res);
 
@@ -235,6 +239,10 @@ char *traverseIfNode(const struct ast *node);
 
 char *traverseExprNode(const struct ast *node);
 
+void test(char *codeStr);
+
 enum _BOOL isExprNode(int nodeType);
+
+void sigillDeal(int sig);
 
 
