@@ -82,6 +82,8 @@ int main(int argc) {
     }
 }##
 
+
+// 不能通过测试
 int main(int ab, int df){
     int ab;
     int mf;
@@ -117,6 +119,10 @@ int main(int argc, char ef, double te) {
         ab = 5;
         test_mf = 89;
         hi = 94;
+    }else{
+        ab = 53;
+        test_mf = 289;
+        hi = 945;
     }
     while(ab = 7){
         test = 5;

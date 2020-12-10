@@ -163,11 +163,16 @@ void dump(struct ast *root) {
 //    printIndent(level);
 }
 
-void newCode(struct ast *root) {
+char *newCode(struct ast *root) {
+//    signal(SIGILL,sigillDeal);//----------------------------------注册SIGILL对应的处理函数
     char *code = "";
 //    generateCCode(root, code);
     char *codeStr = traverseNode(root);
-    printf("%s\n", codeStr);
+//    printf("%s\n", codeStr);
+    return codeStr;
+//    return "codeStr";
+//    test(codeStr);
+
 }
 
 char *generateCCode(struct ast *root, char *code) {
@@ -435,7 +440,7 @@ char *traverseNode(struct ast *node) {
         header.funcStmtNode = node->funcStmtsListHead;
         char *codeStr3 = traverseLinkedList(header, FUNC_STMT_HEADER);
 
-        codeStr = contactStrBetter(2,  codeStr2, codeStr3);
+        codeStr = contactStrBetter(2, codeStr2, codeStr3);
 
         return codeStr;
     }
@@ -542,6 +547,12 @@ char *traverseExprNode(const struct ast *node) {
     return codeStr;
 }
 
+void test(char *codeStr) {
+    // do nothing
+    // 断点使用。
+    int a = 5;
+}
+
 char *traverseIfNode(const struct ast *node) {
     char *codeStr1 = traverseNode(node->con);
     SINGLE_LINKED_LIST_NODE_HEADER header;
@@ -642,13 +653,15 @@ char *contactStrBetter(int num, ...) {
     va_start(valist, num);
 
     /* 访问所有赋给 valist 的参数 */
-    /* 访问所有赋给 valist 的参数 */
     for (i = 0; i < num; i++) {
         char *str = va_arg(valist, char *);
+//        printf("str:%s\n", str);
 //        printf("str%d = %s\n", i, str);
         char *oldCodeStr = codeStr;
 //        printf("old = %s\n", oldCodeStr);
-        codeStr = (char *) malloc(strlen(str) + strlen(oldCodeStr));
+        // 旧代码是：codeStr = (char *) malloc(strlen(str) + strlen(oldCodeStr));
+        // Illegal instruction: 4，耗费三个下午的时间才解决这个问题
+        codeStr = (char *) malloc(strlen(str) + strlen(oldCodeStr) + 2);
         strcat(codeStr, oldCodeStr);
 //        printf("codeStr1 = %s\n", codeStr);
         strcat(codeStr, str);
@@ -658,4 +671,12 @@ char *contactStrBetter(int num, ...) {
     va_end(valist);
 
     return codeStr;
+}
+
+void sigillDeal(int sig) {
+    if (sig == SIGILL) {
+        printf("\nGot SIGILL(Illegal Instruction)\n");
+        system("vmmap `pidof AiApp`");//-----------------获取进程的maps信息。
+        raise(SIGSEGV);//-----------------------------------------将当前进程的内存存入coredump中，便于后续通过gdb分析导出内存内容。
+    }
 }
