@@ -155,24 +155,24 @@ else_body:
 	;
 
 then_exprs:
-//	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
-//	| expr ';' 				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
-	| expr ';' then_exprs			{    }
-	| expr ';'				{    }
+	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+	| expr ';' 				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+//	| expr ';' then_exprs			{    }
+//	| expr ';'				{    }
 	;
 
 else_exprs:
-//	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
-	| expr ';' else_exprs			{   }
+	| expr ';' else_exprs			{  addToElseExprNodeList($1, elseExprNodeListHeader); }
+//	| expr ';' else_exprs			{   }
 	;
 
 
 expr:
-	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  addToThenExprNodeList($$, thenExprNodeListHeader); }
+	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
 	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
 	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
 	| expr '/'  expr			{ $$ = createExpr('/', $1, $3);  }
-	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  addToThenExprNodeList($$, thenExprNodeListHeader); }
+	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 //	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 	| '(' expr ')'				{ $$ = $2; }
 	| identifier				{ $$ = $1; }
