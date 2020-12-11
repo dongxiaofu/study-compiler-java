@@ -150,7 +150,7 @@ then:
 //
 else_body:
 //	| '{' else_exprs '}'				{  }
-//	| '{' else_exprs '}'				{ $$ = elseExprNodeListHeader; }
+	| '{' else_exprs '}'				{ $$ = elseExprNodeListHeader; }
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 

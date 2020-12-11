@@ -2,6 +2,9 @@
 #include "fb1-5.h"
 
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader) {
+//    reverseLinkedList(thenExprNodeListHeader);
+//    reverseLinkedList(elseExprNodeListHeader);
+
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = IF_NODE_TYPE;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
@@ -450,12 +453,15 @@ char *traverseNode(struct ast *node) {
     }
     // if 结构节点
     if (node->nodeType == IF_NODE_TYPE) {
+//        reverseLinkedList(&node->thenExprNodeListHeader);
+//        reverseLinkedList(&node->elseExprNodeListHeader);
         return traverseIfNode(node);
     }
     // while结构节点
     if (node->nodeType == WHILE_NODE_TYPE) {
         char *codeStr1 = traverseNode(node->con);
         SINGLE_LINKED_LIST_NODE_HEADER header;
+//        reverseLinkedList(&node->thenExprNodeListHeader);
         header.exprNode = node->thenExprNodeListHeader;
         char *codeStr2 = traverseLinkedList(header, EXPR_HEADER);
 
@@ -474,6 +480,7 @@ char *traverseNode(struct ast *node) {
     // do-while结构节点
     if (node->nodeType == DO_WHILE_NODE_TYPE) {
         SINGLE_LINKED_LIST_NODE_HEADER header;
+//        reverseLinkedList(&node->thenExprNodeListHeader);
         header.exprNode = node->thenExprNodeListHeader;
         char *codeStr1 = traverseLinkedList(header, EXPR_HEADER);
         char *codeStr2 = traverseNode(node->con);
@@ -560,8 +567,10 @@ void test(char *codeStr) {
 char *traverseIfNode(const struct ast *node) {
     char *codeStr1 = traverseNode(node->con);
     SINGLE_LINKED_LIST_NODE_HEADER header;
+//    reverseLinkedList(&node->thenExprNodeListHeader);
     header.exprNode = node->thenExprNodeListHeader;
     char *codeStr2 = traverseLinkedList(header, EXPR_HEADER);
+//    reverseLinkedList(&node->elseExprNodeListHeader);
     header.exprNode = node->elseExprNodeListHeader;
     char *codeStr3 = traverseLinkedList(header, EXPR_HEADER);
 
@@ -593,6 +602,8 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
     }
 
     if (headerType == EXPR_HEADER) {
+        // 不能放在这里，会导致多条if语句丢失元素。我不能心算出为何会出错。
+//        reverseLinkedList(&header.exprNode);
         // 终止条件
         if (header.exprNode.next == NULL) {
             return "";
@@ -682,5 +693,37 @@ void sigillDeal(int sig) {
         printf("\nGot SIGILL(Illegal Instruction)\n");
         system("vmmap `pidof AiApp`");//-----------------获取进程的maps信息。
         raise(SIGSEGV);//-----------------------------------------将当前进程的内存存入coredump中，便于后续通过gdb分析导出内存内容。
+    }
+}
+
+// 反转链表，想不到好方法。
+// 思路：1. 先将节点存储到数组。2. 倒序遍历数组，构造新链表。
+void reverseLinkedList(ExprNode *oldHead) {
+    int count = 0;
+    ExprNode *cur = (ExprNode *) malloc(sizeof(ExprNode));
+    cur = oldHead->next;
+    while (cur != NULL) {
+        count++;
+        cur = cur->next;
+    }
+    ExprNode *arr[count];
+    cur = oldHead->next;
+    int j = 0;
+    while (cur != NULL) {
+        arr[j++] = cur;
+        cur = cur->next;
+    }
+    oldHead->next = NULL;
+    // 连这种常规操作，我都需要想一想。不熟练啊。
+    for (int i = count - 1; i >= 0; i--) {
+        cur = arr[i];
+        if (i - 1 >= 0) {
+            cur->next = arr[i] - 1;
+        } else {
+            cur->next = NULL;
+        }
+        if (oldHead->next == NULL) {
+            oldHead->next = cur;
+        }
     }
 }

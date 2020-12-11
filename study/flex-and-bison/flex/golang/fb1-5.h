@@ -245,4 +245,6 @@ enum _BOOL isExprNode(int nodeType);
 
 void sigillDeal(int sig);
 
+void reverseLinkedList(ExprNode *oldHead);
+
 
