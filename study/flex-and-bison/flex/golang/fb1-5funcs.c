@@ -33,6 +33,7 @@ struct ast *createAssignNode() {
     thenExprNodeListHeader->next = NULL;
     // 耗时4个多小时，才通过猜测+尝试 解决 链表结点次序颠倒 + 写出这句。防止出现重复元素。
     thenExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
+//    paramNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
 
     return node;
 }
@@ -296,10 +297,10 @@ void addToActualParamNodeList(struct ast *param, struct paramNode *actualparamNo
     struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
     cur->param = param;
     cur->next = NULL;
-    paramNodeCur->next = cur;
-    paramNodeCur = cur;
+    actualparamNodeCur->next = cur;
+    actualparamNodeCur = cur;
     if (actualparamNodeListHeader->next == NULL) {
-        actualparamNodeListHeader->next = paramNodeCur;
+        actualparamNodeListHeader->next = actualparamNodeCur;
     }
     return;
 }
