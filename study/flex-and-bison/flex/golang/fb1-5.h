@@ -7,7 +7,7 @@
 enum NODE_TYPE {
     IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
     ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE, ACTUAL_PARAM_NODE_TYPE,
-    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE, CALL_NODE_TYPE,
+    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE, CALL_NODE_TYPE,RETURN_NODE_TYPE,
     PLUS_NODE_TYPE = 43,
     SUB_NODE_TYPE = 45, TIMES_NODE_TYPE = 42, EQUAL_NODE_TYPE = 61,
 
@@ -174,6 +174,8 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
 struct ast *createAssignNode(struct ast *expr);
 
 struct ast *createCallNode(struct ast *funcName, struct paramNode *paramListHead);
+
+struct ast *createReturnNode(struct ast *expr);
 
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader);
 

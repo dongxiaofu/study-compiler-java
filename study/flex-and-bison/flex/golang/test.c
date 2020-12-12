@@ -166,13 +166,29 @@ int main(int argc){
 int main(int argc){
     int a;
     int x;
+    int str;
+    str = "str=%d";
+    a = 9;
+    x = 7;
     printf(str, x);
+    return 0;
 }
 ##
 
 int main(int argc){
     int str;
-    printf(str, num);
+    int x;
+    str = "str=%d";
+    x = 7;
+    printf(str, x);
+    return 0;
+}
+##
+
+int main(int argc){
+    int num;
+    num = 5;
+    printf(str, x);
 }
 ##
 

@@ -10,6 +10,7 @@ int old_status;
 "else"  { yylval.strval = strdup(yytext); return ELSE; }
 "while"  { yylval.strval = strdup(yytext); return WHILE; }
 "do"  { yylval.strval = strdup(yytext); return DO; }
+"return"  { yylval.strval = strdup(yytext); return RETURN; }
 "+" |
 "-" |
 "*" |

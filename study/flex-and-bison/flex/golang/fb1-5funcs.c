@@ -44,6 +44,14 @@ struct ast *createCallNode(struct ast *funcName, struct paramNode *actualparamNo
     return node;
 }
 
+struct ast *createReturnNode(struct ast *expr){
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = RETURN_NODE_TYPE;
+    node->expr = expr;
+
+    return node;
+}
+
 // todo 用"继承"struct的作用是，能不让father struct成员量太杂太多。
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
     WhileNode *node = malloc(sizeof(WhileNode));
@@ -550,6 +558,14 @@ char *traverseNode(struct ast *node) {
         char *oldCodeStr = codeStr;
         // 第一个参数是3，而不是2。断点调试很久，才找到这个问题。代码不是特别多，找错误就如此麻烦了。
         codeStr = contactStrBetter(3, oldCodeStr, node->funcName, codeStr1);
+
+        return codeStr;
+    }
+
+    if (node->nodeType == RETURN_NODE_TYPE) {
+        char *codeStr1 = traverseNode(node->expr);
+        char *oldCodeStr = codeStr;
+        codeStr = contactStrBetter(4, oldCodeStr, "return", " ", codeStr1);
 
         return codeStr;
     }
