@@ -35,17 +35,19 @@ int yylex ();
 %token OP CP IF ELSE WHILE DO
 %token COMMENT
 %token IDENTIFIER
+%token STR
+%token SPECIAL_CHAR
 
 //%type <str1> expr
 %type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt assign_stmt call_stmt
-%type <node> param  variable identifier number actual_parameter
+%type <node> param  variable identifier number actual_parameter special_char str
 %type <pn> params actual_params
 %type <fvn> variables
 %type <en> then_exprs else_exprs else_body then
 %type <fsn> stmts
 %type <intval> NUMBER
 %type <strval> ADD SUB MUL DIV ABS EOL IF ELSE
-%type <strval> calclist factor IDENTIFIER
+%type <strval> IDENTIFIER SPECIAL_CHAR STR
 %type <intval> term
 
 %type <strval> tparam test
@@ -187,8 +189,14 @@ expr:	number					{ $$ = $1; }
 //	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 	| '(' expr ')'				{ $$ = $2; }
 	| identifier				{ $$ = $1; }
+	| str					{ $$ = $1; }
 //	| number				{ $$ = $1; }
 	;
+
+str:STR			{ $$ = createStr($1); }
+
+special_char:	SPECIAL_CHAR				{ $$ = createStr($1); }
+
 
 identifier:	IDENTIFIER				{ $$ = createStr($1); }
 	;
