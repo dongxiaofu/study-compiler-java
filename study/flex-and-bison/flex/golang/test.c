@@ -115,6 +115,8 @@ int main(int argc, char ef, double te) {
     int ab;
     int mf;
     char hi;
+    mf = 80;
+    ab = 70;
     if (true) {
         ab = 5;
         test_mf = 89;
@@ -128,6 +130,42 @@ int main(int argc, char ef, double te) {
         test = 5;
     }
 }##
+
+int main(int argc){
+    int a;
+    a = 55;
+}##
+
+int main(int argc){
+    int a;
+    int x;
+    int d;
+    int m;
+    x = 58;
+    a = 95;
+    m = 46;
+    d = 100;
+}##
+
+int main(int argc){
+    int a;
+    int x;
+    x = 58;
+    a = 95;
+    m = 46;
+    d = 100;
+}##
+
+
+int main(int argc){
+    int a;
+    int x;
+}
+
+int f(int k){
+    int a;
+}
+##
 
 
 

@@ -25,6 +25,18 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
     return node;
 }
 
+struct ast *createAssignNode( ) {
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = ASSIGN_NODE_TYPE;
+    node->thenExprNodeListHeader = *thenExprNodeListHeader;
+    // todo 这两个以及其他地方的类似情况，是否也需要做类似容错处理？
+    thenExprNodeListHeader->next = NULL;
+    // 耗时4个多小时，才通过猜测+尝试 解决 链表结点次序颠倒 + 写出这句。防止出现重复元素。
+    thenExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
+
+    return node;
+}
+
 // todo 用"继承"struct的作用是，能不让father struct成员量太杂太多。
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
     WhileNode *node = malloc(sizeof(WhileNode));
@@ -358,9 +370,11 @@ struct ast *createFunction(struct ast *returnType, struct ast *funcName,
 
 void init() {
     paramNodeListHeader = (struct paramNode *) malloc(sizeof(struct paramNode));
+    paramNodeListHeader->next = NULL;
     paramNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
 
     funcVariableNodeListHeader = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
+    funcVariableNodeListHeader->next = NULL;
     funcVariableNodeCur = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
 
     funcStmtNodeListHeader = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
@@ -486,6 +500,16 @@ char *traverseNode(struct ast *node) {
         char *codeStr2 = traverseNode(node->con);
         char *oldCodeStr = codeStr;
         codeStr = contactStrBetter(3, oldCodeStr, codeStr1, codeStr2);
+
+        return codeStr;
+    }
+
+    if(node->nodeType == ASSIGN_NODE_TYPE){
+        SINGLE_LINKED_LIST_NODE_HEADER header;
+        header.exprNode = node->thenExprNodeListHeader;
+        char *codeStr1 = traverseLinkedList(header, EXPR_HEADER);
+        char *oldCodeStr = codeStr;
+        codeStr = contactStrBetter(2, oldCodeStr, codeStr1);
 
         return codeStr;
     }
