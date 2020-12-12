@@ -6,8 +6,8 @@
 
 enum NODE_TYPE {
     IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
-    ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE,
-    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE,
+    ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE, ACTUAL_PARAM_NODE_TYPE,
+    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE, CALL_NODE_TYPE,
     PLUS_NODE_TYPE = 43,
     SUB_NODE_TYPE = 45, TIMES_NODE_TYPE = 42, EQUAL_NODE_TYPE = 61,
 
@@ -15,7 +15,7 @@ enum NODE_TYPE {
 
 // todo EXPR_HEADER 等不能重复，它们的值能重复吗？
 enum HEADER_TYPE {
-    FUNC_STMT_HEADER = 'A', EXPR_HEADER, PARAM_HEADER, FUNC_VARIABLE_HEADER
+    FUNC_STMT_HEADER = 'A', EXPR_HEADER, PARAM_HEADER, ACTUAL_PARAM_HEADER, FUNC_VARIABLE_HEADER
 };
 
 enum _BOOL {
@@ -153,6 +153,9 @@ typedef struct doWhileNode {
 struct paramNode *paramNodeListHeader;
 struct paramNode *paramNodeCur;
 
+struct paramNode *actualparamNodeListHeader;
+struct paramNode *actualparamNodeCur;
+
 struct funcVariableNode *funcVariableNodeListHeader;
 struct funcVariableNode *funcVariableNodeCur;
 
@@ -168,6 +171,8 @@ ExprNode *elseExprNodeCur;
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader);
 
 struct ast *createAssignNode();
+
+struct ast *createCallNode(struct ast *funcName, struct paramNode *paramListHead);
 
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader);
 
@@ -197,7 +202,11 @@ char *int2String(int num);
 
 struct ast *createParam(struct ast *dataType, struct ast *name);
 
+struct ast *createActualParam(struct ast *name);
+
 void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader);
+
+void addToActualParamNodeList(struct ast *param, struct paramNode *actualparamNodeListHeader);
 
 //ExprNode *thenExprNodeListHeader;
 //ExprNode *thenExprNodeCur;

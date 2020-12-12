@@ -25,7 +25,7 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
     return node;
 }
 
-struct ast *createAssignNode( ) {
+struct ast *createAssignNode() {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = ASSIGN_NODE_TYPE;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
@@ -33,6 +33,17 @@ struct ast *createAssignNode( ) {
     thenExprNodeListHeader->next = NULL;
     // 耗时4个多小时，才通过猜测+尝试 解决 链表结点次序颠倒 + 写出这句。防止出现重复元素。
     thenExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
+
+    return node;
+}
+
+struct ast *createCallNode(struct ast *funcName, struct paramNode *actualparamNodeListHeader) {
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = CALL_NODE_TYPE;
+    node->funcName = funcName->stringValue;
+    node->paramListHead = *actualparamNodeListHeader;
+
+    actualparamNodeListHeader->next = NULL;
 
     return node;
 }
@@ -259,6 +270,14 @@ struct ast *createParam(struct ast *dataType, struct ast *name) {
     return node;
 }
 
+struct ast *createActualParam(struct ast *name) {
+    struct ast *node = malloc(sizeof(struct ast));
+    node->nodeType = ACTUAL_PARAM_NODE_TYPE;
+    node->paramName = name->stringValue;
+
+    return node;
+}
+
 void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader) {
     // todo 不能使用malloc初始化paramNode,只能如此声明。会出问题吗？
 //    struct paramNode *cur = {NULL, NULL};
@@ -269,6 +288,18 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
     paramNodeCur = cur;
     if (paramNodeListHeader->next == NULL) {
         paramNodeListHeader->next = paramNodeCur;
+    }
+    return;
+}
+
+void addToActualParamNodeList(struct ast *param, struct paramNode *actualparamNodeListHeader){
+    struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
+    cur->param = param;
+    cur->next = NULL;
+    paramNodeCur->next = cur;
+    paramNodeCur = cur;
+    if (actualparamNodeListHeader->next == NULL) {
+        actualparamNodeListHeader->next = paramNodeCur;
     }
     return;
 }
@@ -372,6 +403,10 @@ void init() {
     paramNodeListHeader = (struct paramNode *) malloc(sizeof(struct paramNode));
     paramNodeListHeader->next = NULL;
     paramNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
+
+    actualparamNodeListHeader = (struct paramNode *) malloc(sizeof(struct paramNode));
+    actualparamNodeListHeader->next = NULL;
+    actualparamNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
 
     funcVariableNodeListHeader = (struct funcVariableNode *) malloc(sizeof(struct funcVariableNode));
     funcVariableNodeListHeader->next = NULL;
@@ -504,12 +539,23 @@ char *traverseNode(struct ast *node) {
         return codeStr;
     }
 
-    if(node->nodeType == ASSIGN_NODE_TYPE){
+    if (node->nodeType == ASSIGN_NODE_TYPE) {
         SINGLE_LINKED_LIST_NODE_HEADER header;
         header.exprNode = node->thenExprNodeListHeader;
         char *codeStr1 = traverseLinkedList(header, EXPR_HEADER);
         char *oldCodeStr = codeStr;
         codeStr = contactStrBetter(2, oldCodeStr, codeStr1);
+
+        return codeStr;
+    }
+
+    if (node->nodeType == CALL_NODE_TYPE) {
+        SINGLE_LINKED_LIST_NODE_HEADER header;
+        header.paramNode = node->paramListHead;
+        char *codeStr1 = traverseLinkedList(header, ACTUAL_PARAM_HEADER);
+        char *oldCodeStr = codeStr;
+        // 第一个参数是3，而不是2。断点调试很久，才找到这个问题。代码不是特别多，找错误就如此麻烦了。
+        codeStr = contactStrBetter(3, oldCodeStr, node->funcName, codeStr1);
 
         return codeStr;
     }
@@ -529,6 +575,11 @@ char *traverseNode(struct ast *node) {
     if (node->nodeType == PARAM_NODE_TYPE) {
         // 已经拼接好的codeStr + 参数类型 + " " + 参数名
         codeStr = contactStrBetter(4, codeStr, node->paramType, " ", node->paramName);
+        return codeStr;
+    }
+    // 实参
+    if (node->nodeType == ACTUAL_PARAM_NODE_TYPE) {
+        codeStr = contactStrBetter(2, codeStr, node->paramName);
         return codeStr;
     }
 
@@ -648,6 +699,23 @@ char *traverseLinkedList(SINGLE_LINKED_LIST_NODE_HEADER header, int headerType) 
         // 终止条件
         if (header.paramNode.next == NULL) {
             return "";
+        }
+        // todo 不使用malloc初始化是否可以？
+//        struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));
+        struct paramNode *cur = header.paramNode.next;
+        while (cur != NULL) {
+            char *oldCodeStr = codeStr;
+            char *str = traverseNode(cur->param);
+            codeStr = contactStrBetter(2, oldCodeStr, str);
+            cur = cur->next;
+        }
+        return codeStr;
+    }
+
+    if (headerType == ACTUAL_PARAM_HEADER) {
+        // 终止条件
+        if (header.paramNode.next == NULL) {
+            return "@@@@@@";
         }
         // todo 不使用malloc初始化是否可以？
 //        struct funcStmtNode *cur = (struct funcStmtNode *) malloc(sizeof(struct funcStmtNode));

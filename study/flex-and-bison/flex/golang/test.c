@@ -156,14 +156,23 @@ int main(int argc){
     d = 100;
 }##
 
+int main(int argc){
+    int d;
+    d = 100;
+}##
+
+"num = %d\n"
 
 int main(int argc){
     int a;
     int x;
+    printf(str, x);
 }
+##
 
-int f(int k){
-    int a;
+int main(int argc){
+    int str;
+    printf(str, num);
 }
 ##
 

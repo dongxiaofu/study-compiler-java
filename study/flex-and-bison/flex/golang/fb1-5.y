@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <string.h>
 #include "fb1-5.h"
 
 int yydebug=1;
@@ -36,9 +37,9 @@ int yylex ();
 %token IDENTIFIER
 
 //%type <str1> expr
-%type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt
-%type <node> param  variable identifier number
-%type <pn> params
+%type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt assign_stmt call_stmt
+%type <node> param  variable identifier number actual_parameter
+%type <pn> params actual_params
 %type <fvn> variables
 %type <en> then_exprs else_exprs else_body then
 %type <fsn> stmts
@@ -84,41 +85,51 @@ params:
 	| param			{ $$ = paramNodeListHeader;}
 	;
 
+actual_params:
+	| actual_parameter ',' actual_params	{ $$ = actualparamNodeListHeader; }
+	| actual_parameter			{ $$ = actualparamNodeListHeader; }
+	;
+
 //createParam(char *dataType, char *name)
 param:
 	| identifier identifier	 { struct ast *param = createParam($1, $2);  addToParamNodeList(param, paramNodeListHeader); }
+	;
+
+actual_parameter:
+	| identifier { struct ast *param = createActualParam($1);  addToActualParamNodeList(param, actualparamNodeListHeader); }
 	;
 
 //createBlock(struct funcVariableNode *funcVariableListHead,
 //                        struct funcStmtNode *funcStmtsListHead)
 block:
 //	| '{' block '}'			{ $$ = $2; }
-	|  variables stmts block 	{ $$ = createBlock(funcVariableNodeListHeader, $2); }
+	|  variables stmts  block 	{ $$ = createBlock(funcVariableNodeListHeader, $2); }
 	|  '{' variables stmts block '}'	{ $$ = createBlock(funcVariableNodeListHeader, funcStmtNodeListHeader); }
 	;
 
 //addToFuncVariableNodeList(struct ast *variable,
 //                               struct funcVariableNode *funcVariableListHead)
 variables:
-	| variable	';'	variables	{ $$ = funcVariableNodeListHeader; }
-//	| variable				{ $$ = funcVariableNodeListHeader; }
+	| variable	';'			{ $$ = funcVariableNodeListHeader; }
+	| variables variable ';'	{ $$ = funcVariableNodeListHeader; }
 	;
 
 //createVariable(char *dataType, char *variableName)
-variable:
-	| identifier identifier			{ struct ast *variable = createVariable($1, $2); addToFuncVariableNodeList(variable, funcVariableNodeListHeader); }
+variable:  identifier identifier			{ struct ast *variable = createVariable($1, $2); addToFuncVariableNodeList(variable, funcVariableNodeListHeader); }
 	;
 
 //addToFuncStmtNodeList(struct ast *funcStmtNode,
 //                           struct funcStmtNode *funcStmtsListHead)
 stmts:
-	| stmt stmts			{ $$ =  funcStmtNodeListHeader; }
+	|  stmt				{ $$ =  funcStmtNodeListHeader; }
+	|  stmts stmt			{ $$ =  funcStmtNodeListHeader; }
 	;
 
-stmt:
-	| if_stmt			{ $$ = $1; }
+stmt:	if_stmt				{ $$ = $1; }
 	| while_stmt			{ $$ = $1; }
 	| do_while_stmt			{ $$ = $1; }
+	| assign_stmt			{ $$ = $1; }
+	| call_stmt			{ $$ = $1; }
 	;
 
 while_stmt:
@@ -134,17 +145,17 @@ if_stmt:
 	| IF con then ELSE else_body	{ struct ast *stmt  = createIfNode($2, $3, $5); addToFuncStmtNodeList(stmt); }
 	;
 
-con:							{}
-	| expr						{ $$ = createCon( $1);}
+assign_stmt:then_exprs			{ struct ast *stmt = createAssignNode(); addToFuncStmtNodeList(stmt);}
+
+call_stmt:identifier '(' actual_params ')' ';'			{ struct ast *stmt = createCallNode($1, $3); addToFuncStmtNodeList(stmt);}
+
+con:	expr						{ $$ = createCon( $1);}
 
 //	| '(' IDENTIFIER '=' NUMBER	')'		{ $$ = createCon('+', $2, $4); }
 //	| '(' IDENTIFIER '=' IDENTIFIER	')'		{ $$ = createCon('='); }
 	;
 //
-then:
-//	| '{' then_exprs '}'				{ $$ = $2; }
-	| '{' then_exprs '}'				{ $$ = thenExprNodeListHeader; }
-//	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
+then:	'{' then_exprs '}'				{ $$ = thenExprNodeListHeader; }
 	;
 
 //
@@ -154,9 +165,9 @@ else_body:
 //	| exprs					{ $$ = $1; printf("exprs = %s\n", $1); }
 	;
 
-then_exprs:
-	| expr ';' then_exprs			{  addToThenExprNodeList($1, thenExprNodeListHeader); }
-	| expr ';' 				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+then_exprs: expr ';'				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
+	| then_exprs  expr ';'			{  addToThenExprNodeList($2, thenExprNodeListHeader); }
+//	| expr ';' 				{  addToThenExprNodeList($1, thenExprNodeListHeader); }
 //	| expr ';' then_exprs			{    }
 //	| expr ';'				{    }
 	;
@@ -167,7 +178,7 @@ else_exprs:
 	;
 
 
-expr:
+expr:	number					{ $$ = $1; }
 	| expr	'+'  expr			{ $$ = createExpr('+', $1, $3);  }
 	| expr '-'  expr			{ $$ = createExpr('-', $1, $3);  }
 	| expr '*'  expr			{ $$ = createExpr('*', $1, $3);  }
@@ -176,15 +187,13 @@ expr:
 //	| expr '=' expr				{ $$ = createExpr('=', $1, $3);  }
 	| '(' expr ')'				{ $$ = $2; }
 	| identifier				{ $$ = $1; }
-	| number				{ $$ = $1; }
+//	| number				{ $$ = $1; }
 	;
 
-identifier:
-	| IDENTIFIER				{ $$ = createStr($1); }
+identifier:	IDENTIFIER				{ $$ = createStr($1); }
 	;
 
-number:
-	| NUMBER				{ $$ = createNum($1); }
+number:		NUMBER					{ $$ = createNum($1); }
 	;
 %%
 
