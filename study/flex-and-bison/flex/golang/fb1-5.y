@@ -145,7 +145,7 @@ if_stmt:
 	| IF con then ELSE else_body	{ struct ast *stmt  = createIfNode($2, $3, $5); addToFuncStmtNodeList(stmt); }
 	;
 
-assign_stmt:then_exprs			{ struct ast *stmt = createAssignNode(); addToFuncStmtNodeList(stmt);}
+assign_stmt:expr '=' expr ';'			{ struct ast *expr = createExpr('=', $1, $3);struct ast *stmt = createAssignNode(expr); addToFuncStmtNodeList(stmt);}
 
 call_stmt:identifier '(' actual_params ')' ';'			{ struct ast *stmt = createCallNode($1, $3); addToFuncStmtNodeList(stmt);}
 

@@ -98,6 +98,7 @@ struct ast {
     struct ast *l;
     struct ast *r;
     struct ast *con;
+    struct ast *expr;
     // 表达式链表 start
     // thenBody
     ExprNode thenExprNodeListHeader;
@@ -170,7 +171,7 @@ ExprNode *elseExprNodeCur;
 
 struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, ExprNode *elseExprNodeListHeader);
 
-struct ast *createAssignNode();
+struct ast *createAssignNode(struct ast *expr);
 
 struct ast *createCallNode(struct ast *funcName, struct paramNode *paramListHead);
 

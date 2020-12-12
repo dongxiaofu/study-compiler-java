@@ -25,15 +25,10 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
     return node;
 }
 
-struct ast *createAssignNode() {
+struct ast *createAssignNode(struct ast *expr) {
     struct ast *node = malloc(sizeof(struct ast));
     node->nodeType = ASSIGN_NODE_TYPE;
-    node->thenExprNodeListHeader = *thenExprNodeListHeader;
-    // todo 这两个以及其他地方的类似情况，是否也需要做类似容错处理？
-    thenExprNodeListHeader->next = NULL;
-    // 耗时4个多小时，才通过猜测+尝试 解决 链表结点次序颠倒 + 写出这句。防止出现重复元素。
-    thenExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
-//    paramNodeCur = (struct paramNode *) malloc(sizeof(struct paramNode));
+    node->expr = expr;
 
     return node;
 }
@@ -541,9 +536,7 @@ char *traverseNode(struct ast *node) {
     }
 
     if (node->nodeType == ASSIGN_NODE_TYPE) {
-        SINGLE_LINKED_LIST_NODE_HEADER header;
-        header.exprNode = node->thenExprNodeListHeader;
-        char *codeStr1 = traverseLinkedList(header, EXPR_HEADER);
+        char *codeStr1 = traverseNode(node->expr);
         char *oldCodeStr = codeStr;
         codeStr = contactStrBetter(2, oldCodeStr, codeStr1);
 
