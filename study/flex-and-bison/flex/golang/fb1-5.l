@@ -26,7 +26,7 @@ int old_status;
 ":" |
 "%" |  {  return SPECIAL_CHAR; };
 [0-9]+		{ yylval.intval = atoi(yytext); return NUMBER; }
-[$a-z_A-Z]*  { yylval.strval = strdup(yytext);  return IDENTIFIER;  }
+[$a-z_A-Z*]*  { yylval.strval = strdup(yytext);  return IDENTIFIER;  }
 [a-z_A-Z0-9:%=]*  { yylval.strval = strdup(yytext);  return STR;  }
 "//".*  { }
 "##"        { return EOL; }

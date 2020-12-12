@@ -32,14 +32,14 @@ int yylex ();
 %token  NUMBER
 %token ADD SUB MUL DIV ABS
 %token  EOL
-%token OP CP IF ELSE WHILE DO
+%token OP CP IF ELSE WHILE DO RETURN
 %token COMMENT
 %token IDENTIFIER
 %token STR
 %token SPECIAL_CHAR
 
 //%type <str1> expr
-%type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt assign_stmt call_stmt
+%type <node> con expr compilation_unit stmt func block while_stmt if_stmt do_while_stmt assign_stmt call_stmt return_stmt
 %type <node> param  variable identifier number actual_parameter special_char str
 %type <pn> params actual_params
 %type <fvn> variables
@@ -132,6 +132,7 @@ stmt:	if_stmt				{ $$ = $1; }
 	| do_while_stmt			{ $$ = $1; }
 	| assign_stmt			{ $$ = $1; }
 	| call_stmt			{ $$ = $1; }
+	| return_stmt			{ $$ = $1; }
 	;
 
 while_stmt:
@@ -150,6 +151,8 @@ if_stmt:
 assign_stmt:expr '=' expr ';'			{ struct ast *expr = createExpr('=', $1, $3);struct ast *stmt = createAssignNode(expr); addToFuncStmtNodeList(stmt);}
 
 call_stmt:identifier '(' actual_params ')' ';'			{ struct ast *stmt = createCallNode($1, $3); addToFuncStmtNodeList(stmt);}
+
+return_stmt:RETURN expr ';'			{ struct ast *stmt = createReturnNode($2); addToFuncStmtNodeList(stmt);}
 
 con:	expr						{ $$ = createCon( $1);}
 

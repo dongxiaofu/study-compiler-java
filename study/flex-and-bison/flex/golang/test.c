@@ -176,7 +176,7 @@ int main(int argc){
 ##
 
 int main(int argc){
-    int str;
+    char *str;
     int x;
     str = "str=%d";
     x = 7;
