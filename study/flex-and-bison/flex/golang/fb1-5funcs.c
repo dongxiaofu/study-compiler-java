@@ -5,7 +5,7 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
 //    reverseLinkedList(thenExprNodeListHeader);
 //    reverseLinkedList(elseExprNodeListHeader);
 
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = IF_NODE_TYPE;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
     node->con = con;
@@ -26,7 +26,7 @@ struct ast *createIfNode(struct ast *con, ExprNode *thenExprNodeListHeader, Expr
 }
 
 struct ast *createAssignNode(struct ast *expr) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = ASSIGN_NODE_TYPE;
     node->expr = expr;
 
@@ -34,7 +34,7 @@ struct ast *createAssignNode(struct ast *expr) {
 }
 
 struct ast *createCallNode(struct ast *funcName, struct paramNode *actualparamNodeListHeader) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = CALL_NODE_TYPE;
     node->funcName = funcName->stringValue;
     node->paramListHead = *actualparamNodeListHeader;
@@ -44,8 +44,8 @@ struct ast *createCallNode(struct ast *funcName, struct paramNode *actualparamNo
     return node;
 }
 
-struct ast *createReturnNode(struct ast *expr){
-    struct ast *node = malloc(sizeof(struct ast));
+struct ast *createReturnNode(struct ast *expr) {
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = RETURN_NODE_TYPE;
     node->expr = expr;
 
@@ -54,7 +54,7 @@ struct ast *createReturnNode(struct ast *expr){
 
 // todo 用"继承"struct的作用是，能不让father struct成员量太杂太多。
 struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
-    WhileNode *node = malloc(sizeof(WhileNode));
+    WhileNode *node = (WhileNode *) malloc(sizeof(WhileNode));
     struct ast *fatherNode = (struct ast *) node;
     fatherNode->nodeType = WHILE_NODE_TYPE;
     fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
@@ -66,7 +66,7 @@ struct ast *createWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
 }
 
 struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader) {
-    DoWhileNode *node = malloc(sizeof(WhileNode));
+    DoWhileNode *node = (DoWhileNode *) malloc(sizeof(WhileNode));
     struct ast *fatherNode = (struct ast *) node;
     fatherNode->nodeType = DO_WHILE_NODE_TYPE;
     fatherNode->thenExprNodeListHeader = *thenExprNodeListHeader;
@@ -80,7 +80,7 @@ struct ast *createDoWhileNode(struct ast *con, ExprNode *thenExprNodeListHeader)
 // todo 后期从整个项目中删除这个con结点
 struct ast *createCon(struct ast *con) {
     return con;
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = con->nodeType;
     node->con = con;
     if (con->nodeType == STR_NODE_TYPE || con->nodeType == NUM_NODE_TYPE) {
@@ -100,7 +100,7 @@ struct ast *createCon(struct ast *con) {
 // todo 未使用
 struct ast *createThen(ExprNode *thenExprNodeListHeader) {
     int nodeType = THEN_NODE_TYPE;
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = nodeType;
     node->thenExprNodeListHeader = *thenExprNodeListHeader;
 
@@ -110,7 +110,7 @@ struct ast *createThen(ExprNode *thenExprNodeListHeader) {
 
 // todo 未使用
 struct ast *createElseBody(ExprNode *elseExprNodeListHeader) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = ELSE_BODY_NODE_TYPE;
     node->elseExprNodeListHeader = *elseExprNodeListHeader;
 
@@ -121,7 +121,7 @@ struct ast *createElseBody(ExprNode *elseExprNodeListHeader) {
 
 // todo nodeType如何使用enum？
 struct ast *createExpr(int nodeType, struct ast *l, struct ast *r) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = nodeType;
     node->l = l;
     node->r = r;
@@ -129,14 +129,14 @@ struct ast *createExpr(int nodeType, struct ast *l, struct ast *r) {
 }
 
 struct ast *createNum(int num) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = NUM_NODE_TYPE;
     node->numberValue = num;
     return node;
 }
 
 struct ast *createStr(char *str) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = STR_NODE_TYPE;
     char *temp = (char *) malloc(sizeof(str) + 1);
     int len = strlen(str);
@@ -199,8 +199,22 @@ char *newCode(struct ast *root) {
 //    signal(SIGILL,sigillDeal);//----------------------------------注册SIGILL对应的处理函数
     char *code = "";
 //    generateCCode(root, code);
+    // 生成汇编代码使用
+    strcpy(funcName, root->funcName);
     char *codeStr = traverseNode(root);
 //    printf("%s\n", codeStr);
+
+//    fb1-5funcs.c:206:23: warning: incompatible pointer types passing 'char *[20]' to parameter of type 'char *' [-Wincompatible-pointer-types]
+//    generateStartCode(funcName);
+    generateStartCode(funcName);
+    FuncCode *funcCode = (FuncCode *) malloc(sizeof(FuncCode));
+    getFuncCode(funcCode, funcName);
+    printf("name:%s\n", funcCode->funcName);
+    printf("start:%s\n", funcCode->startCode);
+    printf("call:%s\n", funcCode->callCode);
+    printf("variable:%s\n", funcCode->variableCode);
+
+
     return codeStr;
 //    return "codeStr";
 //    test(codeStr);
@@ -266,7 +280,7 @@ char *int2String(int num) {
 
 // todo struct ast *node 也是局部变量，为何能作为函数返回值？
 struct ast *createParam(struct ast *dataType, struct ast *name) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = PARAM_NODE_TYPE;
     node->paramType = dataType->stringValue;
     node->paramName = name->stringValue;
@@ -275,7 +289,7 @@ struct ast *createParam(struct ast *dataType, struct ast *name) {
 }
 
 struct ast *createActualParam(struct ast *name) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = ACTUAL_PARAM_NODE_TYPE;
     node->paramName = name->stringValue;
 
@@ -296,7 +310,7 @@ void addToParamNodeList(struct ast *param, struct paramNode *paramNodeListHeader
     return;
 }
 
-void addToActualParamNodeList(struct ast *param, struct paramNode *actualparamNodeListHeader){
+void addToActualParamNodeList(struct ast *param, struct paramNode *actualparamNodeListHeader) {
     struct paramNode *cur = (struct paramNode *) malloc(sizeof(struct paramNode));
     cur->param = param;
     cur->next = NULL;
@@ -337,7 +351,7 @@ void addToElseExprNodeList(struct ast *expr, ExprNode *elseExprNodeListHeader) {
 
 struct ast *createBlock(struct funcVariableNode *funcVariableListHead,
                         struct funcStmtNode *funcStmtsListHead) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     // todo 后期优化。在Java，结点类名自身就是识别符号
     node->nodeType = BLOCK_NODE_TYPE;
     node->funcVariableListHead = *funcVariableNodeListHeader;
@@ -381,7 +395,7 @@ void addToFuncStmtNodeList(struct ast *funcStmtNode) {
 }
 
 struct ast *createVariable(struct ast *dataType, struct ast *variableName) {
-    struct ast *variable = malloc(sizeof(struct ast));
+    struct ast *variable = (struct ast *) malloc(sizeof(struct ast));
     variable->nodeType = VARIABLE_NODE_TYPE;
     variable->dataType = dataType->stringValue;
     variable->variableName = variableName->stringValue;
@@ -391,7 +405,7 @@ struct ast *createVariable(struct ast *dataType, struct ast *variableName) {
 // todo 这个文件里的参数、结构体等大部分都使用指针，能不能不要指针？我不愿现在去测试这点。
 struct ast *createFunction(struct ast *returnType, struct ast *funcName,
                            struct paramNode *paramListHead, struct ast *funcBody) {
-    struct ast *node = malloc(sizeof(struct ast));
+    struct ast *node = (struct ast *) malloc(sizeof(struct ast));
     node->nodeType = FUNC_NODE_TYPE;
     node->returnType = returnType->stringValue;
     node->funcName = funcName->stringValue;
@@ -427,13 +441,21 @@ void init() {
     elseExprNodeListHeader = (ExprNode *) malloc(sizeof(ExprNode));
     elseExprNodeListHeader->next = NULL;
     elseExprNodeCur = (ExprNode *) malloc(sizeof(ExprNode));
+
+    codeStrTable = (CodeHashTable *) malloc(sizeof(CodeHashTable));
+    codeStrTable->tableSize = -1;
+    codeStrTable->init = 0;
+
+    variableHashTable = (VariableHashTable *) malloc(sizeof(VariableHashTable));
+    variableHashTable->tableSize = -1;
+    variableHashTable->init = 0;
 }
 
 char *contactStr(char *str1, char *str2, char *str3) {
     // todo 不确定，str的长度是否需要加1。
     // todo 能使用(char *）malloc(*)吗？强制类型转换。
     int len = sizeof(str1) + sizeof(str2) + sizeof(str3);
-    char *str = malloc(len + 1);
+    char *str = (char *) malloc(len + 1);
     sprintf(str, "%s%s%s", str1, str2, str3);
     str[len + 1] = '\0';
     return str;
@@ -485,6 +507,9 @@ char *traverseNode(struct ast *node) {
         char *codeStr2 = traverseNode(node->funcBody);
         char *oldCodeStr = codeStr;
         codeStr = contactStrBetter(5, oldCodeStr, node->returnType, node->funcName, codeStr1, codeStr2);
+        // 生成汇编代码使用
+        // todo 非常奇怪，这个节点，在遍历变量节点之后才遍历。
+        // strcpy(funcName, node->funcName);
 
         return codeStr;
     }
@@ -543,7 +568,11 @@ char *traverseNode(struct ast *node) {
         return codeStr;
     }
 
+    // todo ASSIGN_NODE_TYPE 类型节点，并无函数名。现在又需要，怎么办？用全局变量保存。
     if (node->nodeType == ASSIGN_NODE_TYPE) {
+        // 生成汇编代码--变量，funcName是全局变量
+        generateVariableCode(node->expr, funcName);
+
         char *codeStr1 = traverseNode(node->expr);
         char *oldCodeStr = codeStr;
         codeStr = contactStrBetter(2, oldCodeStr, codeStr1);
@@ -554,6 +583,9 @@ char *traverseNode(struct ast *node) {
     if (node->nodeType == CALL_NODE_TYPE) {
         SINGLE_LINKED_LIST_NODE_HEADER header;
         header.paramNode = node->paramListHead;
+        // 生成汇编代码callCode start
+        generateCallCode(funcName, node->paramListHead.next);
+        // 生成汇编代码callCode end
         char *codeStr1 = traverseLinkedList(header, ACTUAL_PARAM_HEADER);
         char *oldCodeStr = codeStr;
         // 第一个参数是3，而不是2。断点调试很久，才找到这个问题。代码不是特别多，找错误就如此麻烦了。
@@ -594,6 +626,8 @@ char *traverseNode(struct ast *node) {
     }
 
     if (node->nodeType == VARIABLE_NODE_TYPE) {
+        // 生成汇编代码
+        addToVariableHashTable(*node);
         // 已经拼接好的codeStr + 变量类型 + " " + 变量名
         codeStr = contactStrBetter(4, codeStr, node->dataType, " ", node->variableName);
         return codeStr;
@@ -826,6 +860,245 @@ void reverseLinkedList(ExprNode *oldHead) {
         }
         if (oldHead->next == NULL) {
             oldHead->next = cur;
+        }
+    }
+}
+
+// 存储到函数哈希表中更好？无所谓。由于实参存储在单链表中，放入哈希表或由此函数返回都行。
+// 这样的话，函数哈希表就有些浪费了。
+// 第二个参数是调用函数的第二个实参
+void generateCallCode(char *funcName, struct paramNode *paramNode) {
+    char *callCodeTemplate = "    call printf";
+    char *pushStackCode = "";
+    // 反转单链表
+    struct paramNode *cur = paramNode;
+    while (cur != NULL) {
+        struct ast *param = cur->param;
+        Variable *variable = (Variable *) malloc(sizeof(Variable));
+        getVariable(param->paramName, variable);
+        char codeStr[40];
+        // 获取参数类型
+        if (strcmp("int", variable->type) == 0) {
+            sprintf(codeStr, "pushl $%s\n", int2String(param->numberValue));
+        } else if (strcmp("string", variable->type) == 0) {
+            char *paramName = contactStrBetter(2, "$", param->paramName);
+            sprintf(codeStr, "pushl %s\n", paramName);
+        }
+        // todo 前后次序问题，不能很清晰、迅速地心算出来
+        pushStackCode = contactStrBetter(2, codeStr, pushStackCode);
+        cur = cur->next;
+    }
+    char *callCode = contactStrBetter(2, pushStackCode, callCodeTemplate);
+    addToCodeHashTable(funcName, CALL, callCode);
+}
+
+//.section .data
+//        str:
+//.asciz  "hello,world:%d\n"
+//len = . - str
+// 遍历assignStmtNode时生成
+// assignStmtNode 没有一个头节点，所以，需用一个全局变量存储变量汇编代码。
+// 直接用全局变量达成此目的，太简略了，完全不具备复用性。
+// 仍然打算用简陋的哈希表完成这个工作。
+void generateVariableCode(struct ast *expr, char *funcName) {
+    FuncCode *funcCode = (FuncCode *) malloc(sizeof(FuncCode));
+    getFuncCode(funcCode, funcName);
+    char *variableCodeStr = funcCode->variableCode;
+    // 取得expr的左右两边的数据。在这里卡了许久。因为，我这里是简化版，所以，expr->l是变量名，expr->r是值。
+    // 可是，我却陷入了旧代码中的处理ASSIGN_NODE_TYPE类型节点的逻辑。看了很久，才发现，我对表达式，是用专门逻辑处理的。
+    // 由于，我需要直接在这里获取变量名和变量值，所以，不能在旧代码中插入这里的代码。
+    // 将生成汇编代码的代码分散在各个地方，也不好。能集中就尽量集中。
+    struct ast *left = expr->l;
+    struct ast *right = expr->r;
+    char *variableName = left->stringValue;
+    char *variableValue = right->stringValue;       // todo 可能是整型，如何处理？整型不需要生成这部分汇编代码。
+    // 在哈希表中查找
+    // todo 二维数组如何用malloc申请内存？
+//    char *variable = (char *) malloc(sizeof(char[100]) * 3);
+    // 没办法，只能这样硬编码
+    Variable *variable = (Variable *) malloc(sizeof(Variable));
+    getVariable(variableName, variable);
+    // 字符串类型
+    if (strcmp(variable->type, "string") == 0) {
+        char *codeTemplate = "%s:\n"
+                             "    .asciz  \"%s\"\n"
+                             "    len = . - %s";
+        char *codeStr = (char *) malloc(
+                strlen(codeTemplate) + strlen(variableName) * 2 + 2 + strlen(variableValue) + 1);
+        sprintf(codeStr, codeTemplate, variableName, variableValue, variableName);
+        char *newCodeStr = contactStrBetter(2, variableCodeStr, codeStr);
+        // 将结果存储到函数哈希表中
+        addToCodeHashTable(funcName, VARIABLE, newCodeStr);
+    }
+    // 整型，不需要生成变量
+    if (strcmp(variable->type, "int") == 0) {
+        // do nothing
+    }
+}
+
+// 不熟练，连接字符串的代码，我还不能百分百确定它们是正确的。
+// todo startCode的长度不能精准确定，只能给出一个大的空间，浪费空间。有更好的方法吗？
+// 为了函数哈希表不被浪费，更重要的是，为了在遍历结束之后，再生成汇编代码，我把汇编代码的三个组成
+// 部分全部放入函数哈希表中。
+void generateStartCode(char *funcName) {
+    char *startCodeTemplate = ".section .text\n"
+                              ".global _start\n"
+                              "_start:\n"
+                              "    nop\n"
+                              "%s"
+                              "    movl $1, %eax\n"
+                              "    int $0x80";
+    // 放到最后整合 start
+    //    char *startCode = (char *) malloc(strlen(startCodeTemplate) + 1
+//                                      + strlen(callCode) + 1);
+//    sprintf(startCode, startCodeTemplate, callCode);
+    // 放到最后整合 end
+//    startCode = contactStrBetter(variableCode, startCode);
+    // 存储到函数哈希表
+    FuncCode *funcCode = (FuncCode *) malloc(sizeof(FuncCode));
+    getFuncCode(funcCode, funcName);
+    addToCodeHashTable(funcName, START, startCodeTemplate);
+}
+
+void addToVariableHashTable(struct ast funcVariableNode) {
+    Variable *variable = (Variable *) malloc(sizeof(Variable));
+    char *dataType = funcVariableNode.dataType;
+    if (strcmp(dataType, "char") == 0) {
+        variable->type = "string";
+        dataType = "string";
+    }
+
+    if (strcmp(dataType, "string") == 0) {
+        variable->name = funcVariableNode.variableName;
+        char *variableName = funcVariableNode.variableName;
+        int len = strlen(variableName);
+        if (len >= 1 && variableName[0] == '*') {
+            char *str = funcVariableNode.variableName + 1;
+            variable->name = str;
+        }
+    } else {
+        variable->name = funcVariableNode.variableName;
+        variable->type = funcVariableNode.dataType;
+    }
+    int tableSize = variableHashTable->tableSize;
+    variableHashTable->variableTable[++tableSize] = variable;
+    variableHashTable->tableSize = tableSize;
+    if (variableHashTable->init == 0) {
+        variableHashTable->init = 1;
+    }
+}
+
+//
+//void addToVariableHashTable(struct funcVariableNode *funcVariableNode) {
+//    // todo 数组类型哈希表初始化，难点，这种方法，只是暂时的
+//    int init = hashTable.init;
+//    if (init == 0) {
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                for (int k = 0; k < 20; k++) {
+//                    hashTable.variableHashTable[i][j][k] = '0';
+//                }
+//            }
+//        }
+//        hashTable.init = 1;
+//    }
+//    struct ast *funcVariable = funcVariableNode->funcVariable;
+//    char *nodeType = (char *) malloc(sizeof(char) * 10);
+//    char *value = (char *) malloc(sizeof(char) * 20);
+//
+//    // 整型
+//    if (funcVariable->nodeType == NUM_NODE_TYPE) {
+//        // todo 字符串变量，这样赋值，可以吗？经测试，可行。
+//        value = int2String(funcVariable->numberValue);
+//        nodeType = 'int';
+//    }
+//    // 标识符
+//    if (funcVariable->nodeType == STR_NODE_TYPE) {
+//        value = funcVariable->stringValue;
+//        nodeType = 'string';
+//    }
+//
+//    int tableSize = hashTable.tableSize;
+////    *hashTable.variableHashTable[tableSize + 1][0] = funcVariable->variableName;
+////    *hashTable.variableHashTable[tableSize + 1][1] = nodeType;
+////    *hashTable.variableHashTable[tableSize + 1][2] = value;
+//
+//    *hashTable.variableHashTable[tableSize + 1][0] = "str";
+//    *hashTable.variableHashTable[tableSize + 1][1] = "string";
+//    *hashTable.variableHashTable[tableSize + 1][2] = "hello:%d";
+//
+//    hashTable.tableSize++;
+//}
+
+void getVariable(char *variableName, Variable *variable) {
+    if (variableHashTable->init == 0) {
+        return;
+    }
+    int tableSize = variableHashTable->tableSize;
+    for (int i = 0; i <= tableSize; i++) {
+        if (strcmp(variableName, variableHashTable->variableTable[i]->name) == 0) {
+//            variable = variableHashTable->variableTable[i];
+            variable->name = variableHashTable->variableTable[i]->name;
+            variable->type = variableHashTable->variableTable[i]->type;
+            variable->value = variableHashTable->variableTable[i]->value;
+
+            break;
+        }
+    }
+}
+
+// todo 使用malloc，能不初始化那个结构吗？
+void addToCodeHashTable(char *funcName, int codeType, char *codeStr) {
+    int init = codeStrTable->init;
+    if (init == 0) {
+        init = 1;
+        codeStrTable->init = init;
+    }
+    int tableSize = codeStrTable->tableSize;
+    // todo 有问题。会重复添加，必须做到：不存在，添加；存在，保存和更新。
+    // 查找hash表中是否存在同名函数，若存在，更新；若不存在，加入。
+    int index = -1;
+    for (int i = 0; i <= tableSize; i++) {
+        if (strcmp(codeStrTable->funcCodeTable[i].funcName, funcName) == 0) {
+            index = i;
+            break;
+        }
+    }
+
+    // 不存在，加入。
+    if (index == -1) {
+        index = tableSize + 1;
+        strcpy(codeStrTable->funcCodeTable[index].funcName, funcName);
+//        codeStrTable->funcCodeTable[index].funcName[strlen(codeStrTable->funcCodeTable[index].funcName) + 1] = '\0';
+        codeStrTable->tableSize = index;
+    }
+    updateFuncCode(codeType, codeStr, &codeStrTable->funcCodeTable[index]);
+}
+
+void updateFuncCode(int codeType, char *codeStr, FuncCode *funcCode) {
+    if (codeType == CALL) {
+//        codeStrTable->funcCodeTable[index].callCode = codeStr;
+        strcpy(funcCode->callCode, codeStr);
+    } else if (codeType == START) {
+//        codeStrTable->funcCodeTable[index].startCode = codeStr;
+        strcpy(funcCode->startCode, codeStr);
+    } else if (codeType == VARIABLE) {
+//        codeStrTable->funcCodeTable[index].variableCode = codeStr;
+        strcpy(funcCode->variableCode, codeStr);
+    }
+}
+
+void getFuncCode(FuncCode *funcCode, char *funcName) {
+    int tableSize = codeStrTable->tableSize;
+    for (int i = 0; i <= tableSize; i++) {
+        if (strcmp(funcName, codeStrTable->funcCodeTable[i].funcName) == 0) {
+            // struct 能否用等号赋值？
+//            funcCode = &codeStrTable->funcCodeTable[i];
+            strcpy(funcCode->funcName, codeStrTable->funcCodeTable[i].funcName);
+            strcpy(funcCode->startCode, codeStrTable->funcCodeTable[i].startCode);
+            strcpy(funcCode->variableCode, codeStrTable->funcCodeTable[i].variableCode);
+            strcpy(funcCode->callCode, codeStrTable->funcCodeTable[i].callCode);
+            break;
         }
     }
 }

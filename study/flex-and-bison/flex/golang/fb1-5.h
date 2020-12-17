@@ -7,7 +7,7 @@
 enum NODE_TYPE {
     IF_NODE_TYPE = 'A', WHILE_NODE_TYPE, DO_WHILE_NODE_TYPE, CON_NODE_TYPE, THEN_NODE_TYPE,
     ELSE_BODY_NODE_TYPE, EXPR_NODE_TYPE, NUM_NODE_TYPE, STR_NODE_TYPE, PARAM_NODE_TYPE, ACTUAL_PARAM_NODE_TYPE,
-    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE, CALL_NODE_TYPE,RETURN_NODE_TYPE,
+    BLOCK_NODE_TYPE, VARIABLE_NODE_TYPE, FUNC_NODE_TYPE, ASSIGN_NODE_TYPE, CALL_NODE_TYPE, RETURN_NODE_TYPE,
     PLUS_NODE_TYPE = 43,
     SUB_NODE_TYPE = 45, TIMES_NODE_TYPE = 42, EQUAL_NODE_TYPE = 61,
 
@@ -20,6 +20,18 @@ enum HEADER_TYPE {
 
 enum _BOOL {
     FALSE = 0, TRUE
+};
+
+//./fb1-5.h:27:13: warning: multi-character character constant [-Wmultichar]
+//START = 'START',
+//enum CODE_STR_TYPE {
+//    VARIABLE = 'VARIABLE',
+//    START = 'START',
+//    CALL = 'CALL',
+//};
+
+enum CODE_STR_TYPE {
+    VARIABLE = 0, START, CALL
 };
 
 
@@ -260,5 +272,65 @@ enum _BOOL isExprNode(int nodeType);
 void sigillDeal(int sig);
 
 void reverseLinkedList(ExprNode *oldHead);
+
+// 生成最简单的汇编代码 start
+// 函数名
+char funcName[20];
+//遍历哈希表
+typedef struct {
+    char *type;
+    char *name;
+    char *value;
+} Variable;
+typedef struct {
+    Variable *variableTable[10];
+    int tableSize;
+    int init;
+} VariableHashTable;
+
+typedef struct {
+    // 函数名
+    char funcName[500];
+    // 汇编代码_start
+    char startCode[500];
+    // 汇编代码变量
+    char variableCode[500];
+    // 汇编代码函数调用
+    char callCode[500];
+} FuncCode;
+typedef struct {
+    FuncCode funcCodeTable[10];
+    int tableSize;
+    int init;
+} CodeHashTable;
+//./fb1-5.h:296:24: warning: incompatible pointer to integer conversion initializing 'char' with an expression of type 'void *' [-Wint-conversion]
+//HashTable hashTable = {NULL, -1, 0};
+//HashTable hashTable = {NULL, -1, 0};
+//CodeHashTable codeStrTable = {NULL, -1, 0};
+//char *codeStrTable = (char *) malloc(sizeof(char));
+CodeHashTable *codeStrTable;
+VariableHashTable *variableHashTable;
+
+
+void generateCallCode(char *funcName, struct paramNode *paramNode);
+
+void generateVariableCode(struct ast *expr, char *funcName);
+
+void generateStartCode(char *funcName);
+
+//写成struct funcVariableNode funcVariableNode行吗
+void addToVariableHashTable(struct ast funcVariableNode);
+
+// 查找变量
+void getVariable(char *variableName, Variable *variable);
+
+void addToCodeHashTable(char *funcName, int codeType, char *codeStr);
+
+// 更新 FuncCode
+void updateFuncCode(int codeType, char *codeStr, FuncCode *funcCode);
+
+// 获取FuncCode，是用函数返回还是用指针参数返回？不确定啊。
+void getFuncCode(FuncCode *funcCode, char *funcName);
+// 生成最简单的汇编代码 end
 
 
