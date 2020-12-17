@@ -329,8 +329,13 @@ void addToCodeHashTable(char *funcName, int codeType, char *codeStr);
 // 更新 FuncCode
 void updateFuncCode(int codeType, char *codeStr, FuncCode *funcCode);
 
+// 更新 Variable
+void updateVariable(char *name, char *value);
+
 // 获取FuncCode，是用函数返回还是用指针参数返回？不确定啊。
 void getFuncCode(FuncCode *funcCode, char *funcName);
+// 存储到文件中
+void save2file(char *filename, char *codeStr);
 // 生成最简单的汇编代码 end
 
 

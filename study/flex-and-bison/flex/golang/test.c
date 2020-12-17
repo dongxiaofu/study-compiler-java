@@ -178,8 +178,8 @@ int main(int argc){
 int main(int argc){
     char *str;
     int x;
-    str = "str=%d";
-    x = 7;
+    str = "str2=%d\n";
+    x = 18;
     printf(str, x);
     return 0;
 }

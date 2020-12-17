@@ -214,6 +214,14 @@ char *newCode(struct ast *root) {
     printf("call:%s\n", funcCode->callCode);
     printf("variable:%s\n", funcCode->variableCode);
 
+    char *startCode = (char *) malloc(strlen(funcCode->startCode) + 1 + strlen(funcCode->callCode) + 1);
+    sprintf(startCode, funcCode->startCode, funcCode->callCode, "%");
+    char *startStr = ".section .data\n";
+    char *fullCodeStr = contactStrBetter(3, startStr, funcCode->variableCode, startCode);
+    printf("fullCodeStr:%s\n", fullCodeStr);
+
+    char *filename = "/Users/cg/data/code/study-compiler-java/study/gas/cg.s";
+    save2file(filename, fullCodeStr);
 
     return codeStr;
 //    return "codeStr";
@@ -868,7 +876,7 @@ void reverseLinkedList(ExprNode *oldHead) {
 // 这样的话，函数哈希表就有些浪费了。
 // 第二个参数是调用函数的第二个实参
 void generateCallCode(char *funcName, struct paramNode *paramNode) {
-    char *callCodeTemplate = "    call printf";
+    char *callCodeTemplate = "    call printf\n";
     char *pushStackCode = "";
     // 反转单链表
     struct paramNode *cur = paramNode;
@@ -879,10 +887,10 @@ void generateCallCode(char *funcName, struct paramNode *paramNode) {
         char codeStr[40];
         // 获取参数类型
         if (strcmp("int", variable->type) == 0) {
-            sprintf(codeStr, "pushl $%s\n", int2String(param->numberValue));
+            sprintf(codeStr, "  pushl $%s\n", variable->value);
         } else if (strcmp("string", variable->type) == 0) {
             char *paramName = contactStrBetter(2, "$", param->paramName);
-            sprintf(codeStr, "pushl %s\n", paramName);
+            sprintf(codeStr, "  pushl %s\n", paramName);
         }
         // todo 前后次序问题，不能很清晰、迅速地心算出来
         pushStackCode = contactStrBetter(2, codeStr, pushStackCode);
@@ -911,7 +919,13 @@ void generateVariableCode(struct ast *expr, char *funcName) {
     struct ast *left = expr->l;
     struct ast *right = expr->r;
     char *variableName = left->stringValue;
-    char *variableValue = right->stringValue;       // todo 可能是整型，如何处理？整型不需要生成这部分汇编代码。
+    char *variableValue;
+    if (right->nodeType == NUM_NODE_TYPE) {
+        variableValue = int2String(right->numberValue);      // todo 可能是整型，如何处理？整型不需要生成这部分汇编代码。
+    } else {
+        variableValue = right->stringValue;       // todo 可能是整型，如何处理？整型不需要生成这部分汇编代码。
+    }
+
     // 在哈希表中查找
     // todo 二维数组如何用malloc申请内存？
 //    char *variable = (char *) malloc(sizeof(char[100]) * 3);
@@ -922,7 +936,7 @@ void generateVariableCode(struct ast *expr, char *funcName) {
     if (strcmp(variable->type, "string") == 0) {
         char *codeTemplate = "%s:\n"
                              "    .asciz  \"%s\"\n"
-                             "    len = . - %s";
+                             "    len = . - %s\n";
         char *codeStr = (char *) malloc(
                 strlen(codeTemplate) + strlen(variableName) * 2 + 2 + strlen(variableValue) + 1);
         sprintf(codeStr, codeTemplate, variableName, variableValue, variableName);
@@ -933,6 +947,8 @@ void generateVariableCode(struct ast *expr, char *funcName) {
     // 整型，不需要生成变量
     if (strcmp(variable->type, "int") == 0) {
         // do nothing
+        // 将结果存储到函数哈希表中
+        updateVariable(variableName, variableValue);
     }
 }
 
@@ -946,7 +962,7 @@ void generateStartCode(char *funcName) {
                               "_start:\n"
                               "    nop\n"
                               "%s"
-                              "    movl $1, %eax\n"
+                              "    movl $1, %seax\n"
                               "    int $0x80";
     // 放到最后整合 start
     //    char *startCode = (char *) malloc(strlen(startCodeTemplate) + 1
@@ -1088,6 +1104,20 @@ void updateFuncCode(int codeType, char *codeStr, FuncCode *funcCode) {
     }
 }
 
+void updateVariable(char *name, char *value) {
+    int init = variableHashTable->init;
+    if (init == 0) {
+        return;
+    }
+    int tableSize = variableHashTable->tableSize;
+    for (int i = 0; i <= tableSize; i++) {
+        if (strcmp(name, variableHashTable->variableTable[i]->name) == 0) {
+            variableHashTable->variableTable[i]->value = value;
+            break;
+        }
+    }
+}
+
 void getFuncCode(FuncCode *funcCode, char *funcName) {
     int tableSize = codeStrTable->tableSize;
     for (int i = 0; i <= tableSize; i++) {
@@ -1100,5 +1130,16 @@ void getFuncCode(FuncCode *funcCode, char *funcName) {
             strcpy(funcCode->callCode, codeStrTable->funcCodeTable[i].callCode);
             break;
         }
+    }
+}
+
+void save2file(char *filename, char *codeStr) {
+    FILE *fp = NULL;
+    fp = fopen(filename, "w+");
+    int errorNo = fprintf(fp, "%s", codeStr);
+    fclose(fp);
+    if (errorNo < 0) {
+        perror("写入数据失败\n");
+        exit(1);
     }
 }
