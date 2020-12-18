@@ -220,13 +220,18 @@ char *newCode(struct ast *root) {
     char *fullCodeStr = contactStrBetter(3, startStr, funcCode->variableCode, startCode);
     printf("fullCodeStr:%s\n", fullCodeStr);
 
-    char *filename = "/Users/cg/data/code/study-compiler-java/study/gas/cg.s";
+    char *filenamePrefix = "/Users/cg/data/code/study-compiler-java/study/gas/cg";
+    char *filename = contactStrBetter(2, filenamePrefix, ".s");
     save2file(filename, fullCodeStr);
 
-    return codeStr;
-//    return "codeStr";
-//    test(codeStr);
+    char *commandTemplate = "as -gstabs -o $code.o %s.s"
+                         "&ld -dynamic-linker /lib/ld-linux.so.2 -o %s -lc %s.o";
+    char *command = (char *)malloc(strlen(commandTemplate) + 1 + (strlen(filenamePrefix) + 1) * 3);
+    sprintf(command,commandTemplate, filenamePrefix, filenamePrefix, filenamePrefix);
+    printf("command = %s\n", command);
+    system(command);
 
+    return codeStr;
 }
 
 char *generateCCode(struct ast *root, char *code) {
